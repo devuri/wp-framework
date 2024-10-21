@@ -10,12 +10,14 @@
  */
 
 use Defuse\Crypto\Key;
+use Psr\Http\Message\RequestInterface;
 use Psr\Log\InvalidArgumentException;
 use Psr\Log\LogLevel;
 use Symfony\Component\Filesystem\Filesystem;
 use Urisoft\DotAccess;
 use Urisoft\Encryption;
 use Urisoft\Env;
+use WPframework\AppInit;
 use WPframework\EnvGenerator;
 use WPframework\Framework;
 use WPframework\Http\Asset;
@@ -493,4 +495,13 @@ function logWithStackTrace(): void
         $function = $frame['function'] ?? 'N/A';
         error_log("#{$index} {$file}({$line}): {$function}()");
     }
+}
+
+function customHeaderMiddleware(AppInit $app): void
+{
+    $app->addMiddleware(function (RequestInterface $request, $handler) {
+        $response = $handler->handle($request);
+
+        return $response->withHeader('X-Custom-Header', 'MyCustomValue');
+    });
 }

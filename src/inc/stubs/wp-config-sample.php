@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the WPframework package.
+ *
+ * (c) Uriel Wilson <uriel@wpframework.io>
+ *
+ * The full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 use WPframework\AppFactory;
 
 /*
@@ -8,13 +17,13 @@ use WPframework\AppFactory;
  * It loads the necessary files and sets up the environment for the application to run.
  * This includes initializing the Composer autoloader, which is used to load classes and packages.
  */
-if (file_exists(dirname(__DIR__) . '/vendor/autoload.php')) {
-    require_once dirname(__DIR__) . '/vendor/autoload.php';
+if (file_exists(\dirname(__DIR__) . '/vendor/autoload.php')) {
+    require_once \dirname(__DIR__) . '/vendor/autoload.php';
 } else {
     exit('Cannot find the vendor autoload file.');
 }
 
-/**
+/*
  * For developers: WordPress debugging mode.
  *
  * Change this to true to enable the display of notices during development.
@@ -26,20 +35,21 @@ if (file_exists(dirname(__DIR__) . '/vendor/autoload.php')) {
  *
  * @link https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/
  */
-define( 'WP_DEBUG', false );
+\define('WP_DEBUG', false);
 
+$app = AppFactory::create(\dirname(__DIR__));
+// customHeaderMiddleware($app);
 
-/* That's all, stop editing! Happy publishing. */
+// That's all, stop editing! Happy publishing.
 
-AppFactory::create(dirname(__DIR__));
 AppFactory::run();
 
 // Set the table prefix.
 $table_prefix = env('DB_PREFIX');
 
 // Define ABSPATH.
-if (! defined('ABSPATH')) {
-    define('ABSPATH', __DIR__ . '/');
+if ( ! \defined('ABSPATH')) {
+    \define('ABSPATH', __DIR__ . '/');
 }
 
 // Load WordPress settings

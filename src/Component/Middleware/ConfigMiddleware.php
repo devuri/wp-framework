@@ -14,25 +14,9 @@ namespace WPframework\Middleware;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Psr\Log\LoggerInterface;
 
-class LoggingMiddleware extends AbstractMiddleware
+class ConfigMiddleware extends AbstractMiddleware
 {
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
-     * Constructor to inject the logger.
-     *
-     * @param LoggerInterface $logger
-     */
-    public function __construct(LoggerInterface $logger)
-    {
-        $this->logger = $logger;
-    }
-
     /**
      * Process an incoming server request.
      *
@@ -43,19 +27,8 @@ class LoggingMiddleware extends AbstractMiddleware
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        // $this->logger->info('Incoming request', [
-        //     'method' => $request->getMethod(),
-        //     'uri' => (string) $request->getUri(),
-        //     'headers' => $request->getHeaders(),
-        // ]);
-
         $this->when();
 
         return $handler->handle($request);
-        //
-        // $this->logger->info('Outgoing response', [
-        //     'status' => $response->getStatusCode(),
-        //     'headers' => $response->getHeaders(),
-        // ]);
     }
 }

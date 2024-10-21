@@ -176,9 +176,6 @@ class Terminate
         return false;
     }
 
-    /**
-     * CSS styles.
-     */
     private static function page_styles(): void
     {
         ?>

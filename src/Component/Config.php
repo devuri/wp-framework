@@ -11,8 +11,20 @@
 
 namespace WPframework;
 
-final class Config
+final class Config implements ConfigInterface
 {
+    protected $settings = [];
+
+    public function set(string $key, $value): void
+    {
+        $this->settings[$key] = $value;
+    }
+
+    public function get(string $key, $default = null)
+    {
+        return $this->settings[$key] ?? $default;
+    }
+
     public static function getDefault(): array
     {
         return [
@@ -121,3 +133,12 @@ final class Config
         return self::getDefault();
     }
 }
+
+
+// $config = new Config();
+//
+// $config->set('WP_DEBUG', getenv('WP_DEBUG') ?: false);
+// $config->set('DB_NAME', getenv('DB_NAME'));
+// $config->set('DB_USER', getenv('DB_USER'));
+// $config->set('DB_PASSWORD', getenv('DB_PASSWORD'));
+// $config->defineConstants();

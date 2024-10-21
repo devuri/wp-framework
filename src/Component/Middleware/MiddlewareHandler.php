@@ -37,16 +37,20 @@ class MiddlewareHandler implements RequestHandlerInterface
      */
     private ?LoggerInterface $logger;
 
+    private ?MiddlewareRegistry $middlewareRegistry;
+
     /**
      * MiddlewareHandler constructor.
      *
      * @param RequestHandlerInterface $finalHandler The final handler to invoke if no middleware processes the request.
      * @param ?LoggerInterface        $logger       Optional logger to log any errors in middleware.
      */
-    public function __construct(RequestHandlerInterface $finalHandler, ?LoggerInterface $logger = null)
+    public function __construct(RequestHandlerInterface $finalHandler, MiddlewareRegistry $middlewareRegistry, ?LoggerInterface $logger = null)
     {
         $this->finalHandler = $finalHandler;
+        $this->middlewareRegistry = $middlewareRegistry;
         $this->logger = $logger;
+        $this->middlewareQueue = $this->middlewareRegistry->getRegisteredMiddleware();
     }
 
     /**
@@ -80,6 +84,10 @@ class MiddlewareHandler implements RequestHandlerInterface
         }
 
         $middleware = array_shift($this->middlewareQueue);
+
+        if (\is_string($middleware)) {
+            $middleware = new $middleware();
+        }
 
         try {
             if ($middleware instanceof MiddlewareInterface) {

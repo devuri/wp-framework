@@ -33,7 +33,7 @@ use WPframework\Middleware\MiddlewareHandler;
  */
 class App
 {
-    use AppInit;
+    use AppMakerTrait;
 
     /**
      * The base path of the application.
