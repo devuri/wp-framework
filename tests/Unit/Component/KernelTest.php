@@ -15,11 +15,11 @@ use PHPUnit\Framework\TestCase;
 use WPframework\Kernel;
 
 /**
- * Test the Kernel.
+ * @group WPframework
+ *
+ * @covers \WPframework\Kernel::getArgs
  *
  * @internal
- *
- * @coversNothing
  */
 class KernelTest extends TestCase
 {

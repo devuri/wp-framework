@@ -15,9 +15,11 @@ use PHPUnit\Framework\TestCase;
 use WPframework\HashValidator;
 
 /**
- * @internal
+ * @group WPframework
  *
- * @coversNothing
+ * @covers \WPframework\HashValidator::isMd5
+ *
+ * @internal
  */
 class HashValidatorTest extends TestCase
 {

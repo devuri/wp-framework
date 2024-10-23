@@ -15,9 +15,11 @@ use PHPUnit\Framework\TestCase;
 use WPframework\Framework;
 
 /**
- * @internal
+ * @group WPframework
  *
- * @coversNothing
+ * @covers \WPframework\Framework::getAppOptions
+ *
+ * @internal
  */
 class AppOptionsTest extends TestCase
 {

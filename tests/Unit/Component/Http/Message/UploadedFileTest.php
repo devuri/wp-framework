@@ -17,9 +17,11 @@ use Psr\Http\Message\UploadedFileInterface;
 use WPframework\Http\Message\UploadedFile;
 
 /**
- * @internal
+ * @group WPframework\Http\Message
  *
- * @coversNothing
+ * @covers \WPframework\Http\Message\UploadedFile
+ *
+ * @internal
  */
 class UploadedFileTest extends TestCase
 {

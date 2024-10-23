@@ -14,9 +14,12 @@ namespace WPframework\Tests\Unit\Helpers;
 use WPframework\Tests\BaseTest;
 
 /**
- * @internal
+ * @group WPframework
  *
- * @coversNothing
+ * @covers ::asset
+ * @covers ::assetUrl
+ *
+ * @internal
  */
 class HelpersTest extends BaseTest
 {

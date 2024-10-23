@@ -29,13 +29,17 @@ abstract class AbstractMiddleware implements MiddlewareInterface
      * @return ResponseInterface
      */
     abstract public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface;
-    protected function log(): LoggerInterface
+
+	/**
+	 * @return LoggerInterface
+	 */
+	protected function log(): LoggerInterface
     {
         return new FileLogger();
     }
 
     protected function when(): void
     {
-        $this->log()->info('middleware(' . time() . '): ' . static::class);
+        //$this->log()->info('middleware(' . time() . '): ' . static::class);
     }
 }

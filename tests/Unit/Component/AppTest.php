@@ -14,11 +14,11 @@ namespace WPframework\Tests\Unit\Component;
 use WPframework\Tests\BaseTest;
 
 /**
- * Test the Kernel.
+ * @group WPframework
+ *
+ * @covers \WPframework\App
  *
  * @internal
- *
- * @coversNothing
  */
 class AppTest extends BaseTest
 {

@@ -21,6 +21,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\NullLogger;
 use RuntimeException;
 use WPframework\Middleware\MiddlewareHandler;
+use WPframework\Middleware\MiddlewareRegistry;
 
 class FinalHandler implements RequestHandlerInterface
 {
@@ -59,10 +60,13 @@ class ShortCircuitMiddleware implements MiddlewareInterface
     }
 }
 
+
 /**
- * @internal
+ * @group WPframework\Middleware
  *
- * @coversNothing
+ * @covers \WPframework\Middleware\MiddlewareHandler
+ *
+ * @internal
  */
 class MiddlewareHandlerTest extends TestCase
 {
@@ -70,8 +74,9 @@ class MiddlewareHandlerTest extends TestCase
     {
         $finalHandler = new FinalHandler();
         $request = new ServerRequest('GET', '/test');
+		$registry = new MiddlewareRegistry();
 
-        $middlewareHandler = new MiddlewareHandler($finalHandler);
+        $middlewareHandler = new MiddlewareHandler($finalHandler, $registry);
         $response = $middlewareHandler->handle($request);
 
         $this->assertInstanceOf(ResponseInterface::class, $response);
@@ -82,11 +87,12 @@ class MiddlewareHandlerTest extends TestCase
     {
         $finalHandler = new FinalHandler();
         $request = new ServerRequest('GET', '/test');
+		$registry = new MiddlewareRegistry();
 
         // Middleware that adds a custom header to the response
         $middleware = new AddHeaderMiddleware();
 
-        $middlewareHandler = new MiddlewareHandler($finalHandler);
+        $middlewareHandler = new MiddlewareHandler($finalHandler, $registry);
         $middlewareHandler->addMiddleware($middleware);
 
         $response = $middlewareHandler->handle($request);
@@ -99,12 +105,13 @@ class MiddlewareHandlerTest extends TestCase
     public function test_middleware_modifies_request(): void
     {
         $finalHandler = new FinalHandler();
+		$registry = new MiddlewareRegistry();
         $request = new ServerRequest('GET', '/test', [], null, '1.1', [], [], ['initial' => 'value']);
 
         // Middleware that modifies the request (adds a query parameter)
         $middleware = new ModifyRequestMiddleware();
 
-        $middlewareHandler = new MiddlewareHandler($finalHandler);
+        $middlewareHandler = new MiddlewareHandler($finalHandler, $registry);
         $middlewareHandler->addMiddleware($middleware);
 
         $response = $middlewareHandler->handle($request);
@@ -120,12 +127,13 @@ class MiddlewareHandlerTest extends TestCase
     public function test_short_circuit_middleware(): void
     {
         $finalHandler = new FinalHandler();
+		$registry = new MiddlewareRegistry();
         $request = new ServerRequest('GET', '/test');
 
         // Middleware that short-circuits the request, returning a 403 Forbidden response
         $shortCircuitMiddleware = new ShortCircuitMiddleware();
 
-        $middlewareHandler = new MiddlewareHandler($finalHandler);
+        $middlewareHandler = new MiddlewareHandler($finalHandler, $registry);
         $middlewareHandler->addMiddleware($shortCircuitMiddleware);
 
         $response = $middlewareHandler->handle($request);
@@ -138,10 +146,11 @@ class MiddlewareHandlerTest extends TestCase
     public function test_multiple_middleware_in_sequence(): void
     {
         $finalHandler = new FinalHandler();
+		$registry = new MiddlewareRegistry();
         $request = new ServerRequest('GET', '/test');
 
         // Middleware stack: AddHeaderMiddleware -> ModifyRequestMiddleware -> FinalHandler
-        $middlewareHandler = new MiddlewareHandler($finalHandler);
+        $middlewareHandler = new MiddlewareHandler($finalHandler, $registry);
 
         // Add middleware in order
         $middlewareHandler->addMiddleware(new ModifyRequestMiddleware());
@@ -164,6 +173,7 @@ class MiddlewareHandlerTest extends TestCase
     public function test_handle_throws_exception_and_logs_error(): void
     {
         $finalHandler = new FinalHandler();
+		$registry = new MiddlewareRegistry();
         $request = new ServerRequest('GET', '/test');
         $logger = new NullLogger();
 
@@ -171,7 +181,7 @@ class MiddlewareHandlerTest extends TestCase
             throw new RuntimeException('Test exception');
         };
 
-        $middlewareHandler = new MiddlewareHandler($finalHandler, $logger);
+        $middlewareHandler = new MiddlewareHandler($finalHandler, $registry, $logger);
         $middlewareHandler->addMiddleware($middleware);
 
         $this->expectException(RuntimeException::class);

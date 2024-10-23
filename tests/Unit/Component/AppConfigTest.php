@@ -16,9 +16,11 @@ use WPframework\AppConfig;
 use WPframework\ConstantBuilder;
 
 /**
- * @internal
+ * @group WPframework
  *
- * @coversNothing
+ * @covers \WPframework\AppConfig
+ *
+ * @internal
  */
 class AppConfigTest extends TestCase
 {

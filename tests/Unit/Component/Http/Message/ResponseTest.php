@@ -16,9 +16,11 @@ use Psr\Http\Message\StreamInterface;
 use WPframework\Http\Message\Response;
 
 /**
- * @internal
+ * @group WPframework\Http\Message
  *
- * @coversNothing
+ * @covers \WPframework\Http\Message\Response
+ *
+ * @internal
  */
 class ResponseTest extends TestCase
 {

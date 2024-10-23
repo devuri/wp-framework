@@ -15,9 +15,11 @@ use PHPUnit\Framework\TestCase;
 use WPframework\ConstantBuilder;
 
 /**
- * @internal
+ * @group WPframework
  *
- * @coversNothing
+ * @covers \WPframework\ConstantBuilder
+ *
+ * @internal
  */
 class ConstantBuilderTest extends TestCase
 {

@@ -16,9 +16,11 @@ use WPframework\Logger\FileLogger;
 use WPframework\Logger\Log;
 
 /**
- * @internal
+ * @group WPframework\Logger
  *
- * @coversNothing
+ * @covers \WPframework\Logger\FileLogger
+ *
+ * @internal
  */
 class FileLoggerTest extends TestCase
 {

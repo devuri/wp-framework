@@ -15,9 +15,11 @@ use Urisoft\DotAccess;
 use WPframework\Tests\BaseTest;
 
 /**
- * @internal
+ * @group WPframework
  *
- * @coversNothing
+ * @covers ::config
+ *
+ * @internal
  */
 class ConfigTest extends BaseTest
 {

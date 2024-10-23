@@ -17,9 +17,11 @@ use Psr\Http\Message\RequestInterface;
 use WPframework\Http\Message\Request;
 
 /**
- * @internal
+ * @group WPframework\Http\Message
  *
- * @coversNothing
+ * @covers \WPframework\Http\Message\Request
+ *
+ * @internal
  */
 class RequestTest extends TestCase
 {

@@ -15,9 +15,11 @@ use PHPUnit\Framework\TestCase;
 use WPframework\Config;
 
 /**
- * @internal
+ * @group WPframework
  *
- * @coversNothing
+ * @covers \WPframework\Config
+ *
+ * @internal
  */
 class ConfigDefaultTest extends TestCase
 {

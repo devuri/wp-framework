@@ -14,9 +14,11 @@ namespace WPframework\Tests\Unit\Helpers;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @internal
+ * @group WPframework
  *
- * @coversNothing
+ * @covers ::wpSanitize
+ *
+ * @internal
  */
 class AppSanitizerTest extends TestCase
 {

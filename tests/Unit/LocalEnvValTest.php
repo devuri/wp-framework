@@ -15,9 +15,11 @@ use PHPUnit\Framework\TestCase;
 use WPframework\Setup;
 
 /**
- * @internal
+ * @group WPframework
  *
- * @coversNothing
+ * @covers \WPframework\Setup
+ *
+ * @internal
  */
 class LocalEnvValTest extends TestCase
 {

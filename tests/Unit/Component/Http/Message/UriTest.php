@@ -16,9 +16,11 @@ use Psr\Http\Message\UriInterface;
 use WPframework\Http\Message\Uri;
 
 /**
- * @internal
+ * @group WPframework\Http\Message
  *
- * @coversNothing
+ * @covers \WPframework\Http\Message\Uri
+ *
+ * @internal
  */
 class UriTest extends TestCase
 {

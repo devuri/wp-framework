@@ -15,11 +15,11 @@ use WPframework\Kernel;
 use WPframework\Tests\BaseTest;
 
 /**
- * Test the Kernel.
+ * @group WPframework
+ *
+ * @covers \WPframework\Kernel
  *
  * @internal
- *
- * @coversNothing
  */
 class KernelWithArgsTest extends BaseTest
 {

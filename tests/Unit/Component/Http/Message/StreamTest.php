@@ -16,9 +16,11 @@ use Psr\Http\Message\StreamInterface;
 use WPframework\Http\Message\Stream;
 
 /**
- * @internal
+ * @group WPframework\Http\Message
  *
- * @coversNothing
+ * @covers \WPframework\Http\Message\Stream
+ *
+ * @internal
  */
 class StreamTest extends TestCase
 {
