@@ -12,6 +12,7 @@
 namespace WPframework\Logger;
 
 use Psr\Log\LoggerInterface;
+use RuntimeException;
 
 class Log
 {

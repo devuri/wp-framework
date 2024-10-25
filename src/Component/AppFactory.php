@@ -30,12 +30,12 @@ class AppFactory
     /**
      * @return AppInit
      */
-    public static function create(string $app_path, ?string $environment = null): AppInit
+    public static function create(string $appDirPath, ?string $environment = null): AppInit
     {
         Log::init(new FileLogger());
         self::setEnvironment($environment);
-        self::defineConstant($app_path);
-        self::$app = new AppInit($app_path);
+        self::defineConstant($appDirPath);
+        self::$app = new AppInit();
         self::registerDefaultMiddlewares();
         self::setErrorHandler();
 
@@ -49,14 +49,14 @@ class AppFactory
         self::$app->run($request);
     }
 
-    public static function defineConstant(string $app_path): void
+    public static function defineConstant(string $appDirPath): void
     {
         if ( ! \defined('SITE_CONFIGS_DIR')) {
             \define('SITE_CONFIGS_DIR', 'configs');
         }
 
         if ( ! \defined('APP_DIR_PATH')) {
-            \define('APP_DIR_PATH', $app_path);
+            \define('APP_DIR_PATH', $appDirPath);
         }
 
         if ( ! \defined('APP_HTTP_HOST')) {
@@ -143,6 +143,5 @@ class AppFactory
         );
 
         return $requestCreator->fromGlobals();
-        ;
     }
 }

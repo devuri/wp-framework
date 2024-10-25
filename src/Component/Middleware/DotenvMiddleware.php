@@ -11,14 +11,25 @@
 
 namespace WPframework\Middleware;
 
+use Dotenv\Dotenv;
+use Dotenv\Exception\InvalidPathException;
+use Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Dotenv\Dotenv;
-use Dotenv\Exception\InvalidPathException;
+use Symfony\Component\Filesystem\Filesystem;
+use WPframework\EnvType;
+use WPframework\Support\Tenancy;
 
 class DotenvMiddleware extends AbstractMiddleware
 {
+    protected $envType;
+
+    public function __construct()
+    {
+        $this->envType = new EnvType(new Filesystem());
+    }
+
     /**
      * Process an incoming server request.
      *
@@ -29,34 +40,33 @@ class DotenvMiddleware extends AbstractMiddleware
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $this->when();
+        $envFiles = $this->envType->filterFiles(
+            EnvType::supportedFiles(),
+            APP_DIR_PATH
+        );
 
-		$_env_files = _envFilesFilter(_supportedEnvFiles(), APP_DIR_PATH);
+        $_dotenv = Dotenv::createImmutable(APP_DIR_PATH, $envFiles, true);
 
-		$_dotenv = Dotenv::createImmutable(APP_DIR_PATH, $_env_files, true);
+        // Tenancy
+        $this->tenantSetup()->init($_dotenv);
 
-		try {
-			$_dotenv->load();
-		} catch (InvalidPathException $e) {
-			tryRegenerateEnvFile(APP_DIR_PATH, APP_HTTP_HOST, $_env_files);
-
-			$debug = [
-				'path'        => APP_DIR_PATH,
-				'line'        => __LINE__,
-				'exception'   => $e,
-				'invalidfile' => "Missing env file: {$e->getMessage()}",
-			];
-
-			Terminate::exit([ "Missing env file: {$e->getMessage()}", 500, $debug ]);
-		} catch (Exception $e) {
-			$debug = [
-				'path'      => APP_DIR_PATH,
-				'line'      => __LINE__,
-				'exception' => $e,
-			];
-			//Terminate::exit([ $e->getMessage(), 500, $debug ]);
-		}// end try
+        try {
+            $_dotenv->load();
+        } catch (InvalidPathException $e) {
+            $this->envType->tryRegenerateFile(APP_DIR_PATH, APP_HTTP_HOST, $envFiles);
+            $this->log()->info("Missing env file: {$e->getMessage()}");
+        } catch (Exception $e) {
+            $this->log()->error("Exception: {$e->getMessage()}");
+        }
 
         return $handler->handle($request);
+    }
+
+    /**
+     * Bootstrap multitenancy.
+     */
+    protected function tenantSetup()
+    {
+        return new Tenancy(APP_DIR_PATH, SITE_CONFIGS_DIR);
     }
 }

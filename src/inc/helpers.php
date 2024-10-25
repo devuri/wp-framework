@@ -13,19 +13,15 @@ use Defuse\Crypto\Key;
 use Psr\Http\Message\RequestInterface;
 use Psr\Log\InvalidArgumentException;
 use Psr\Log\LogLevel;
-use Symfony\Component\Filesystem\Filesystem;
 use Urisoft\DotAccess;
 use Urisoft\Encryption;
 use Urisoft\Env;
 use WPframework\AppInit;
-use WPframework\EnvGenerator;
-use WPframework\Framework;
+use WPframework\Config;
 use WPframework\Http\Asset;
 use WPframework\Logger\FileLogger;
 use WPframework\Logger\Log;
 use WPframework\Terminate;
-
-// @codingStandardsIgnoreFile.
 
 /**
  * The Asset url.
@@ -94,20 +90,6 @@ function env($name, $default = null, $encrypt = false, $strtolower = false)
     return $env_var;
 }
 
-/**
- * Start and load core plugin.
- *
- * @return null|Framework
- */
-function wpframeworkCore(): ?Framework
-{
-    if ( ! \defined('ABSPATH')) {
-        exit;
-    }
-
-    return _wpframework();
-}
-
 function envWhitelist(): array
 {
     static $whitelist;
@@ -149,11 +131,7 @@ function siteConfigsDir(): ?string
  */
 function config(?string $key = null, $default = null)
 {
-    $_options = _wpframework()->options();
-
-    if (\is_null($key)) {
-        return $_options;
-    }
+    $_options = new DotAccess(Config::siteConfig(APP_DIR_PATH));
 
     return $_options->get($key, $default);
 }
@@ -252,61 +230,6 @@ function _configsDir(): string
     return  __DIR__ . '/configs';
 }
 
-function _wpframework(?string $app_path = null): ?Framework
-{
-    static $framework;
-
-    if (\is_null($framework)) {
-        $framework = new Framework($app_path);
-    }
-
-    return $framework;
-}
-
-
-/**
- * Retrieves the default file names for environment configuration.
- *
- * This is designed to return an array of default file names
- * used for environment configuration in a WordPress environment.
- * These file names include various formats and stages of environment setup,
- * such as production, staging, development, and local environments.
- *
- * @since [version number]
- *
- * @return string[] An array of default file names for environment configurations. The array includes the following file names: - 'env' - '.env' - '.env.secure' - '.env.prod' - '.env.staging' - '.env.dev' - '.env.debug' - '.env.local' - 'env.local'
- *
- * @psalm-return list{'env', '.env', '.env.secure', '.env.prod', '.env.staging', '.env.dev', '.env.debug', '.env.local', 'env.local'}
- */
-function _supportedEnvFiles(): array
-{
-    return [
-        'env',
-        '.env',
-        '.env.secure',
-        '.env.prod',
-        '.env.staging',
-        '.env.dev',
-        '.env.debug',
-        '.env.local',
-        'env.local',
-    ];
-}
-
-/**
- * Filters out environment files that do not exist to avoid warnings.
- */
-function _envFilesFilter(array $env_files, string $app_path): array
-{
-    foreach ($env_files as $key => $file) {
-        if ( ! file_exists($app_path . '/' . $file)) {
-            unset($env_files[$key]);
-        }
-    }
-
-    return $env_files;
-}
-
 /**
  * Determines if the application is configured to operate in multi-tenant mode.
  *
@@ -400,22 +323,6 @@ function _frameworkCurrentThemeInfo(): array
         'available'     => false,
         'error_message' => 'The current active theme is not available.',
     ];
-}
-
-/**
- * Regenerates the tenant-specific .env file if it doesn't exist.
- *
- * @param string $app_path
- * @param string $app_http_host
- * @param array  $available_files
- */
-function tryRegenerateEnvFile(string $app_path, string $app_http_host, array $available_files = []): void
-{
-    $app_main_env_file = "{$app_path}/.env";
-    if ( ! file_exists($app_main_env_file) && empty($available_files)) {
-        $generator = new EnvGenerator(new Filesystem());
-        $generator->create($app_main_env_file, $app_http_host);
-    }
 }
 
 function exitWithThemeError(array $themeInfo): void

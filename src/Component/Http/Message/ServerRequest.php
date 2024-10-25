@@ -14,6 +14,7 @@ namespace WPframework\Http\Message;
 use Nyholm\Psr7\ServerRequest as Psr7ServerRequest;
 use Psr\Http\Message\ServerRequestInterface;
 
+// @phpstan-ignore-next-line
 class ServerRequest extends Psr7ServerRequest implements ServerRequestInterface
 {
     // Add any custom methods or overrides here (if needed)

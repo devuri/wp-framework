@@ -13,29 +13,35 @@ namespace WPframework;
 
 use WPframework\Exceptions\ConstantAlreadyDefinedException;
 
-/**
- * Class ConstantBuilder.
- *
- * This class provides methods for defining and managing constants in your application.
- */
 class ConstantBuilder
 {
     /**
-     * List of constants defined.
-     *
      * @var array
      */
-    protected $constants = [];
+    protected array $constants;
 
     /**
      * @var array
      */
-    protected $constantMap = ['disabled'];
+    protected array $constantMap = ['disabled'];
 
     /**
      * @var bool
      */
-    protected $errorNotice;
+    protected bool $errorNotice;
+
+    /**
+     * @var array
+     */
+    protected array $expectedConstants;
+
+	/**
+	 * construct.
+	 */
+	public function __construct()
+    {
+        $this->errorNotice = false;
+    }
 
     /**
      * Define a constant with a value.
@@ -143,6 +149,30 @@ class ConstantBuilder
     }
 
     /**
+     * Checks if a constant is defined and expected.
+     *
+     * @param string $name The constant name.
+     *
+     * @return bool True if the constant is defined and expected; false otherwise.
+     */
+    public function isExpected($name): ?bool
+    {
+        if (empty($this->expectedConstants)) {
+            return null;
+        }
+
+        return \in_array($name, $this->expectedConstants, true) && \defined($name);
+    }
+
+    /**
+     * @param array $expectedConstants An array of expected constant names.
+     */
+    public function expectedConstants(array $expectedConstants = []): void
+    {
+        $this->expectedConstants = $expectedConstants;
+    }
+
+    /**
      * List of secret values that should always be hashed.
      *
      * @param array $secrets Optional array to merge with the default secrets.
@@ -182,14 +212,6 @@ class ConstantBuilder
             return;
         }
 
-        // if (\in_array(env('WP_ENVIRONMENT_TYPE'), ['development', 'debug', 'dev', 'staging'], true)) {
-        $constantMap = $this->constants;
-
-        if (\is_array($constantMap)) {
-            $this->constantMap = $constantMap;
-        } else {
-            $this->constantMap = ['invalid_type_returned'];
-        }
-        // }
+        $this->constantMap = $this->constants;
     }
 }

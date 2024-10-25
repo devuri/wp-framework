@@ -13,6 +13,7 @@ namespace WPframework\Http\Message;
 
 use Nyholm\Psr7\Factory\Psr17Factory;
 
+// @phpstan-ignore-next-line
 class RequestFactory extends Psr17Factory
 {
     // Add any custom methods or overrides here (if needed)

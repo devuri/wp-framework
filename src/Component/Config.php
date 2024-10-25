@@ -11,20 +11,11 @@
 
 namespace WPframework;
 
+use InvalidArgumentException;
+use WPframework\Interfaces\ConfigInterface;
+
 final class Config implements ConfigInterface
 {
-    protected $settings = [];
-
-    public function set(string $key, $value): void
-    {
-        $this->settings[$key] = $value;
-    }
-
-    public function get(string $key, $default = null)
-    {
-        return $this->settings[$key] ?? $default;
-    }
-
     public static function getDefault(): array
     {
         return [
@@ -127,18 +118,43 @@ final class Config implements ConfigInterface
         $options_file = $appPath . '/' . siteConfigsDir() . '/app.php';
 
         if (file_exists($options_file) && \is_array(@require $options_file)) {
-            return require $options_file;
+            $siteConfigs = require $options_file;
+        } else {
+            $siteConfigs = [];
         }
 
-        return self::getDefault();
+        if ( ! \is_array($siteConfigs)) {
+            throw new InvalidArgumentException('Error: Config::siteConfig must be of type array', 1);
+        }
+
+        return self::multiMerge(self::getDefault(), $siteConfigs);
+    }
+
+    /**
+     * Merges two multi-dimensional arrays recursively.
+     *
+     * This function will recursively merge the values of `$array2` into `$array1`.
+     * If the same key exists in both arrays, and both corresponding values are arrays,
+     * the values are recursively merged.
+     * Otherwise, values from `$array2` will overwrite those in `$array1`.
+     *
+     * @param array $array1 The base array that will be merged into.
+     * @param array $array2 The array with values to merge into `$array1`.
+     *
+     * @return array The merged array.
+     */
+    private static function multiMerge(array $array1, array $array2): array
+    {
+        $merged = $array1;
+
+        foreach ($array2 as $key => $value) {
+            if (isset($merged[$key]) && \is_array($merged[$key]) && \is_array($value)) {
+                $merged[$key] = self::multiMerge($merged[$key], $value);
+            } else {
+                $merged[$key] = $value;
+            }
+        }
+
+        return $merged;
     }
 }
-
-
-// $config = new Config();
-//
-// $config->set('WP_DEBUG', getenv('WP_DEBUG') ?: false);
-// $config->set('DB_NAME', getenv('DB_NAME'));
-// $config->set('DB_USER', getenv('DB_USER'));
-// $config->set('DB_PASSWORD', getenv('DB_PASSWORD'));
-// $config->defineConstants();

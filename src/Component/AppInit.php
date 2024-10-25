@@ -16,9 +16,9 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Throwable;
 use WPframework\Http\Message\Response;
-use WPframework\Middleware\FinalHandler;
-use WPframework\Middleware\MiddlewareHandler;
-use WPframework\Middleware\MiddlewareRegistry;
+use WPframework\Middleware\Handlers\FinalHandler;
+use WPframework\Middleware\Handlers\MiddlewareDispatcher;
+use WPframework\Middleware\Handlers\MiddlewareRegistry;
 
 class AppInit implements RequestHandlerInterface
 {
@@ -40,7 +40,7 @@ class AppInit implements RequestHandlerInterface
     /**
      * AppInit constructor.
      */
-    public function __construct(string $app_path)
+    public function __construct()
     {
         $this->middlewareRegistry = new MiddlewareRegistry();
         $this->defaultHandler = new FinalHandler();
@@ -102,7 +102,7 @@ class AppInit implements RequestHandlerInterface
     public function handle(RequestInterface $request): ResponseInterface
     {
         try {
-            $middlewareHandler = new MiddlewareHandler(
+            $middlewareHandler = new MiddlewareDispatcher(
                 $this->defaultHandler,
                 $this->middlewareRegistry
             );

@@ -53,7 +53,7 @@ The `Setup` class relies on several external dependencies:
   - `symfony/error-handler`: For error handling during development.
   - `filp/whoops`: For detailed error pages in development environments.
 - **Internal Interfaces and Traits**:
-  - `WPframework\Env\EnvTypes`
+  - `WPframework\Env\EnvType`
   - `WPframework\Http\EnvSwitcherInterface`
   - `WPframework\Traits\ConstantBuilderTrait`
   - `WPframework\Traits\TenantTrait`

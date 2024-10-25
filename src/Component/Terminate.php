@@ -5,6 +5,7 @@ namespace WPframework;
 use Exception;
 use InvalidArgumentException;
 use Urisoft\DotAccess;
+use WPframework\Interfaces\ExitInterface;
 
 class Terminate
 {

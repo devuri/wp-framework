@@ -12,7 +12,7 @@
 namespace WPframework\Tests\Unit\Component;
 
 use PHPUnit\Framework\TestCase;
-use WPframework\HashValidator;
+use WPframework\Support\HashValidator;
 
 /**
  * @group WPframework

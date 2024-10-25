@@ -31,7 +31,7 @@ define( 'WP_DEBUG', false );
 
 /* That's all, stop editing! Happy publishing. */
 
-AppFactory::create(dirname(__DIR__));
+$siteAppFactory = AppFactory::create(dirname(__DIR__));
 AppFactory::run();
 
 // Set the table prefix.

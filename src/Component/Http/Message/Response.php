@@ -14,6 +14,7 @@ namespace WPframework\Http\Message;
 use Nyholm\Psr7\Response as Psr7Response;
 use Psr\Http\Message\ResponseInterface;
 
+// @phpstan-ignore-next-line
 class Response extends Psr7Response implements ResponseInterface
 {
     // Add any custom methods or overrides here (if needed)

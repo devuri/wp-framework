@@ -37,8 +37,9 @@ if (file_exists(\dirname(__DIR__) . '/vendor/autoload.php')) {
  */
 \define('WP_DEBUG', false);
 
-$app = AppFactory::create(\dirname(__DIR__));
-// customHeaderMiddleware($app);
+$siteAppFactory = AppFactory::create(\dirname(__DIR__));
+
+// customHeaderMiddleware($siteAppFactory);
 
 // That's all, stop editing! Happy publishing.
 

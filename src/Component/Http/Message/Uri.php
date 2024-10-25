@@ -14,6 +14,7 @@ namespace WPframework\Http\Message;
 use Nyholm\Psr7\Uri as Psr7Uri;
 use Psr\Http\Message\UriInterface;
 
+// @phpstan-ignore-next-line
 class Uri extends Psr7Uri implements UriInterface
 {
     // Add any custom methods or overrides here (if needed)

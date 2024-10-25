@@ -52,10 +52,5 @@ class LoggingMiddleware extends AbstractMiddleware
         $this->when();
 
         return $handler->handle($request);
-        //
-        // $this->logger->info('Outgoing response', [
-        //     'status' => $response->getStatusCode(),
-        //     'headers' => $response->getHeaders(),
-        // ]);
     }
 }

@@ -12,6 +12,7 @@
 namespace WPframework;
 
 use Exception;
+use WPframework\Interfaces\TenantInterface;
 
 class Tenant implements TenantInterface
 {

@@ -14,25 +14,28 @@ namespace WPframework\Middleware;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use WPframework\AppConfig;
-use WPframework\Support\SiteManager;
-use WPframework\Support\Switcher;
+use WPframework\Support\KernelConfig;
 
-class ConfigMiddleware extends AbstractMiddleware
+class KernelMiddleware extends AbstractMiddleware
 {
-    private $configManager;
-    private $siteManager;
+    /**
+     * @var KernelConfig
+     */
+    private $kernelConfig;
 
     /**
-     * @param AppConfig $configManager
+     * Constructor to inject the response factory.
+     *
+     * @param KernelConfig $kernel
      */
-    public function __construct(AppConfig $configManager)
+    public function __construct(KernelConfig $kernelConfig)
     {
-        $this->configManager = $configManager;
-        $this->siteManager = new SiteManager($this->configManager);
+        $this->kernelConfig = $kernelConfig;
     }
 
     /**
+     * Process an incoming server request.
+     *
      * @param ServerRequestInterface  $request
      * @param RequestHandlerInterface $handler
      *
@@ -40,13 +43,7 @@ class ConfigMiddleware extends AbstractMiddleware
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $this->siteManager->setSwitcher(
-            new Switcher($this->configManager)
-        );
-
-        $this->siteManager->appSetup($request)->constants();
-
-        $this->configManager->setConstantMap();
+        $this->kernelConfig->setKernelConstants();
 
         return $handler->handle($request);
     }

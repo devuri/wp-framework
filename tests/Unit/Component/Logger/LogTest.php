@@ -18,7 +18,7 @@ use WPframework\Logger\Log;
 /**
  * @internal
  *
- * 
+ * @coversNothing
  */
 class LogTest extends TestCase
 {

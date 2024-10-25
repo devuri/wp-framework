@@ -16,6 +16,11 @@ use PHPUnit\Framework\TestCase;
 use Urisoft\Encryption;
 use Urisoft\Filesystem;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class EncryptionTest extends TestCase
 {
     protected $encryption;

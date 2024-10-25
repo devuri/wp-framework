@@ -9,6 +9,9 @@
  * file that was distributed with this source code.
  */
 
-return [
-    'favicon' => WPframework\Middleware\FaviconCache::class,
-];
+namespace WPframework\Interfaces;
+
+interface ExitInterface
+{
+    public function terminate($status = 0): void;
+}
