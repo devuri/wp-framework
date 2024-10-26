@@ -12,7 +12,6 @@
 namespace WPframework\Support;
 
 use Urisoft\DotAccess;
-use WPframework\AppConfig;
 use WPframework\Config;
 
 class KernelConfig
@@ -25,7 +24,7 @@ class KernelConfig
     private $configs;
     private $tenantId;
 
-    public function __construct(AppConfig $configManager)
+    public function __construct(ConstantBuilder $configManager)
     {
         $this->appPath = APP_DIR_PATH;
         $this->appHttpHost = APP_HTTP_HOST;

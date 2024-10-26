@@ -87,7 +87,7 @@ class DB
         }
     }
 
-    private function connect()
+    private function connect(): ?PDO
     {
         $this->conn = null;
 

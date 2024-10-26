@@ -11,7 +11,7 @@
 
 namespace WPframework\Tests\Unit\Helpers;
 
-use WPframework\Tests\BaseTest;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @group WPframework
@@ -21,7 +21,7 @@ use WPframework\Tests\BaseTest;
  *
  * @internal
  */
-class HelpersTest extends BaseTest
+class HelpersTest extends TestCase
 {
     public function test_asset_function(): void
     {

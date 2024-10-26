@@ -14,7 +14,7 @@ namespace WPframework\Middleware;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use WPframework\AppConfig;
+use WPframework\Support\ConstantBuilder;
 use WPframework\Support\SiteManager;
 use WPframework\Support\Switcher;
 
@@ -24,9 +24,9 @@ class ConfigMiddleware extends AbstractMiddleware
     private $siteManager;
 
     /**
-     * @param AppConfig $configManager
+     * @param ConstantBuilder $configManager
      */
-    public function __construct(AppConfig $configManager)
+    public function __construct(ConstantBuilder $configManager)
     {
         $this->configManager = $configManager;
         $this->siteManager = new SiteManager($this->configManager);
@@ -46,7 +46,7 @@ class ConfigMiddleware extends AbstractMiddleware
 
         $this->siteManager->appSetup($request)->constants();
 
-        $this->configManager->setConstantMap();
+        $this->configManager->setMap();
 
         return $handler->handle($request);
     }

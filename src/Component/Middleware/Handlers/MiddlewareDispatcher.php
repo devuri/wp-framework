@@ -111,7 +111,7 @@ class MiddlewareDispatcher implements RequestHandlerInterface
     /**
      * Creates a new instance of MiddlewareDispatcher with the remaining middleware queue.
      *
-     * @return MiddlewareDispatcher A new handler with the remaining middleware.
+     * @return static A new handler with the remaining middleware.
      */
     private function getNextHandler(): self
     {

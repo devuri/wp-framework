@@ -24,7 +24,7 @@ class Foundation
         UriFactoryInterface $uriFactory,
         UploadedFileFactoryInterface $uploadedFileFactory,
         StreamFactoryInterface $streamFactory
-    ) {
+    ): ServerRequestCreator {
         return new ServerRequestCreator(
             $serverRequestFactory,
             $uriFactory,

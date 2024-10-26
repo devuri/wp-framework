@@ -58,10 +58,8 @@ class WhoopsMiddleware implements MiddlewareInterface
      *
      * @param ServerRequestInterface $request
      * @param Throwable              $exception
-     *
-     * @return ResponseInterface
      */
-    private function handleException(ServerRequestInterface $request, Throwable $exception): ResponseInterface
+    private function handleException(ServerRequestInterface $request, Throwable $exception): Response
     {
         $acceptHeader = $request->getHeaderLine('Accept');
         if (false !== strpos($acceptHeader, 'application/json')) {

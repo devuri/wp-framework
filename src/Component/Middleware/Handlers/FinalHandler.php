@@ -23,7 +23,7 @@ class FinalHandler implements RequestHandlerInterface
      *
      * @param ServerRequestInterface $request
      *
-     * @return ResponseInterface
+     * @return Response
      */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {

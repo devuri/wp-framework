@@ -65,7 +65,7 @@ class DotenvMiddleware extends AbstractMiddleware
     /**
      * Bootstrap multitenancy.
      */
-    protected function tenantSetup()
+    protected function tenantSetup(): Tenancy
     {
         return new Tenancy(APP_DIR_PATH, SITE_CONFIGS_DIR);
     }

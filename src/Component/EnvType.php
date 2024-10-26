@@ -80,6 +80,8 @@ final class EnvType
      * @since [version number]
      *
      * @return string[] An array of default file names for environment configurations.
+     *
+     * @psalm-return list{'env', '.env', '.env.secure', '.env.prod', '.env.staging', '.env.dev', '.env.debug', '.env.local', 'env.local'}
      */
     public static function supportedFiles(): array
     {

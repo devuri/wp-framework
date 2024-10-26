@@ -11,6 +11,7 @@
 
 namespace WPframework\Middleware\Handlers;
 
+use Psr\Http\Server\MiddlewareInterface;
 use WPframework\Middleware\Traits\CoreMiddlewareTrait;
 
 class MiddlewareRegistry
@@ -35,9 +36,9 @@ class MiddlewareRegistry
     }
 
     /**
-     * @return array
+     * @return null|array
      */
-    public function getRegisteredMiddleware(): array
+    public function getRegisteredMiddleware(): ?array
     {
         return $this->middlewares;
     }
@@ -45,7 +46,7 @@ class MiddlewareRegistry
     protected function setDefault(): void
     {
         foreach (self::getDefaults() as $key => $middleware) {
-            if ( ! \is_string($key)) {
+            if ( ! \is_string($key) || empty($key)) {
                 continue;
             }
             $this->register($middleware, $key);

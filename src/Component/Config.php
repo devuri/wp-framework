@@ -16,6 +16,11 @@ use WPframework\Interfaces\ConfigInterface;
 
 final class Config implements ConfigInterface
 {
+    /**
+     * @return (null|mixed|(null|bool|mixed|(mixed|string)[]|string)[]|string)[]
+     *
+     * @psalm-return array{error_handler: mixed, config_file: 'config', terminate: array{debugger: false}, directory: array{wp_dir_path: 'wp', web_root_dir: mixed, content_dir: mixed, plugin_dir: mixed, mu_plugin_dir: mixed, sqlite_dir: mixed, sqlite_file: mixed, theme_dir: mixed, asset_dir: mixed, publickey_dir: mixed}, default_theme: mixed, disable_updates: mixed, can_deactivate: mixed, security: array{sucuri_waf: false, encryption_key: null, 'brute-force': true, 'two-factor': true, 'no-pwned-passwords': true, 'admin-ips': array<never, never>}, mailer: array{brevo: array{apikey: mixed}, postmark: array{token: mixed}, sendgrid: array{apikey: mixed}, mailerlite: array{apikey: mixed}, mailgun: array{domain: mixed, secret: mixed, endpoint: mixed, scheme: 'https'}, ses: array{key: mixed, secret: mixed, region: mixed}}, sudo_admin: mixed, sudo_admin_group: null, s3uploads: array{bucket: mixed, key: mixed, secret: mixed, region: mixed, 'bucket-url': mixed, 'object-acl': mixed, expires: mixed, 'http-cache': mixed}, redis: array{disabled: mixed, host: mixed, port: mixed, password: mixed, adminbar: mixed, 'disable-metrics': mixed, 'disable-banners': mixed, prefix: mixed, database: mixed, timeout: mixed, 'read-timeout': mixed}, publickey: array{'app-key': mixed}}
+     */
     public static function getDefault(): array
     {
         return [

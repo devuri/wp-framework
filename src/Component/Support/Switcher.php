@@ -11,7 +11,6 @@
 
 namespace WPframework\Support;
 
-use WPframework\AppConfig;
 use WPframework\Interfaces\EnvSwitcherInterface;
 
 /**
@@ -33,14 +32,14 @@ class Switcher implements EnvSwitcherInterface
     protected $constants;
 
     /**
-     * @var AppConfig
+     * @var ConstantBuilder
      */
     private $constantBuilder;
 
     /**
-     * @param AppConfig $constantBuilder
+     * @param ConstantBuilder $constantBuilder
      */
-    public function __construct(AppConfig $constantBuilder)
+    public function __construct(ConstantBuilder $constantBuilder)
     {
         $this->constantBuilder = $constantBuilder;
     }

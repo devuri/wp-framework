@@ -13,6 +13,7 @@ namespace WPframework;
 
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Throwable;
 use WPframework\Http\Message\Response;
@@ -55,9 +56,9 @@ class AppInit implements RequestHandlerInterface
      *
      * @param callable|MiddlewareInterface $middleware
      *
-     * @return self
+     * @return static
      */
-    public function addMiddleware($middleware, string $key): self
+    public function addMiddleware($middleware, string $key = ''): self
     {
         $this->middlewareRegistry->register($middleware, $key);
 
@@ -69,7 +70,7 @@ class AppInit implements RequestHandlerInterface
      *
      * @param callable $errorHandler
      *
-     * @return self
+     * @return static
      */
     public function setErrorHandler(callable $errorHandler): self
     {
@@ -83,7 +84,7 @@ class AppInit implements RequestHandlerInterface
      *
      * @param callable $defaultHandler
      *
-     * @return self
+     * @return static
      */
     public function setDefaultHandler(callable $defaultHandler): self
     {

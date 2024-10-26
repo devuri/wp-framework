@@ -130,10 +130,7 @@ class AppFactory
         });
     }
 
-    /**
-     * @return RequestInterface
-     */
-    private static function createRequest(RequestFactory $psr17Factory): RequestInterface
+    private static function createRequest(RequestFactory $psr17Factory): \Psr\Http\Message\ServerRequestInterface
     {
         $requestCreator = Foundation::create(
             $psr17Factory,

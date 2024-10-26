@@ -151,9 +151,9 @@ class Log
     /**
      * Ensure that the logger is initialized and return the logger instance.
      *
-     * @return LoggerInterface
+     * @return null|LoggerInterface
      */
-    private static function getLogger(): LoggerInterface
+    private static function getLogger(): ?LoggerInterface
     {
         return self::$logger;
     }

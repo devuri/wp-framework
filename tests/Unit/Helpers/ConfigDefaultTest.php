@@ -118,7 +118,7 @@ class ConfigDefaultTest extends TestCase
 
         // Public key checks
         $this->assertArrayHasKey('publickey', $configs);
-        $this->assertEquals('b75b666f-ac11-4342-b001-d2546f1d3a5b', $configs['publickey']['app-key']);
+        $this->assertNull($configs['publickey']['app-key']);
         $this->assertEquals('pubkeys', $configs['directory']['publickey_dir']);
     }
 }

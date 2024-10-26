@@ -12,7 +12,6 @@
 namespace WPframework\Support;
 
 use Psr\Http\Message\ServerRequestInterface;
-use WPframework\AppConfig;
 use WPframework\EnvType;
 use WPframework\Interfaces\EnvSwitcherInterface as Switcher;
 
@@ -24,13 +23,16 @@ class SiteManager
     private $errorHandler;
     private $errorLogsDir;
 
-    public function __construct(AppConfig $configManager)
+    public function __construct(ConstantBuilder $configManager)
     {
         $this->configManager = $configManager;
         $this->errorLogsDir  = self::setErrorLogsDir(APP_DIR_PATH);
         $this->errorHandler  = false;
     }
 
+    /**
+     * @return static
+     */
     public function constants(): self
     {
         $this->setDatabase();
@@ -88,6 +90,9 @@ class SiteManager
         return $this;
     }
 
+    /**
+     * @return static
+     */
     public function appSetup(ServerRequestInterface $request): self
     {
         $this->setEnvironment(env('WP_ENVIRONMENT_TYPE'));
@@ -102,41 +107,41 @@ class SiteManager
         $this->switcher = $switcher;
     }
 
-    protected function setSiteUrl(): void
+    public function setSiteUrl(): void
     {
         $this->configManager->addConstant('WP_HOME', env('WP_HOME'));
         $this->configManager->addConstant('WP_SITEURL', env('WP_SITEURL'));
     }
 
-    protected function setAssetUrl(): void
+    public function setAssetUrl(): void
     {
         $this->configManager->addConstant('ASSET_URL', env('ASSET_URL'));
     }
 
-    protected function setOptimize(): void
+    public function setOptimize(): void
     {
         $this->configManager->addConstant('CONCATENATE_SCRIPTS', env('CONCATENATE_SCRIPTS') ?? self::getConstant('optimize'));
     }
 
-    protected function setMemory(): void
+    public function setMemory(): void
     {
         $this->configManager->addConstant('WP_MEMORY_LIMIT', env('MEMORY_LIMIT') ?? self::getConstant('memory'));
         $this->configManager->addConstant('WP_MAX_MEMORY_LIMIT', env('MAX_MEMORY_LIMIT') ?? self::getConstant('memory'));
     }
 
-    protected function setForceSsl(): void
+    public function setForceSsl(): void
     {
         $this->configManager->addConstant('FORCE_SSL_ADMIN', env('FORCE_SSL_ADMIN') ?? self::getConstant('ssl_admin'));
         $this->configManager->addConstant('FORCE_SSL_LOGIN', env('FORCE_SSL_LOGIN') ?? self::getConstant('ssl_login'));
     }
 
-    protected function setAutosave(): void
+    public function setAutosave(): void
     {
         $this->configManager->addConstant('AUTOSAVE_INTERVAL', env('AUTOSAVE_INTERVAL') ?? self::getConstant('autosave'));
         $this->configManager->addConstant('WP_POST_REVISIONS', env('WP_POST_REVISIONS') ?? self::getConstant('revisions'));
     }
 
-    protected function setDatabase(): void
+    public function setDatabase(): void
     {
         $this->configManager->addConstant('DB_NAME', env('DB_NAME'));
         $this->configManager->addConstant('DB_USER', env('DB_USER'));
@@ -146,7 +151,7 @@ class SiteManager
         $this->configManager->addConstant('DB_COLLATE', env('DB_COLLATE') ?? '');
     }
 
-    protected function setSalts(): void
+    public function setSalts(): void
     {
         $this->configManager->addConstant('AUTH_KEY', env('AUTH_KEY'));
         $this->configManager->addConstant('SECURE_AUTH_KEY', env('SECURE_AUTH_KEY'));
@@ -166,12 +171,15 @@ class SiteManager
      *
      * @return string
      */
-    protected function determineEnvironment(string $environment): string
+    public function determineEnvironment(string $environment): string
     {
         return trim($environment);
     }
 
-    protected function enableErrorHandler(ServerRequestInterface $request): bool
+    /**
+     * @return true
+     */
+    public function enableErrorHandler(ServerRequestInterface $request): bool
     {
         if ($this->errorHandler) {
             return true;
@@ -185,7 +193,12 @@ class SiteManager
         return true;
     }
 
-    protected static function getConstant(string $key)
+    /**
+     * @return null|int|string|true
+     *
+     * @psalm-return '256M'|'localhost'|'production'|10|180|null|true
+     */
+    public static function getConstant(string $key)
     {
         $constants = [
             'environment' => 'production',

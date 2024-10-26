@@ -83,7 +83,7 @@ if (!defined('REQUIRE_TENANT_CONFIG')) {
 }
 
 if (!defined('APP_TENANT_ID')) {
-    define('APP_TENANT_ID', false );
+    define('APP_TENANT_ID', 'id' );
 }
 
 if (!defined('TENANCY_WEB_ROOT')) {

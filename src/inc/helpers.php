@@ -145,7 +145,7 @@ function config(?string $key = null, $default = null)
  * @param string $secretkey Secret key used for generating the HMAC variant.
  * @param string $algo      Name of selected hashing algorithm (i.e. "md5", "sha256", "haval160,4", etc..)
  *
- * @return string Returns a string containing the calculated hash value.
+ * @return false|string Returns a string containing the calculated hash value.
  *
  * @see https://www.php.net/manual/en/function.hash-hmac.php
  */
@@ -262,7 +262,9 @@ function getWpframeworkHttpEnv(): ?string
  *
  * @param array $dir The array containing the current upload directory's path and URL.
  *
- * @return array
+ * @return (mixed|string)[]
+ *
+ * @psalm-return array{basedir: 'public/content/tenant//uploads', baseurl: string, path: string, url: string,...}
  */
 function setMultitenantUploadDirectory($dir): array
 {
@@ -284,16 +286,18 @@ function setMultitenantUploadDirectory($dir): array
  *
  * @return string The formatted footer text.
  */
-function _frameworkFooterLabel(): string
+function frameworkFooterLabel(): string
 {
     $home_url   = esc_url(home_url());
     $date_year  = gmdate('Y');
     $site_name  = esc_html(get_bloginfo('name'));
 
+    $httpEnvConfig = \defined('HTTP_ENV_CONFIG') ? HTTP_ENV_CONFIG : null;
+
     // admin only info.
     if (current_user_can('manage_options')) {
         $tenant_id = APP_TENANT_ID;
-        $http_env  = strtolower(esc_html(HTTP_ENV_CONFIG));
+        $http_env  = strtolower(esc_html($httpEnvConfig));
     } else {
         $tenant_id = null;
         $http_env  =  null;
@@ -307,7 +311,7 @@ function _frameworkFooterLabel(): string
  *
  * @psalm-return array{available: bool, error_message?: 'The current active theme is not available.', theme_info?: string}
  */
-function _frameworkCurrentThemeInfo(): array
+function frameworkCurrentThemeInfo(): array
 {
     $current_theme = wp_get_theme();
 
@@ -410,5 +414,5 @@ function customHeaderMiddleware(AppInit $app): void
         $response = $handler->handle($request);
 
         return $response->withHeader('X-Custom-Header', 'MyCustomValue');
-    });
+    }, 'custom-header');
 }
