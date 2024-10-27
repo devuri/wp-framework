@@ -10,20 +10,18 @@
  */
 
 use Defuse\Crypto\Key;
+use Psr\Http\Message\RequestInterface;
 use Psr\Log\InvalidArgumentException;
 use Psr\Log\LogLevel;
-use Symfony\Component\Filesystem\Filesystem;
 use Urisoft\DotAccess;
 use Urisoft\Encryption;
 use Urisoft\Env;
-use WPframework\EnvGenerator;
-use WPframework\Framework;
+use WPframework\AppInit;
+use WPframework\Config;
 use WPframework\Http\Asset;
 use WPframework\Logger\FileLogger;
 use WPframework\Logger\Log;
 use WPframework\Terminate;
-
-// @codingStandardsIgnoreFile.
 
 /**
  * The Asset url.
@@ -92,20 +90,6 @@ function env($name, $default = null, $encrypt = false, $strtolower = false)
     return $env_var;
 }
 
-/**
- * Start and load core plugin.
- *
- * @return null|Framework
- */
-function wpframeworkCore(): ?Framework
-{
-    if ( ! \defined('ABSPATH')) {
-        exit;
-    }
-
-    return _wpframework();
-}
-
 function envWhitelist(): array
 {
     static $whitelist;
@@ -147,11 +131,7 @@ function siteConfigsDir(): ?string
  */
 function config(?string $key = null, $default = null)
 {
-    $_options = _wpframework()->options();
-
-    if (\is_null($key)) {
-        return $_options;
-    }
+    $_options = new DotAccess(Config::siteConfig(APP_DIR_PATH));
 
     return $_options->get($key, $default);
 }
@@ -165,7 +145,7 @@ function config(?string $key = null, $default = null)
  * @param string $secretkey Secret key used for generating the HMAC variant.
  * @param string $algo      Name of selected hashing algorithm (i.e. "md5", "sha256", "haval160,4", etc..)
  *
- * @return string Returns a string containing the calculated hash value.
+ * @return false|string Returns a string containing the calculated hash value.
  *
  * @see https://www.php.net/manual/en/function.hash-hmac.php
  */
@@ -250,61 +230,6 @@ function _configsDir(): string
     return  __DIR__ . '/configs';
 }
 
-function _wpframework(?string $app_path = null): ?Framework
-{
-    static $framework;
-
-    if (\is_null($framework)) {
-        $framework = new Framework($app_path);
-    }
-
-    return $framework;
-}
-
-
-/**
- * Retrieves the default file names for environment configuration.
- *
- * This is designed to return an array of default file names
- * used for environment configuration in a WordPress environment.
- * These file names include various formats and stages of environment setup,
- * such as production, staging, development, and local environments.
- *
- * @since [version number]
- *
- * @return string[] An array of default file names for environment configurations. The array includes the following file names: - 'env' - '.env' - '.env.secure' - '.env.prod' - '.env.staging' - '.env.dev' - '.env.debug' - '.env.local' - 'env.local'
- *
- * @psalm-return list{'env', '.env', '.env.secure', '.env.prod', '.env.staging', '.env.dev', '.env.debug', '.env.local', 'env.local'}
- */
-function _supportedEnvFiles(): array
-{
-    return [
-        'env',
-        '.env',
-        '.env.secure',
-        '.env.prod',
-        '.env.staging',
-        '.env.dev',
-        '.env.debug',
-        '.env.local',
-        'env.local',
-    ];
-}
-
-/**
- * Filters out environment files that do not exist to avoid warnings.
- */
-function _envFilesFilter(array $env_files, string $app_path): array
-{
-    foreach ($env_files as $key => $file) {
-        if ( ! file_exists($app_path . '/' . $file)) {
-            unset($env_files[$key]);
-        }
-    }
-
-    return $env_files;
-}
-
 /**
  * Determines if the application is configured to operate in multi-tenant mode.
  *
@@ -337,7 +262,9 @@ function getWpframeworkHttpEnv(): ?string
  *
  * @param array $dir The array containing the current upload directory's path and URL.
  *
- * @return array
+ * @return (mixed|string)[]
+ *
+ * @psalm-return array{basedir: 'public/content/tenant//uploads', baseurl: string, path: string, url: string,...}
  */
 function setMultitenantUploadDirectory($dir): array
 {
@@ -359,16 +286,18 @@ function setMultitenantUploadDirectory($dir): array
  *
  * @return string The formatted footer text.
  */
-function _frameworkFooterLabel(): string
+function frameworkFooterLabel(): string
 {
     $home_url   = esc_url(home_url());
     $date_year  = gmdate('Y');
     $site_name  = esc_html(get_bloginfo('name'));
 
+    $httpEnvConfig = \defined('HTTP_ENV_CONFIG') ? HTTP_ENV_CONFIG : null;
+
     // admin only info.
     if (current_user_can('manage_options')) {
         $tenant_id = APP_TENANT_ID;
-        $http_env  = strtolower(esc_html(HTTP_ENV_CONFIG));
+        $http_env  = strtolower(esc_html($httpEnvConfig));
     } else {
         $tenant_id = null;
         $http_env  =  null;
@@ -382,7 +311,7 @@ function _frameworkFooterLabel(): string
  *
  * @psalm-return array{available: bool, error_message?: 'The current active theme is not available.', theme_info?: string}
  */
-function _frameworkCurrentThemeInfo(): array
+function frameworkCurrentThemeInfo(): array
 {
     $current_theme = wp_get_theme();
 
@@ -398,22 +327,6 @@ function _frameworkCurrentThemeInfo(): array
         'available'     => false,
         'error_message' => 'The current active theme is not available.',
     ];
-}
-
-/**
- * Regenerates the tenant-specific .env file if it doesn't exist.
- *
- * @param string $app_path
- * @param string $app_http_host
- * @param array  $available_files
- */
-function tryRegenerateEnvFile(string $app_path, string $app_http_host, array $available_files = []): void
-{
-    $app_main_env_file = "{$app_path}/.env";
-    if ( ! file_exists($app_main_env_file) && empty($available_files)) {
-        $generator = new EnvGenerator(new Filesystem());
-        $generator->create($app_main_env_file, $app_http_host);
-    }
 }
 
 function exitWithThemeError(array $themeInfo): void
@@ -493,4 +406,13 @@ function logWithStackTrace(): void
         $function = $frame['function'] ?? 'N/A';
         error_log("#{$index} {$file}({$line}): {$function}()");
     }
+}
+
+function customHeaderMiddleware(AppInit $app): void
+{
+    $app->addMiddleware(function (RequestInterface $request, $handler) {
+        $response = $handler->handle($request);
+
+        return $response->withHeader('X-Custom-Header', 'MyCustomValue');
+    }, 'custom-header');
 }

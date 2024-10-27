@@ -39,7 +39,7 @@ if (\defined('APP_THEME_DIR')) {
 }
 
 // Missing theme fix.
-$theme_info = _frameworkCurrentThemeInfo();
+$theme_info = frameworkCurrentThemeInfo();
 if (false === $theme_info['available']) {
     exitWithThemeError($theme_info);
 }
@@ -49,4 +49,4 @@ if (isMultitenantApp()) {
     add_filter('upload_dir', 'setMultitenantUploadDirectory');
 }
 
-add_filter('admin_footer_text', '_frameworkFooterLabel');
+add_filter('admin_footer_text', 'frameworkFooterLabel');

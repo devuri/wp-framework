@@ -14,6 +14,7 @@ namespace WPframework\Http\Message;
 use Nyholm\Psr7\UploadedFile as Psr7UploadedFile;
 use Psr\Http\Message\UploadedFileInterface;
 
+// @phpstan-ignore-next-line
 class UploadedFile extends Psr7UploadedFile implements UploadedFileInterface
 {
     // Add any custom methods or overrides here (if needed)

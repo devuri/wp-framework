@@ -13,11 +13,10 @@ namespace WPframework\Middleware;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 
-class LoggingMiddleware implements MiddlewareInterface
+class LoggingMiddleware extends AbstractMiddleware
 {
     /**
      * @var LoggerInterface
@@ -50,11 +49,8 @@ class LoggingMiddleware implements MiddlewareInterface
         //     'headers' => $request->getHeaders(),
         // ]);
 
+        $this->when();
+
         return $handler->handle($request);
-        //
-        // $this->logger->info('Outgoing response', [
-        //     'status' => $response->getStatusCode(),
-        //     'headers' => $response->getHeaders(),
-        // ]);
     }
 }

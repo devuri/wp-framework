@@ -13,6 +13,7 @@ require_once \dirname(__FILE__, 2) . '/vendor/autoload.php';
 
 // app test path
 \define('APP_SRC_PATH', \dirname(__FILE__, 2) . '/src');
+\define('APP_HTTP_HOST', 'example.com');
 \define('APP_TEST_PATH', __DIR__);
 \define('APP_DIR_PATH', __DIR__);
 \define('ABSPATH', __DIR__);

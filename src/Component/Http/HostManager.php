@@ -11,6 +11,8 @@
 
 namespace WPframework\Http;
 
+use WPframework\Interfaces\HostInterface;
+
 class HostManager implements HostInterface
 {
     /**

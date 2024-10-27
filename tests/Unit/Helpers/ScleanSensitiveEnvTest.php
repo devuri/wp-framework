@@ -14,9 +14,11 @@ namespace WPframework\Tests\Unit\Helpers;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @internal
+ * @group WPframework
  *
- * @coversNothing
+ * @covers ::cleanSensitiveEnv
+ *
+ * @internal
  */
 class ScleanSensitiveEnvTest extends TestCase
 {

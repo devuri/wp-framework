@@ -14,6 +14,7 @@ namespace WPframework\Http\Message;
 use Nyholm\Psr7\Request as NyholmRequest;
 use Psr\Http\Message\RequestInterface;
 
+// @phpstan-ignore-next-line
 class Request extends NyholmRequest implements RequestInterface
 {
     // Add any custom methods or overrides here (if needed)

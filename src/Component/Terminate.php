@@ -5,6 +5,7 @@ namespace WPframework;
 use Exception;
 use InvalidArgumentException;
 use Urisoft\DotAccess;
+use WPframework\Interfaces\ExitInterface;
 
 class Terminate
 {
@@ -176,9 +177,6 @@ class Terminate
         return false;
     }
 
-    /**
-     * CSS styles.
-     */
     private static function page_styles(): void
     {
         ?>

@@ -11,8 +11,16 @@
 
 namespace WPframework;
 
-final class Config
+use InvalidArgumentException;
+use WPframework\Interfaces\ConfigInterface;
+
+final class Config implements ConfigInterface
 {
+    /**
+     * @return (null|mixed|(null|bool|mixed|(mixed|string)[]|string)[]|string)[]
+     *
+     * @psalm-return array{error_handler: mixed, config_file: 'config', terminate: array{debugger: false}, directory: array{wp_dir_path: 'wp', web_root_dir: mixed, content_dir: mixed, plugin_dir: mixed, mu_plugin_dir: mixed, sqlite_dir: mixed, sqlite_file: mixed, theme_dir: mixed, asset_dir: mixed, publickey_dir: mixed}, default_theme: mixed, disable_updates: mixed, can_deactivate: mixed, security: array{sucuri_waf: false, encryption_key: null, 'brute-force': true, 'two-factor': true, 'no-pwned-passwords': true, 'admin-ips': array<never, never>}, mailer: array{brevo: array{apikey: mixed}, postmark: array{token: mixed}, sendgrid: array{apikey: mixed}, mailerlite: array{apikey: mixed}, mailgun: array{domain: mixed, secret: mixed, endpoint: mixed, scheme: 'https'}, ses: array{key: mixed, secret: mixed, region: mixed}}, sudo_admin: mixed, sudo_admin_group: null, s3uploads: array{bucket: mixed, key: mixed, secret: mixed, region: mixed, 'bucket-url': mixed, 'object-acl': mixed, expires: mixed, 'http-cache': mixed}, redis: array{disabled: mixed, host: mixed, port: mixed, password: mixed, adminbar: mixed, 'disable-metrics': mixed, 'disable-banners': mixed, prefix: mixed, database: mixed, timeout: mixed, 'read-timeout': mixed}, publickey: array{'app-key': mixed}}
+     */
     public static function getDefault(): array
     {
         return [
@@ -115,9 +123,43 @@ final class Config
         $options_file = $appPath . '/' . siteConfigsDir() . '/app.php';
 
         if (file_exists($options_file) && \is_array(@require $options_file)) {
-            return require $options_file;
+            $siteConfigs = require $options_file;
+        } else {
+            $siteConfigs = [];
         }
 
-        return self::getDefault();
+        if ( ! \is_array($siteConfigs)) {
+            throw new InvalidArgumentException('Error: Config::siteConfig must be of type array', 1);
+        }
+
+        return self::multiMerge(self::getDefault(), $siteConfigs);
+    }
+
+    /**
+     * Merges two multi-dimensional arrays recursively.
+     *
+     * This function will recursively merge the values of `$array2` into `$array1`.
+     * If the same key exists in both arrays, and both corresponding values are arrays,
+     * the values are recursively merged.
+     * Otherwise, values from `$array2` will overwrite those in `$array1`.
+     *
+     * @param array $array1 The base array that will be merged into.
+     * @param array $array2 The array with values to merge into `$array1`.
+     *
+     * @return array The merged array.
+     */
+    private static function multiMerge(array $array1, array $array2): array
+    {
+        $merged = $array1;
+
+        foreach ($array2 as $key => $value) {
+            if (isset($merged[$key]) && \is_array($merged[$key]) && \is_array($value)) {
+                $merged[$key] = self::multiMerge($merged[$key], $value);
+            } else {
+                $merged[$key] = $value;
+            }
+        }
+
+        return $merged;
     }
 }

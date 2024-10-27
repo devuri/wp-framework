@@ -82,6 +82,9 @@ class HttpClient
         return $this->_curl($endpoint, $method, $data, $headers);
     }
 
+    /**
+     * @psalm-return array<never, never>
+     */
     protected function set_http_response(array $http_response_header): array
     {
         if ( ! empty($http_response_header)) {
@@ -96,6 +99,11 @@ class HttpClient
         return [];
     }
 
+    /**
+     * @return string[]
+     *
+     * @psalm-return list{0?: string}
+     */
     protected function get_default_headers(): array
     {
         return $this->api_key ? [ 'Authorization: Bearer ' . $this->api_key ] : [];
@@ -178,7 +186,12 @@ class HttpClient
         return $this->http_response;
     }
 
-    private function _curl(string $endpoint, string $method, array $data = [], array $headers = [])
+    /**
+     * @return (bool|mixed|string)[]
+     *
+     * @psalm-return array{status?: mixed, response?: bool|string, error?: 'curl_init not found'}
+     */
+    private function _curl(string $endpoint, string $method, array $data = [], array $headers = []): array
     {
         $url = $this->base_url . $endpoint;
 
@@ -239,7 +252,7 @@ class HttpClient
         return 0;
     }
 
-    private function get_ca_bundle()
+    private function get_ca_bundle(): string
     {
         return \Composer\CaBundle\CaBundle::getSystemCaRootBundlePath();
     }

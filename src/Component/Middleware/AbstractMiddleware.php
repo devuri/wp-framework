@@ -1,0 +1,73 @@
+<?php
+
+/*
+ * This file is part of the WPframework package.
+ *
+ * (c) Uriel Wilson <uriel@wpframework.io>
+ *
+ * The full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace WPframework\Middleware;
+
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Log\LoggerInterface;
+use WPframework\Logger\FileLogger;
+
+abstract class AbstractMiddleware implements MiddlewareInterface
+{
+    /**
+     * Process an incoming server request.
+     *
+     * @param ServerRequestInterface  $request
+     * @param RequestHandlerInterface $handler
+     *
+     * @return ResponseInterface
+     */
+    abstract public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface;
+
+    /**
+     * @return LoggerInterface
+     */
+    protected function log(): LoggerInterface
+    {
+        return new FileLogger();
+    }
+
+    protected function when(): void
+    {
+        // $this->log()->info('middleware(' . time() . '): ' . static::class);
+    }
+
+    /**
+     * Merges two multi-dimensional arrays recursively.
+     *
+     * This function will recursively merge the values of `$array2` into `$array1`.
+     * If the same key exists in both arrays, and both corresponding values are arrays,
+     * the values are recursively merged.
+     * Otherwise, values from `$array2` will overwrite those in `$array1`.
+     *
+     * @param array $array1 The base array that will be merged into.
+     * @param array $array2 The array with values to merge into `$array1`.
+     *
+     * @return array The merged array.
+     */
+    protected static function multiMerge(array $array1, array $array2): array
+    {
+        $merged = $array1;
+
+        foreach ($array2 as $key => $value) {
+            if (isset($merged[$key]) && \is_array($merged[$key]) && \is_array($value)) {
+                $merged[$key] = self::multiMerge($merged[$key], $value);
+            } else {
+                $merged[$key] = $value;
+            }
+        }
+
+        return $merged;
+    }
+}

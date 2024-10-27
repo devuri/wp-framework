@@ -11,6 +11,8 @@
 
 namespace WPframework;
 
+use WPframework\Interfaces\ExitInterface;
+
 class ExitHandler implements ExitInterface
 {
     /**

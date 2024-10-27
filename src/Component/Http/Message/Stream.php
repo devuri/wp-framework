@@ -14,6 +14,7 @@ namespace WPframework\Http\Message;
 use Nyholm\Psr7\Stream as Psr7Stream;
 use Psr\Http\Message\StreamInterface;
 
+// @phpstan-ignore-next-line
 class Stream extends Psr7Stream implements StreamInterface
 {
     // Add any custom methods or overrides here (if needed)

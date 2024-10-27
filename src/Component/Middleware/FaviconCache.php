@@ -14,10 +14,9 @@ namespace WPframework\Middleware;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-class FaviconCache implements MiddlewareInterface
+class FaviconCache extends AbstractMiddleware
 {
     /**
      * @var ResponseFactoryInterface
@@ -47,6 +46,8 @@ class FaviconCache implements MiddlewareInterface
         if ($this->isFaviconRequest($request)) {
             return $this->handleFaviconRequest();
         }
+
+        $this->when();
 
         return $handler->handle($request);
     }
