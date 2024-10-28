@@ -41,7 +41,6 @@
         "devuri/secure-password": "^0.1",
         "devuri/uuid-generator": "^0.0.1",
         "filp/whoops": "^2.15",
-        "fruitcake/php-cors": "^1.3",
         "matomo/device-detector": "^6.4",
         "nyholm/psr7": "^1.8",
         "nyholm/psr7-server": "^1.1",
@@ -54,6 +53,7 @@
     },
     "require-dev": {
         "brain/monkey": "^2.6",
+		"fruitcake/php-cors": "^1.3",
         "fakerphp/faker": "^1.23",
         "php-stubs/wordpress-stubs": "^6.0",
         "phpstan/phpstan": "^1.8",
