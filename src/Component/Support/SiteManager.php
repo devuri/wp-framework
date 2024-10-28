@@ -167,11 +167,11 @@ class SiteManager
     /**
      * Determine the environment based on the provided string.
      *
-     * @param string $environment
+     * @param null|string $environment
      *
      * @return string
      */
-    public function determineEnvironment(string $environment): string
+    public function determineEnvironment(?string $environment): string
     {
         return trim($environment);
     }
