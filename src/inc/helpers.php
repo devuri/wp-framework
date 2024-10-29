@@ -264,7 +264,7 @@ function getWpframeworkHttpEnv(): ?string
  *
  * @return (mixed|string)[]
  *
- * @psalm-return array{basedir: 'public/content/tenant//uploads', baseurl: string, path: string, url: string,...}
+ * @psalm-return array{basedir: 'public/content/tenant/id/uploads', baseurl: string, path: string, url: string,...}
  */
 function setMultitenantUploadDirectory($dir): array
 {

@@ -24,9 +24,9 @@ use WPframework\Support\KernelConfig;
 trait CoreMiddlewareTrait
 {
     /**
-     * @return (string|\WPframework\Middleware\ConfigMiddleware|\WPframework\Middleware\KernelMiddleware|\WPframework\Middleware\LoggingMiddleware|\WPframework\Middleware\WhoopsMiddleware)[]
+     * @return (\WPframework\Middleware\ConfigMiddleware|\WPframework\Middleware\DotenvMiddleware|\WPframework\Middleware\KernelMiddleware|\WPframework\Middleware\LoggingMiddleware|\WPframework\Middleware\WhoopsMiddleware)[]
      *
-     * @psalm-return array{dotenv: \WPframework\Middleware\DotenvMiddleware::class, whoops: \WPframework\Middleware\WhoopsMiddleware, config: \WPframework\Middleware\ConfigMiddleware, kernel: \WPframework\Middleware\KernelMiddleware, logger: \WPframework\Middleware\LoggingMiddleware}
+     * @psalm-return array{dotenv: \WPframework\Middleware\DotenvMiddleware, config: \WPframework\Middleware\ConfigMiddleware, kernel: \WPframework\Middleware\KernelMiddleware, logger: \WPframework\Middleware\LoggingMiddleware, whoops: \WPframework\Middleware\WhoopsMiddleware}
      */
     protected static function getDefaults(): array
     {

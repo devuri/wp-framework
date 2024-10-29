@@ -94,9 +94,7 @@ class KernelMiddleware extends AbstractMiddleware
      * the server is temporarily unavailable due to maintenance. It's used to
      * inform users about the temporary unavailability of the service.
      *
-     * @return string The maintenance message to be displayed to users.
-     *
-     * @psalm-return 'Service Unavailable: <br>The server is currently unable to handle the request due to temporary maintenance of the server.'
+     * @psalm-return 'The server is currently unable to handle the request due to temporary maintenance.'
      */
     private static function getMaintenanceMessage(): string
     {

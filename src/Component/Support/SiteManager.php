@@ -48,10 +48,6 @@ class SiteManager
     }
 
     /**
-     * Set the environment.
-     *
-     * @param null|string $environment
-     *
      * @return static
      */
     public function setEnvironment(): self
@@ -196,7 +192,7 @@ class SiteManager
 
     private function environmentInit(): void
     {
-        $this->environment = trim(RAYDIUM_ENVIRONMENT_TYPE);
+        $this->environment = RAYDIUM_ENVIRONMENT_TYPE;
         $default_env = self::default('environment');
 
         if (empty($this->environment) && env('WP_ENVIRONMENT_TYPE')) {
@@ -206,11 +202,6 @@ class SiteManager
         if ( ! EnvType::isValid($this->environment)) {
             $this->resetEnvironment($default_env);
         }
-    }
-
-    private function isEnvironmentNull(): bool
-    {
-        return empty($this->environment);
     }
 
     private static function wpDevelopmentMode(): string

@@ -33,11 +33,14 @@ class MiddlewareDispatcher implements RequestHandlerInterface
     private RequestHandlerInterface $finalHandler;
 
     /**
-     * @var ?LoggerInterface
+     * @var null|LoggerInterface
      */
     private ?LoggerInterface $logger;
 
-    private ?MiddlewareRegistry $middlewareRegistry;
+    /**
+     * @var MiddlewareRegistry
+     */
+    private MiddlewareRegistry $middlewareRegistry;
 
     /**
      * MiddlewareDispatcher constructor.

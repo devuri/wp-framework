@@ -2,6 +2,10 @@
 
 define('WP_ENVIRONMENT_TYPE', 'testing');
 
+if ( ! \defined('RAYDIUM_ENVIRONMENT_TYPE')) {
+	\define('RAYDIUM_ENVIRONMENT_TYPE', null);
+}
+
 if (!defined('APP_HTTP_HOST')) {
     define('APP_HTTP_HOST', 'default_domain.com');
 }

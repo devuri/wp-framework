@@ -39,14 +39,9 @@ class AppInit implements RequestHandlerInterface
     protected $errorHandler;
 
     /**
-     * @var bool
+     * @var null|Throwable
      */
     protected $error;
-
-    /**
-     * @var array
-     */
-    protected array $const;
 
     /**
      * AppInit constructor.
