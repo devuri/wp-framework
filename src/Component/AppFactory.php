@@ -16,7 +16,6 @@ use Throwable;
 use WPframework\Http\HttpFactory;
 use WPframework\Http\Message\Foundation;
 use WPframework\Http\Message\RequestFactory;
-use WPframework\Http\Message\Response;
 use WPframework\Logger\FileLogger;
 use WPframework\Logger\Log;
 
@@ -32,11 +31,13 @@ class AppFactory
      */
     public static function create(string $appDirPath, ?string $environment = null): AppInit
     {
+        $httpHost =  HttpFactory::init()->get_http_host();
+        \define('SITE_CONFIGS_DIR', 'configs');
+        \define('APP_DIR_PATH', $appDirPath);
+        \define('APP_HTTP_HOST', $httpHost);
         Log::init(new FileLogger());
         self::setEnvironment($environment);
-        self::defineConstant($appDirPath);
         self::$app = new AppInit();
-        self::registerDefaultMiddlewares();
         self::setErrorHandler();
 
         return self::$app;
@@ -47,34 +48,6 @@ class AppFactory
         $request = self::createRequest(new RequestFactory());
 
         self::$app->run($request);
-    }
-
-    public static function defineConstant(string $appDirPath): void
-    {
-        if ( ! \defined('SITE_CONFIGS_DIR')) {
-            \define('SITE_CONFIGS_DIR', 'configs');
-        }
-
-        if ( ! \defined('APP_DIR_PATH')) {
-            \define('APP_DIR_PATH', $appDirPath);
-        }
-
-        if ( ! \defined('APP_HTTP_HOST')) {
-            \define('APP_HTTP_HOST', HttpFactory::init()->get_http_host());
-        }
-
-        if ( ! \defined('RAYDIUM_ENVIRONMENT_TYPE')) {
-            \define('RAYDIUM_ENVIRONMENT_TYPE', null);
-        }
-
-        // Use 204 for No Content, or 404 for Not Found
-        \define('FAVICON_RESPONSE_TYPE', 404);
-
-        // Enable cache
-        \define('FAVICON_ENABLE_CACHE', true);
-
-        // Cache time in seconds (e.g., 2 hours = 7200 seconds)
-        \define('FAVICON_CACHE_TIME', 7200);
     }
 
     /**
@@ -91,30 +64,11 @@ class AppFactory
      *
      * @return void
      */
-    private static function setEnvironment(?string $environment): void
+    private static function setEnvironment(?string $environment = null): void
     {
         if ( ! \defined('RAYDIUM_ENVIRONMENT_TYPE')) {
-            \define('RAYDIUM_ENVIRONMENT_TYPE', $environment ?? null);
+            \define('RAYDIUM_ENVIRONMENT_TYPE', $environment);
         }
-    }
-
-    private static function registerDefaultMiddlewares(): void
-    {
-        self::$app->addMiddleware(function (RequestInterface $request, $handler) {
-            error_log('Request URI: ' . $request->getUri());
-
-            return $handler->handle($request);
-        }, 'req-uri');
-    }
-
-    private static function setDefaultHandler(): void
-    {
-        self::$app->setDefaultHandler(function (RequestInterface $request) {
-            $response = new Response();
-            $response->getBody()->write("Welcome to MyApp!");
-
-            return $response;
-        });
     }
 
     private static function setErrorHandler(): void
@@ -126,7 +80,15 @@ class AppFactory
                 'headers' => $request->getHeaders(),
             ]);
 
-            return $response->withStatus(500);
+            Log::info('Request URI: ' . $request->getUri(), [
+                'method' => $request->getMethod(),
+                'uri' => (string) $request->getUri(),
+                'headers' => $request->getHeaders(),
+            ]);
+
+            $response = $response->withHeader('Raydium-Exception', $e->getMessage());
+
+            return $response->withStatus(503);
         });
     }
 

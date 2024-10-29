@@ -31,11 +31,11 @@ trait CoreMiddlewareTrait
     protected static function getDefaults(): array
     {
         return [
-            'dotenv' => DotenvMiddleware::class,
-            'whoops' => new WhoopsMiddleware(new Run()),
+            'dotenv' => new DotenvMiddleware(),
             'config' => new ConfigMiddleware(self::configManager()),
             'kernel' => new KernelMiddleware(new KernelConfig(self::configManager())),
             'logger' => new LoggingMiddleware(new FileLogger()),
+            'whoops' => new WhoopsMiddleware(new Run()),
         ];
     }
 

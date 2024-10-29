@@ -13,7 +13,6 @@ namespace WPframework\Middleware;
 
 use Dotenv\Dotenv;
 use Dotenv\Exception\InvalidPathException;
-use Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -24,6 +23,7 @@ use WPframework\Support\Tenancy;
 class DotenvMiddleware extends AbstractMiddleware
 {
     protected $envType;
+    protected $env;
 
     public function __construct()
     {
@@ -47,17 +47,17 @@ class DotenvMiddleware extends AbstractMiddleware
 
         $_dotenv = Dotenv::createImmutable(APP_DIR_PATH, $envFiles, true);
 
-        // Tenancy
         $this->tenantSetup()->init($_dotenv);
 
         try {
             $_dotenv->load();
         } catch (InvalidPathException $e) {
             $this->envType->tryRegenerateFile(APP_DIR_PATH, APP_HTTP_HOST, $envFiles);
-            $this->log()->info("Missing env file: {$e->getMessage()}");
-        } catch (Exception $e) {
-            $this->log()->error("Exception: {$e->getMessage()}");
+
+            throw new InvalidPathException($e->getMessage());
         }
+
+        $this->env = $_ENV;
 
         return $handler->handle($request);
     }

@@ -54,16 +54,10 @@ class SiteManager
      *
      * @return static
      */
-    public function setEnvironment(?string $environment): self
+    public function setEnvironment(): self
     {
-        $this->environment = $this->determineEnvironment($environment);
         $this->configManager->addConstant('WP_DEVELOPMENT_MODE', self::wpDevelopmentMode());
-
-        if ($this->isEnvironmentNull()) {
-            $this->configManager->addConstant('WP_ENVIRONMENT_TYPE', env('WP_ENVIRONMENT_TYPE') ?? self::getConstant('environment'));
-        } else {
-            $this->configManager->addConstant('WP_ENVIRONMENT_TYPE', $this->environment);
-        }
+        $this->configManager->addConstant('WP_ENVIRONMENT_TYPE', $this->environment);
 
         return $this;
     }
@@ -77,10 +71,6 @@ class SiteManager
      */
     public function debug(?string $errorLogsDir): self
     {
-        if ($this->isEnvironmentNull() && env('WP_ENVIRONMENT_TYPE')) {
-            $this->resetEnvironment(env('WP_ENVIRONMENT_TYPE'));
-        }
-
         if ( ! EnvType::isValid($this->environment)) {
             $this->switcher->createEnvironment('production', $this->errorLogsDir);
         } else {
@@ -95,7 +85,8 @@ class SiteManager
      */
     public function appSetup(ServerRequestInterface $request): self
     {
-        $this->setEnvironment(env('WP_ENVIRONMENT_TYPE'));
+        $this->environmentInit();
+        $this->setEnvironment();
         $this->debug($this->errorLogsDir);
         $this->enableErrorHandler($request);
 
@@ -120,25 +111,25 @@ class SiteManager
 
     public function setOptimize(): void
     {
-        $this->configManager->addConstant('CONCATENATE_SCRIPTS', env('CONCATENATE_SCRIPTS') ?? self::getConstant('optimize'));
+        $this->configManager->addConstant('CONCATENATE_SCRIPTS', env('CONCATENATE_SCRIPTS') ?? self::default('optimize'));
     }
 
     public function setMemory(): void
     {
-        $this->configManager->addConstant('WP_MEMORY_LIMIT', env('MEMORY_LIMIT') ?? self::getConstant('memory'));
-        $this->configManager->addConstant('WP_MAX_MEMORY_LIMIT', env('MAX_MEMORY_LIMIT') ?? self::getConstant('memory'));
+        $this->configManager->addConstant('WP_MEMORY_LIMIT', env('MEMORY_LIMIT') ?? self::default('memory'));
+        $this->configManager->addConstant('WP_MAX_MEMORY_LIMIT', env('MAX_MEMORY_LIMIT') ?? self::default('memory'));
     }
 
     public function setForceSsl(): void
     {
-        $this->configManager->addConstant('FORCE_SSL_ADMIN', env('FORCE_SSL_ADMIN') ?? self::getConstant('ssl_admin'));
-        $this->configManager->addConstant('FORCE_SSL_LOGIN', env('FORCE_SSL_LOGIN') ?? self::getConstant('ssl_login'));
+        $this->configManager->addConstant('FORCE_SSL_ADMIN', env('FORCE_SSL_ADMIN') ?? self::default('ssl_admin'));
+        $this->configManager->addConstant('FORCE_SSL_LOGIN', env('FORCE_SSL_LOGIN') ?? self::default('ssl_login'));
     }
 
     public function setAutosave(): void
     {
-        $this->configManager->addConstant('AUTOSAVE_INTERVAL', env('AUTOSAVE_INTERVAL') ?? self::getConstant('autosave'));
-        $this->configManager->addConstant('WP_POST_REVISIONS', env('WP_POST_REVISIONS') ?? self::getConstant('revisions'));
+        $this->configManager->addConstant('AUTOSAVE_INTERVAL', env('AUTOSAVE_INTERVAL') ?? self::default('autosave'));
+        $this->configManager->addConstant('WP_POST_REVISIONS', env('WP_POST_REVISIONS') ?? self::default('revisions'));
     }
 
     public function setDatabase(): void
@@ -146,7 +137,7 @@ class SiteManager
         $this->configManager->addConstant('DB_NAME', env('DB_NAME'));
         $this->configManager->addConstant('DB_USER', env('DB_USER'));
         $this->configManager->addConstant('DB_PASSWORD', env('DB_PASSWORD'));
-        $this->configManager->addConstant('DB_HOST', env('DB_HOST') ?? self::getConstant('db_host'));
+        $this->configManager->addConstant('DB_HOST', env('DB_HOST') ?? self::default('db_host'));
         $this->configManager->addConstant('DB_CHARSET', env('DB_CHARSET') ?? 'utf8mb4');
         $this->configManager->addConstant('DB_COLLATE', env('DB_COLLATE') ?? '');
     }
@@ -162,18 +153,6 @@ class SiteManager
         $this->configManager->addConstant('LOGGED_IN_SALT', env('LOGGED_IN_SALT'));
         $this->configManager->addConstant('NONCE_SALT', env('NONCE_SALT'));
         $this->configManager->addConstant('DEVELOPER_ADMIN', env('DEVELOPER_ADMIN') ?? '0');
-    }
-
-    /**
-     * Determine the environment based on the provided string.
-     *
-     * @param null|string $environment
-     *
-     * @return string
-     */
-    public function determineEnvironment(?string $environment): string
-    {
-        return trim($environment);
     }
 
     /**
@@ -198,7 +177,7 @@ class SiteManager
      *
      * @psalm-return '256M'|'localhost'|'production'|10|180|null|true
      */
-    public static function getConstant(string $key)
+    public static function default(string $key)
     {
         $constants = [
             'environment' => 'production',
@@ -213,6 +192,20 @@ class SiteManager
         ];
 
         return $constants[$key] ?? null;
+    }
+
+    private function environmentInit(): void
+    {
+        $this->environment = trim(RAYDIUM_ENVIRONMENT_TYPE);
+        $default_env = self::default('environment');
+
+        if (empty($this->environment) && env('WP_ENVIRONMENT_TYPE')) {
+            $this->resetEnvironment(env('WP_ENVIRONMENT_TYPE', $default_env));
+        }
+
+        if ( ! EnvType::isValid($this->environment)) {
+            $this->resetEnvironment($default_env);
+        }
     }
 
     private function isEnvironmentNull(): bool
