@@ -49,8 +49,6 @@ class LoggingMiddleware extends AbstractMiddleware
         //     'headers' => $request->getHeaders(),
         // ]);
 
-        $this->when();
-
         return $handler->handle($request);
     }
 }

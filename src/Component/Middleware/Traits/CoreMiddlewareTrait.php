@@ -24,18 +24,18 @@ use WPframework\Support\KernelConfig;
 trait CoreMiddlewareTrait
 {
     /**
-     * @return (string|\WPframework\Middleware\ConfigMiddleware|\WPframework\Middleware\KernelMiddleware|\WPframework\Middleware\LoggingMiddleware|\WPframework\Middleware\WhoopsMiddleware)[]
+     * @return (\WPframework\Middleware\ConfigMiddleware|\WPframework\Middleware\DotenvMiddleware|\WPframework\Middleware\KernelMiddleware|\WPframework\Middleware\LoggingMiddleware|\WPframework\Middleware\WhoopsMiddleware)[]
      *
-     * @psalm-return array{dotenv: \WPframework\Middleware\DotenvMiddleware::class, whoops: \WPframework\Middleware\WhoopsMiddleware, config: \WPframework\Middleware\ConfigMiddleware, kernel: \WPframework\Middleware\KernelMiddleware, logger: \WPframework\Middleware\LoggingMiddleware}
+     * @psalm-return array{dotenv: \WPframework\Middleware\DotenvMiddleware, config: \WPframework\Middleware\ConfigMiddleware, kernel: \WPframework\Middleware\KernelMiddleware, logger: \WPframework\Middleware\LoggingMiddleware, whoops: \WPframework\Middleware\WhoopsMiddleware}
      */
     protected static function getDefaults(): array
     {
         return [
-            'dotenv' => DotenvMiddleware::class,
-            'whoops' => new WhoopsMiddleware(new Run()),
+            'dotenv' => new DotenvMiddleware(),
             'config' => new ConfigMiddleware(self::configManager()),
             'kernel' => new KernelMiddleware(new KernelConfig(self::configManager())),
             'logger' => new LoggingMiddleware(new FileLogger()),
+            'whoops' => new WhoopsMiddleware(new Run()),
         ];
     }
 

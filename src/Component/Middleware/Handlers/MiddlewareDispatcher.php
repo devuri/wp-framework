@@ -33,17 +33,20 @@ class MiddlewareDispatcher implements RequestHandlerInterface
     private RequestHandlerInterface $finalHandler;
 
     /**
-     * @var ?LoggerInterface
+     * @var null|LoggerInterface
      */
     private ?LoggerInterface $logger;
 
-    private ?MiddlewareRegistry $middlewareRegistry;
+    /**
+     * @var MiddlewareRegistry
+     */
+    private MiddlewareRegistry $middlewareRegistry;
 
     /**
      * MiddlewareDispatcher constructor.
      *
      * @param RequestHandlerInterface $finalHandler The final handler to invoke if no middleware processes the request.
-     * @param ?LoggerInterface        $logger       Optional logger to log any errors in middleware.
+     * @param null|LoggerInterface    $logger       Optional logger to log any errors in middleware.
      */
     public function __construct(RequestHandlerInterface $finalHandler, MiddlewareRegistry $middlewareRegistry, ?LoggerInterface $logger = null)
     {

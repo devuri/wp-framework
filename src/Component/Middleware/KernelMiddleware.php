@@ -11,11 +11,12 @@
 
 namespace WPframework\Middleware;
 
+use Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use WPframework\Http\Message\Response;
 use WPframework\Support\KernelConfig;
-use WPframework\Terminate;
 
 class KernelMiddleware extends AbstractMiddleware
 {
@@ -46,7 +47,9 @@ class KernelMiddleware extends AbstractMiddleware
     {
         $this->kernelConfig->setKernelConstants();
 
-        $this->inMaintenanceMode();
+        if ($this->inMaintenanceMode()) {
+            throw new Exception(self::getMaintenanceMessage());
+        }
 
         return $handler->handle($request);
     }
@@ -61,7 +64,7 @@ class KernelMiddleware extends AbstractMiddleware
      * If a .maintenance file is found, it terminates the execution with a maintenance message
      * and sends a 503 Service Unavailable status code.
      */
-    protected function inMaintenanceMode(): void
+    protected function inMaintenanceMode(): bool
     {
         $configs_dir = SITE_CONFIGS_DIR;
         $maintenanceChecks = [
@@ -75,11 +78,13 @@ class KernelMiddleware extends AbstractMiddleware
 
         foreach ($maintenanceChecks as $path => $scope) {
             if (file_exists($path)) {
-                Terminate::exit([ self::getMaintenanceMessage(), 503 ]);
+                return true;
 
                 break;
             }
         }
+
+        return false;
     }
 
     /**
@@ -89,12 +94,10 @@ class KernelMiddleware extends AbstractMiddleware
      * the server is temporarily unavailable due to maintenance. It's used to
      * inform users about the temporary unavailability of the service.
      *
-     * @return string The maintenance message to be displayed to users.
-     *
-     * @psalm-return 'Service Unavailable: <br>The server is currently unable to handle the request due to temporary maintenance of the server.'
+     * @psalm-return 'The server is currently unable to handle the request due to temporary maintenance.'
      */
     private static function getMaintenanceMessage(): string
     {
-        return 'Service Unavailable: <br>The server is currently unable to handle the request due to temporary maintenance of the server.';
+        return 'The server is currently unable to handle the request due to temporary maintenance.';
     }
 }

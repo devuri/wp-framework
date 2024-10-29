@@ -39,16 +39,17 @@ class AppInit implements RequestHandlerInterface
     protected $errorHandler;
 
     /**
+     * @var null|Throwable
+     */
+    protected $error;
+
+    /**
      * AppInit constructor.
      */
     public function __construct()
     {
         $this->middlewareRegistry = new MiddlewareRegistry();
         $this->defaultHandler = new FinalHandler();
-
-        $this->errorHandler = function (Throwable $e, RequestInterface $request, ResponseInterface $response) {
-            return $response->withStatus(500);
-        };
     }
 
     /**
@@ -139,6 +140,8 @@ class AppInit implements RequestHandlerInterface
     {
         $response = new Response();
 
+        $this->error = $exception;
+
         return ($this->errorHandler)($exception, $request, $response);
     }
 
@@ -153,6 +156,10 @@ class AppInit implements RequestHandlerInterface
             foreach ($values as $value) {
                 header(\sprintf('%s: %s', $name, $value), false);
             }
+        }
+
+        if ($this->error) {
+            Terminate::exit([ $this->error->getMessage(), $response->getStatusCode() ]);
         }
 
         http_response_code($response->getStatusCode());
