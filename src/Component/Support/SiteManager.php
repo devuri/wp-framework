@@ -192,7 +192,8 @@ class SiteManager
 
     private function environmentInit(): void
     {
-        $this->environment = RAYDIUM_ENVIRONMENT_TYPE;
+        $this->environment = $this->getRaydiumEnvironment();
+
         $default_env = self::default('environment');
 
         if (empty($this->environment) && env('WP_ENVIRONMENT_TYPE')) {
@@ -202,6 +203,15 @@ class SiteManager
         if ( ! EnvType::isValid($this->environment)) {
             $this->resetEnvironment($default_env);
         }
+    }
+
+    private function getRaydiumEnvironment()
+    {
+        if (\defined('RAYDIUM_ENVIRONMENT_TYPE')) {
+            return RAYDIUM_ENVIRONMENT_TYPE;
+        }
+
+        return null;
     }
 
     private static function wpDevelopmentMode(): string
