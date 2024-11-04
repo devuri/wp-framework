@@ -17,6 +17,7 @@ use WPframework\Middleware\ConfigMiddleware;
 use WPframework\Middleware\DotenvMiddleware;
 use WPframework\Middleware\KernelMiddleware;
 use WPframework\Middleware\LoggingMiddleware;
+use WPframework\Middleware\SecurityHeadersMiddleware;
 use WPframework\Middleware\WhoopsMiddleware;
 use WPframework\Support\ConstantBuilder;
 use WPframework\Support\KernelConfig;
@@ -31,6 +32,7 @@ trait CoreMiddlewareTrait
     protected static function getDefaults(): array
     {
         return [
+            'security' => SecurityHeadersMiddleware::class,
             'dotenv' => new DotenvMiddleware(),
             'config' => new ConfigMiddleware(self::configManager()),
             'kernel' => new KernelMiddleware(new KernelConfig(self::configManager())),
