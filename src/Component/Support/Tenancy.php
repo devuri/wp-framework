@@ -76,14 +76,14 @@ class Tenancy
             $_dotenv->required('LANDLORD_DB_PASSWORD')->notEmpty();
             $_dotenv->required('LANDLORD_DB_PREFIX')->notEmpty();
         } catch (Exception $e) {
-            Terminate::exit([ 'Landlord info is required for multi-tenant', 403 ]);
+            Terminate::exit(new Exception('Landlord info is required for multi-tenant'), 403);
         }
 
         $landlord = new DB('tenant', env('LANDLORD_DB_HOST'), env('LANDLORD_DB_NAME'), env('LANDLORD_DB_USER'), env('LANDLORD_DB_PASSWORD'), env('LANDLORD_DB_PREFIX'));
         $hostd    = $landlord->where('domain', $appHttpHost);
 
         if ( ! $hostd) {
-            Terminate::exit([ 'The website is not defined. Please review the URL and try again.', 403 ]);
+            Terminate::exit(new Exception('The website is not defined. Please review the URL and try again.'), 403);
         } else {
             $this->tenant = $hostd[0];
             $this->defineTenantConstants();

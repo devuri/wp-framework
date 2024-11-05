@@ -74,7 +74,7 @@ class AppFactory
     private static function setErrorHandler(): void
     {
         self::$app->setErrorHandler(function (Throwable $e, RequestInterface $request, \Psr\Http\Message\ResponseInterface $response) {
-            Log::critical($e->getMessage(), [
+            Log::error($e->getMessage(), [
                 'method' => $request->getMethod(),
                 'uri' => (string) $request->getUri(),
                 'headers' => $request->getHeaders(),

@@ -48,7 +48,7 @@ class DB
 
             return $stmt->fetchAll(PDO::FETCH_OBJ);
         } catch (PDOException $e) {
-            Terminate::exit([ 'Read error: ' ]);
+            Terminate::exit($e);
         }
     }
 
@@ -64,7 +64,7 @@ class DB
 
             return $stmt->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            Terminate::exit([ 'record error: ' ]);
+            Terminate::exit($e);
         }
     }
 
@@ -83,7 +83,7 @@ class DB
 
             return $stmt->fetchAll(PDO::FETCH_OBJ);
         } catch (PDOException $e) {
-            Terminate::exit([ 'Query error: ' ]);
+            Terminate::exit($e);
         }
     }
 
@@ -95,7 +95,7 @@ class DB
             $this->conn = new PDO('mysql:host=' . $this->host . ';dbname=' . $this->dbName, $this->username, $this->password);
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $e) {
-            Terminate::exit([ 'Connection error: ' ]);
+            Terminate::exit($e);
         }
 
         return $this->conn;
