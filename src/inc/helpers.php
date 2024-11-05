@@ -78,13 +78,7 @@ function env($name, $default = null, $encrypt = false, $strtolower = false)
     try {
         $env_var = $env_instance->get($name, $default, $encrypt, $strtolower);
     } catch (Exception $e) {
-        $debug_info = [
-            'path'      => $encryption_path,
-            'line'      => __LINE__,
-            'exception' => $e,
-            'invalidfile' => "Missing env file: {$e->getMessage()}",
-        ];
-        Terminate::exit([ "Missing env() var: {$e->getMessage()}", 500, $debug_info ]);
+        Terminate::exit($e, 500);
     }
 
     return $env_var;
@@ -333,9 +327,9 @@ function exitWithThemeError(array $themeInfo): void
 {
     $activeTheme = wp_get_theme();
 
-    Terminate::exit([
-        $themeInfo['error_message'] . ' -> ' . $activeTheme->template,
-    ]);
+    Terminate::exit(
+        new Exception($themeInfo['error_message'] . ' -> ' . $activeTheme->template)
+    );
 }
 
 

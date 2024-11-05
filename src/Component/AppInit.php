@@ -41,7 +41,7 @@ class AppInit implements RequestHandlerInterface
     /**
      * @var null|Throwable
      */
-    protected $error;
+    protected $exception;
 
     /**
      * AppInit constructor.
@@ -131,18 +131,18 @@ class AppInit implements RequestHandlerInterface
     /**
      * Method to handle exceptions using the defined error handler.
      *
-     * @param Throwable        $exception
+     * @param Throwable        $except
      * @param RequestInterface $request
      *
      * @return ResponseInterface
      */
-    protected function handleException(Throwable $exception, RequestInterface $request): ResponseInterface
+    protected function handleException(Throwable $except, RequestInterface $request): ResponseInterface
     {
         $response = new Response();
 
-        $this->error = $exception;
+        $this->exception = $except;
 
-        return ($this->errorHandler)($exception, $request, $response);
+        return ($this->errorHandler)($except, $request, $response);
     }
 
     /**
@@ -158,8 +158,8 @@ class AppInit implements RequestHandlerInterface
             }
         }
 
-        if ($this->error) {
-            Terminate::exit([ $this->error->getMessage(), $response->getStatusCode() ]);
+        if ($this->exception) {
+            Terminate::exit($this->exception, $response->getStatusCode());
         }
 
         http_response_code($response->getStatusCode());
