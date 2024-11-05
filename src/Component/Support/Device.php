@@ -9,90 +9,95 @@
  * file that was distributed with this source code.
  */
 
- namespace WPframework\Support;
+namespace WPframework\Support;
 
- use DeviceDetector\ClientHints;
- use DeviceDetector\DeviceDetector;
- use Psr\Log\LoggerInterface;
+use DeviceDetector\ClientHints;
+use DeviceDetector\DeviceDetector;
+use Exception;
+use Psr\Log\LoggerInterface;
 
- class Device
- {
-     private LoggerInterface $logger;
+class Device
+{
+    private LoggerInterface $logger;
 
-     public function __construct(LoggerInterface $logger)
-     {
-         $this->logger = $logger;
-     }
+    public function __construct(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
 
-     public function isBot(): bool
-     {
-         try {
-             $userAgent = $this->getUserAgent();
-             $clientHints = $this->getClientHints();
+    public function isBot(): bool
+    {
+        try {
+            $userAgent = $this->getUserAgent();
+            $clientHints = $this->getClientHints();
 
-             $this->logger->debug('Initializing DeviceDetector with user agent', ['userAgent' => $userAgent]);
+            $this->logger->debug('Initializing DeviceDetector with user agent', ['userAgent' => $userAgent]);
 
-             $deviceDetector = $this->initializeDeviceDetector($userAgent, $clientHints);
+            $deviceDetector = $this->initializeDeviceDetector($userAgent, $clientHints);
 
-             if ($deviceDetector->isBot()) {
-                 $this->logger->info('Bot detected', ['userAgent' => $userAgent]);
-                 return true;
-             }
+            if ($deviceDetector->isBot()) {
+                $this->logger->info('Bot detected', ['userAgent' => $userAgent]);
 
-             $this->logger->debug('No bot detected for user agent', ['userAgent' => $userAgent]);
-             return false;
-         } catch (\Exception $e) {
-             $this->logger->error('An error occurred while detecting the device', [
-                 'exception' => $e->getMessage(),
-                 'trace' => $e->getTraceAsString()
-             ]);
-             return false;
-         }
-     }
+                return true;
+            }
 
-     private function getUserAgent(): string
-     {
-         return $_SERVER['HTTP_USER_AGENT'] ?? '';
-     }
+            $this->logger->debug('No bot detected for user agent', ['userAgent' => $userAgent]);
 
-     private function getClientHints(): ClientHints
-     {
-         try {
-             return ClientHints::factory($_SERVER);
-         } catch (\Exception $e) {
-             $this->logger->warning('Failed to get client hints', [
-                 'exception' => $e->getMessage(),
-                 'trace' => $e->getTraceAsString()
-             ]);
-             return new ClientHints();
-         }
-     }
+            return false;
+        } catch (Exception $e) {
+            $this->logger->error('An error occurred while detecting the device', [
+                'exception' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
 
-     private function initializeDeviceDetector(string $userAgent, ClientHints $clientHints): DeviceDetector
-     {
-         $dd = new DeviceDetector($userAgent, $clientHints);
-         $this->logger->debug('DeviceDetector instance created', [
-             'userAgent' => $userAgent,
-             'clientHints' => $clientHints
-         ]);
+            return false;
+        }
+    }
 
-         // Improves performance by skipping bot details
-         $dd->discardBotInformation();
+    private function getUserAgent(): string
+    {
+        return $_SERVER['HTTP_USER_AGENT'] ?? '';
+    }
 
-         try {
-             $dd->parse();
-             $this->logger->debug('DeviceDetector parsing complete', [
-                 'userAgent' => $userAgent,
-                 'clientHints' => $clientHints
-             ]);
-         } catch (\Exception $e) {
-             $this->logger->error('An error occurred while parsing the user agent', [
-                 'exception' => $e->getMessage(),
-                 'userAgent' => $userAgent,
-                 'trace' => $e->getTraceAsString()
-             ]);
-         }
+    private function getClientHints(): ClientHints
+    {
+        try {
+            return ClientHints::factory($_SERVER);
+        } catch (Exception $e) {
+            $this->logger->warning('Failed to get client hints', [
+                'exception' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
 
-         return $dd;
-     }
+            return new ClientHints();
+        }
+    }
+
+    private function initializeDeviceDetector(string $userAgent, ClientHints $clientHints): DeviceDetector
+    {
+        $dd = new DeviceDetector($userAgent, $clientHints);
+        $this->logger->debug('DeviceDetector instance created', [
+            'userAgent' => $userAgent,
+            'clientHints' => $clientHints,
+        ]);
+
+        // Improves performance by skipping bot details
+        $dd->discardBotInformation();
+
+        try {
+            $dd->parse();
+            $this->logger->debug('DeviceDetector parsing complete', [
+                'userAgent' => $userAgent,
+                'clientHints' => $clientHints,
+            ]);
+        } catch (Exception $e) {
+            $this->logger->error('An error occurred while parsing the user agent', [
+                'exception' => $e->getMessage(),
+                'userAgent' => $userAgent,
+                'trace' => $e->getTraceAsString(),
+            ]);
+        }
+
+        return $dd;
+    }
 }
