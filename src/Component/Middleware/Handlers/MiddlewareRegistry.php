@@ -12,17 +12,14 @@
 namespace WPframework\Middleware\Handlers;
 
 use Psr\Http\Server\MiddlewareInterface;
-use WPframework\Middleware\Traits\CoreMiddlewareTrait;
 
 class MiddlewareRegistry
 {
-    use CoreMiddlewareTrait;
-
     protected ?array $middlewares;
 
     public function __construct()
     {
-        $this->setDefault();
+        $this->setDefault(new CoreMiddleware());
     }
 
     /**
@@ -43,9 +40,9 @@ class MiddlewareRegistry
         return $this->middlewares;
     }
 
-    protected function setDefault(): void
+    protected function setDefault(CoreMiddleware $core): void
     {
-        foreach (self::getDefaults() as $key => $middleware) {
+        foreach ($core->getAll() as $key => $middleware) {
             if ( ! \is_string($key) || empty($key)) {
                 continue;
             }
