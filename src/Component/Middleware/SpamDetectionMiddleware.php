@@ -14,10 +14,9 @@ namespace WPframework\Middleware;
 use Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-class SpamDetectionMiddleware implements MiddlewareInterface
+class SpamDetectionMiddleware extends AbstractMiddleware
 {
     private $suspiciousKeywords = [
         'вход', 'кракен', 'Kraken',
@@ -28,7 +27,7 @@ class SpamDetectionMiddleware implements MiddlewareInterface
         $postData = $request->getParsedBody();
 
         if (\is_array($postData)) {
-            $content = implode(' ', $postData);
+            $content = self::toString($postData);
 
             if ($this->containsCyrillicCharacters($content)) {
                 return $this->blockRequest('Spam detected: Cyrillic characters found');
@@ -44,6 +43,30 @@ class SpamDetectionMiddleware implements MiddlewareInterface
         }
 
         return $handler->handle($request);
+    }
+
+    /**
+     * @param array|string $array
+     *
+     * @return bool
+     */
+    protected static function toString($array)
+    {
+        $result = '';
+
+        if (\is_string($array)) {
+            $array = [$array];
+        }
+
+        foreach ($array as $element) {
+            if (\is_array($element)) {
+                $result .= self::toString($element);
+            } else {
+                $result .= $element . ' ';
+            }
+        }
+
+        return htmlspecialchars(trim($result), ENT_QUOTES, 'UTF-8');
     }
 
     private function containsCyrillicCharacters(string $content): bool

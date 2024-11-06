@@ -59,7 +59,7 @@ class AppInit implements RequestHandlerInterface
      *
      * @return static
      */
-    public function addMiddleware($middleware, string $key = ''): self
+    public function withMiddleware($middleware, string $key = ''): self
     {
         $this->middlewareRegistry->register($middleware, $key);
 

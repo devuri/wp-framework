@@ -404,7 +404,7 @@ function logWithStackTrace(): void
 
 function customHeaderMiddleware(AppInit $app): void
 {
-    $app->addMiddleware(function (RequestInterface $request, $handler) {
+    $app->withMiddleware(function (RequestInterface $request, $handler) {
         $response = $handler->handle($request);
 
         return $response->withHeader('X-Custom-Header', 'MyCustomValue');
