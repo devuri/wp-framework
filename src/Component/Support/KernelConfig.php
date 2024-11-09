@@ -23,6 +23,8 @@ class KernelConfig
     private $configFilename;
     private $configs;
     private $tenantId;
+    private $extras;
+    private static $composerJson;
 
     public function __construct(ConstantBuilder $configManager)
     {
@@ -30,8 +32,9 @@ class KernelConfig
         $this->appHttpHost = APP_HTTP_HOST;
         $this->configManager = $configManager;
         $this->configsDir = SITE_CONFIGS_DIR;
-        $this->configs = new DotAccess(Config::siteConfig(APP_DIR_PATH));
+        $this->configs = new DotAccess(Config::siteConfig($this->appPath));
         $this->tenantId = $this->envTenantId();
+        $this->extras = self::loadComposer("{$this->appPath}/composer.json");
 
         /*
          * Sets the name of the configuration `configs/config.php` file based on arguments.
@@ -43,6 +46,16 @@ class KernelConfig
 
         // set config override file.
         $this->configurationOverrides();
+    }
+
+    public function getExtras()
+    {
+        return $this->extras;
+    }
+
+    public function getConfig()
+    {
+        return $this->configs;
     }
 
     /**
@@ -230,5 +243,14 @@ class KernelConfig
         }
 
         return null;
+    }
+
+    private static function loadComposer(string $composerJsonPath)
+    {
+        if ( ! self::$composerJson) {
+            $json = json_decode(file_get_contents($composerJsonPath), true);
+        }
+
+        return new DotAccess($json);
     }
 }

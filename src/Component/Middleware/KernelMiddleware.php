@@ -24,6 +24,7 @@ class KernelMiddleware extends AbstractMiddleware
      * @var KernelConfig
      */
     private $kernelConfig;
+    private $pathError;
 
     /**
      * Constructor to inject the response factory.
@@ -47,11 +48,44 @@ class KernelMiddleware extends AbstractMiddleware
     {
         $this->kernelConfig->setKernelConstants();
 
+        $isProd = $request->getAttribute('isProd', false);
+
+        if ( ! $this->isValidInstallerPath($isProd)) {
+            throw new Exception(
+                'config file and composer `installer-paths` did not match ' . $this->pathError
+            );
+        }
+
         if ($this->inMaintenanceMode()) {
             throw new Exception(self::getMaintenanceMessage());
         }
 
         return $handler->handle($request);
+    }
+
+    protected function isValidInstallerPath(bool $isProd): bool
+    {
+        $config = $this->kernelConfig->getConfig();
+        $publicWebRoot = $config->get('directory.web_root_dir');
+        $contentDir = $config->get('directory.content_dir');
+        $plugin = $config->get('directory.plugin_dir');
+        $muPlugins = $config->get('directory.mu_plugin_dir');
+
+        // set by the framework.
+        $installerPaths = [
+            "$publicWebRoot/$muPlugins/{\$name}/",
+            "$publicWebRoot/$plugin/{\$name}/",
+            "public/$contentDir/themes/{\$name}/",
+        ];
+
+        if ( ! $isProd) {
+            $this->pathError = 'config: ' . implode(' ', $installerPaths);
+        }
+
+        // from site composer.json
+        $extrasPath = array_keys($this->kernelConfig->getExtras()->get('extra.installer-paths'));
+
+        return $installerPaths === $extrasPath;
     }
 
     /**
