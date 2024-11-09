@@ -47,8 +47,6 @@ class FaviconCache extends AbstractMiddleware
             return $this->handleFaviconRequest();
         }
 
-        $this->when();
-
         return $handler->handle($request);
     }
 

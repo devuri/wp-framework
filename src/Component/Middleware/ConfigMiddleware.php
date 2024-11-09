@@ -48,6 +48,17 @@ class ConfigMiddleware extends AbstractMiddleware
 
         $this->configManager->setMap();
 
+        $request = $request->withAttribute('isProd', $this->isProd());
+
         return $handler->handle($request);
+    }
+
+    private function isProd(): bool
+    {
+        if (env('WP_ENVIRONMENT_TYPE') && \in_array(env('WP_ENVIRONMENT_TYPE'), [ 'secure', 'sec', 'production', 'prod' ], true)) {
+            return true;
+        }
+
+        return false;
     }
 }
