@@ -30,7 +30,6 @@ class SecurityHeadersMiddleware extends AbstractMiddleware
         }
 
         return $response->withHeader('X-Content-Type-Options', 'nosniff')
-            ->withHeader('X-Frame-Options', 'DENY')
             ->withHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
     }
 }
