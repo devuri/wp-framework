@@ -14,5 +14,5 @@ namespace WPframework\Interfaces;
 interface ConfigInterface
 {
     public static function getDefault(): array;
-    public static function siteConfig(string $appPath): array;
+    public function siteConfig(): array;
 }

@@ -108,26 +108,34 @@ function siteConfigsDir(): ?string
 }
 
 /**
- * Retrieve configuration data using dot notation.
+ * Retrieves configuration data using dot notation.
  *
- * This function provides a convenient way to access nested data stored in a configuration file
- * using dot notation. It uses the DotAccess library to facilitate easy access to the data.
+ * This function allows easy access to nested configuration data through dot notation syntax.
+ * When a specific dot notation key is provided, it returns the associated value from the
+ * configuration. If no key is specified, the full configuration object is returned.
  *
- * @param null|string $key     The dot notation key to access the data. If null, the entire
- *                             configuration data will be returned.
- * @param mixed       $default The default value to return if the key is not found.
+ * @param null|string $key     Optional. The dot notation key to retrieve the data for.
+ *                             If null, the entire configuration object is returned. Default null.
+ * @param mixed       $default Optional. The default value to return if the specified key is not found. Default null.
  *
  * @return mixed The value associated with the specified key or the default value if the key
- *               is not found. If no key is provided (null), the entire configuration data is
- *               returned.
+ *               is not found. If no key is provided (null), the full configuration object is returned.
  *
- * @see https://github.com/devuri/dot-access DotAccess library used for dot notation access.
+ * @see https://github.com/devuri/dot-access DotAccess library for dot notation access.
  */
 function config(?string $key = null, $default = null)
 {
-    $_options = new DotAccess(Config::siteConfig(APP_DIR_PATH));
+    static $siteConfig = null;
 
-    return $_options->get($key, $default);
+    if (null === $siteConfig) {
+        $siteConfig = new Config(APP_DIR_PATH);
+    }
+
+    if (null === $key) {
+        return $siteConfig;
+    }
+
+    return $siteConfig->get($key, $default);
 }
 
 /**

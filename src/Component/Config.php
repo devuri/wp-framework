@@ -12,10 +12,20 @@
 namespace WPframework;
 
 use InvalidArgumentException;
+use RuntimeException;
+use Urisoft\DotAccess;
 use WPframework\Interfaces\ConfigInterface;
 
 final class Config implements ConfigInterface
 {
+    private $appPath;
+    private static $composerJson;
+
+    public function __construct(string $appPath)
+    {
+        $this->appPath = $appPath;
+    }
+
     /**
      * @return (null|mixed|(null|bool|mixed|(mixed|string)[]|string)[]|string)[]
      *
@@ -118,9 +128,9 @@ final class Config implements ConfigInterface
         ];
     }
 
-    public static function siteConfig(string $appPath): array
+    public function siteConfig(): array
     {
-        $options_file = $appPath . '/' . siteConfigsDir() . '/app.php';
+        $options_file = $this->appPath . '/' . siteConfigsDir() . '/app.php';
 
         if (file_exists($options_file) && \is_array(@require $options_file)) {
             $siteConfigs = require $options_file;
@@ -133,6 +143,53 @@ final class Config implements ConfigInterface
         }
 
         return self::multiMerge(self::getDefault(), $siteConfigs);
+    }
+
+    public function get(?string $key = null, $default = null)
+    {
+        static $_options = null;
+
+        if (null === $_options) {
+            $_options = new DotAccess($this->siteConfig());
+        }
+
+        if (null === $key) {
+            return $_options;
+        }
+
+        return $_options->get($key, $default);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function composer(?string $key = null)
+    {
+        $composer = self::loadComposerFile();
+
+        if ( ! empty($key)) {
+            return $composer->get($key);
+        }
+
+        return self::loadComposerFile();
+    }
+
+    protected function loadComposerFile(?string $composerJsonPath = null)
+    {
+        $composerJsonPath = $composerJsonPath ?? $this->appPath . "/composer.json";
+        if ( ! isset(self::$composerJson)) {
+            if ( ! file_exists($composerJsonPath)) {
+                throw new RuntimeException("composer.json file not found at {$composerJsonPath}");
+            }
+            $json = json_decode(file_get_contents($composerJsonPath), true);
+            if (JSON_ERROR_NONE !== json_last_error()) {
+                throw new RuntimeException("Error decoding composer.json: " . json_last_error_msg());
+            }
+
+            self::$composerJson = $json;
+        }
+
+        return new DotAccess(self::$composerJson);
     }
 
     /**
