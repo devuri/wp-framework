@@ -18,10 +18,12 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Throwable;
 use Whoops\Handler\JsonResponseHandler;
 use Whoops\Handler\PrettyPageHandler;
+use Whoops\Handler\PlainTextHandler;
+use WPframework\Support\ErrHandler;
 use Whoops\Run;
 use WPframework\Http\Message\Response;
 
-class WhoopsMiddleware implements MiddlewareInterface
+class WhoopsMiddleware extends AbstractMiddleware
 {
     /**
      * @var Run
@@ -34,6 +36,13 @@ class WhoopsMiddleware implements MiddlewareInterface
     public function __construct(Run $whoops)
     {
         $this->whoops = $whoops;
+
+		///$outputHandler = new PlainTextHandler();
+		$outputHandler = new ErrHandler($this->log());
+		$this->whoops->pushHandler($outputHandler);
+
+		$this->whoops->allowQuit(false);
+		$this->whoops->register();
     }
 
     /**
@@ -46,41 +55,6 @@ class WhoopsMiddleware implements MiddlewareInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        try {
-            return $handler->handle($request);
-        } catch (Throwable $exception) {
-            return $this->handleException($request, $exception);
-        }
-    }
-
-    /**
-     * Handle the caught exception and return a response.
-     *
-     * @param ServerRequestInterface $request
-     * @param Throwable              $exception
-     */
-    private function handleException(ServerRequestInterface $request, Throwable $exception): Response
-    {
-        $acceptHeader = $request->getHeaderLine('Accept');
-        if (false !== strpos($acceptHeader, 'application/json')) {
-            $jsonHandler = new JsonResponseHandler();
-            $jsonHandler->setJsonApi(true);
-
-            $this->whoops->pushHandler($jsonHandler);
-        } else {
-            $htmlHandler = new PrettyPageHandler();
-            $this->whoops->pushHandler($htmlHandler);
-        }
-
-        ob_start();
-        $this->whoops->handleException($exception);
-        $output = ob_get_clean();
-
-        $response = new Response(500);
-        $response->getBody()->write($output);
-
-        $contentType = false !== strpos($acceptHeader, 'application/json') ? 'application/json' : 'text/html';
-
-        return $response->withHeader('Content-Type', $contentType);
+        return $handler->handle($request);
     }
 }
