@@ -91,7 +91,7 @@ class Terminate
         $this->pageHeader();
         ?>
             <div id="error-page" class="">
-                <h1>Raydium: Exception</h1>
+                <h1>Exception</h1>
                 <p><?php echo htmlspecialchars($this->exception->getMessage(), ENT_QUOTES, 'UTF-8'); ?></p>
                 <p>
                     <a class="button btn" href="/">Retry</a>
@@ -99,9 +99,7 @@ class Terminate
             </div>
             <div>
                 <?php
-                if ($this->isProd()) {
-                    dump('Raydium: debug data is hidden in production');
-                } elseif (config('terminate.debugger')) {
+                if ( ! $this->isProd(env('WP_ENVIRONMENT_TYPE')) && config('terminate.debugger')) {
                     $this->outputDebugInfo();
                 }
         ?>
@@ -136,6 +134,15 @@ class Terminate
         }
     }
 
+    protected function isProd(string $environment): bool
+    {
+        if (\in_array($environment, [ 'secure', 'sec', 'production', 'prod' ], true)) {
+            return true;
+        }
+
+        return false;
+    }
+
     private function pageHeader(string $pageTitle = 'Service Unavailable'): void
     {
         ?>
@@ -160,15 +167,6 @@ class Terminate
 			</body>
 		</html>
 		<?php
-    }
-
-    private function isProd(): bool
-    {
-        if (\defined('WP_ENVIRONMENT_TYPE') && \in_array(\constant('WP_ENVIRONMENT_TYPE'), [ 'secure', 'sec', 'production', 'prod' ], true)) {
-            return true;
-        }
-
-        return false;
     }
 
     private static function pageStyles(): void
