@@ -11,9 +11,11 @@
 
 namespace WPframework\Support;
 
-use Whoops\Handler\Handler;
+use Exception;
 use Psr\Log\LoggerInterface;
-
+use Throwable;
+use Whoops\Handler\Handler;
+use WPframework\Terminate;
 
 class ErrHandler extends Handler
 {
@@ -24,15 +26,53 @@ class ErrHandler extends Handler
         $this->logger = $logger;
     }
 
-    public function handle()
+    public function handleGetException()
+    {
+        return $this->getException();
+    }
+
+    public function handle(): void
     {
         $exception = $this->getException();
+        $fullMessage = $this->getExceptionOutput($exception);
 
-		$this->logger->error($exception->getMessage(), [
-			'exception' => $exception,
-			'trace' => $exception->getTraceAsString()
-		]);
+        $this->logger->error($exception->getMessage(), [
+            'exception' => $exception,
+            'trace' => $exception->getTraceAsString(),
+        ]);
 
-		\WPframework\Terminate::exit($exception);
+        if ( ! self::isProd(env('WP_ENVIRONMENT_TYPE'))) {
+            Terminate::exit(new Exception($fullMessage));
+        }
+
+        Terminate::exit($exception);
+    }
+
+    /**
+     * @param string $environment
+     *
+     * @return bool
+     */
+    protected static function isProd(string $environment): bool
+    {
+        if (\in_array($environment, [ 'secure', 'sec', 'production', 'prod' ], true)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param Throwable $exception
+     */
+    private function getExceptionOutput(Throwable $exception)
+    {
+        return \sprintf(
+            "%s: %s in file %s on line %d",
+            \get_class($exception),
+            $exception->getMessage(),
+            $exception->getFile(),
+            $exception->getLine()
+        );
     }
 }

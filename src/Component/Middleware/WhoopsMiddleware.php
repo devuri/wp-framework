@@ -13,15 +13,9 @@ namespace WPframework\Middleware;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Throwable;
-use Whoops\Handler\JsonResponseHandler;
-use Whoops\Handler\PrettyPageHandler;
-use Whoops\Handler\PlainTextHandler;
-use WPframework\Support\ErrHandler;
 use Whoops\Run;
-use WPframework\Http\Message\Response;
+use WPframework\Support\ErrHandler;
 
 class WhoopsMiddleware extends AbstractMiddleware
 {
@@ -37,12 +31,11 @@ class WhoopsMiddleware extends AbstractMiddleware
     {
         $this->whoops = $whoops;
 
-		///$outputHandler = new PlainTextHandler();
-		$outputHandler = new ErrHandler($this->log());
-		$this->whoops->pushHandler($outputHandler);
+        $outputHandler = new ErrHandler($this->log());
+        $this->whoops->pushHandler($outputHandler);
 
-		$this->whoops->allowQuit(false);
-		$this->whoops->register();
+        $this->whoops->allowQuit(false);
+        $this->whoops->register();
     }
 
     /**
