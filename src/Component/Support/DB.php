@@ -17,31 +17,41 @@ use WPframework\Terminate;
 
 class DB
 {
+    protected $wpdb;
     private $host;
-    private $dbName;
+    private $databaseName;
     private $username;
     private $password;
-    private $conn;
     private $table;
-    private $prefix;
+    private $tablePrefix;
 
-    public function __construct(string $table_name_no_prefix, string $host, string $dbName, string $username, string $password, string $prefix)
-    {
-        $this->host     = $host;
-        $this->dbName   = $dbName;
+    public function __construct(
+        string $host,
+        string $databaseName,
+        string $username,
+        string $password,
+        string $tablePrefix = 'wp_',
+        string $table_name_no_prefix = 'options'
+    ) {
+        $this->host = $host;
+        $this->databaseName = $databaseName;
         $this->username = $username;
         $this->password = $password;
-        $this->prefix   = $prefix;
+        $this->tablePrefix = $tablePrefix;
 
-        // set table_name.
-        $this->table = $this->prefix . $table_name_no_prefix;
+        // Set table name with prefix.
+        $this->setTable($table_name_no_prefix);
     }
 
-    // Fetch all records from the table
+    /**
+     * Fetch all records from the table.
+     *
+     * @return array|false
+     */
     public function all()
     {
         $query = 'SELECT * FROM ' . $this->table;
-        $stmt  = $this->connect()->prepare($query);
+        $stmt = $this->dBect()->prepare($query);
 
         try {
             $stmt->execute();
@@ -52,31 +62,41 @@ class DB
         }
     }
 
-    // Find a specific record by ID
+    /**
+     * Find a specific record by ID.
+     *
+     * @param int $id
+     *
+     * @return array|false
+     */
     public function find($id)
     {
         $query = 'SELECT * FROM ' . $this->table . ' WHERE id = :id LIMIT 1';
-        $stmt  = $this->connect()->prepare($query);
+        $stmt = $this->dBect()->prepare($query);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 
         try {
             $stmt->execute();
 
-            return $stmt->fetch(PDO::FETCH_ASSOC);
+            return $stmt->fetch(PDO::FETCH_ASSOC) ?: false;
         } catch (PDOException $e) {
             Terminate::exit($e);
         }
     }
 
-    // Get records based on a specified condition
     /**
-     * @psalm-param 'domain' $column
+     * Get records based on a specified condition.
+     *
+     * @param string $column
+     * @param string $value
+     *
+     * @return array|false
      */
-    public function where(string $column, string $value)
+    public function where($column, $value)
     {
         $query = 'SELECT * FROM ' . $this->table . ' WHERE ' . $column . ' = :value';
-        $stmt  = $this->connect()->prepare($query);
-        $stmt->bindParam(':value', $value);
+        $stmt = $this->dBect()->prepare($query);
+        $stmt->bindParam(':value', $value, PDO::PARAM_STR);
 
         try {
             $stmt->execute();
@@ -87,17 +107,104 @@ class DB
         }
     }
 
-    private function connect(): ?PDO
+    /**
+     * Retrieve an option value from the wp_options table.
+     *
+     * @param string $optionName
+     * @param mixed  $default
+     *
+     * @return mixed
+     */
+    public function getOption($optionName, $default = null)
     {
-        $this->conn = null;
+        $query = "SELECT option_value FROM $this->table WHERE option_name = :option_name LIMIT 1";
+        $stmt = $this->dBect()->prepare($query);
+        $stmt->bindValue(':option_name', $optionName, PDO::PARAM_STR);
 
         try {
-            $this->conn = new PDO('mysql:host=' . $this->host . ';dbname=' . $this->dbName, $this->username, $this->password);
-            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $stmt->execute();
+            $result = $stmt->fetchColumn();
+
+            if (false === $result) {
+                return $default;
+            }
+
+            return $this->maybeUnserialize($result);
         } catch (PDOException $e) {
-            Terminate::exit($e);
+            error_log("Database error: " . $e->getMessage());
+
+            return $default;
+        }
+    }
+
+    /**
+     * @param string $table_name_no_prefix
+     */
+    protected function setTable(string $table_name_no_prefix): void
+    {
+        $this->table = $this->tablePrefix . $table_name_no_prefix;
+    }
+
+    /**
+     * Establish and return a PDO database connection.
+     *
+     * @return PDO
+     */
+    private function connect()
+    {
+        if (null !== $this->wpdb) {
+            return $this->wpdb;
         }
 
-        return $this->conn;
+        $dsn = "mysql:host={$this->host};dbname={$this->databaseName};charset=utf8mb4";
+
+        try {
+            $this->wpdb = new PDO($dsn, $this->username, $this->password, [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            ]);
+        } catch (PDOException $e) {
+            Terminate::exit($e->getMessage());
+        }
+
+        return $this;
+    }
+
+    /**
+     * Unserialize data if it is serialized.
+     *
+     * @param string $data The data to potentially unserialize.
+     *
+     * @return mixed The unserialized data, or the original data if not serialized.
+     */
+    private function maybeUnserialize($data)
+    {
+        return $this->isSerialized($data) ? unserialize($data, ['allowed_classes' => false]) : $data;
+    }
+
+    /**
+     * Check if a given string is serialized.
+     *
+     * @param string $data The data to check.
+     *
+     * @return bool True if the data is serialized, false otherwise.
+     */
+    private function isSerialized($data)
+    {
+        if ( ! \is_string($data)) {
+            return false;
+        }
+
+        $trimmed = trim($data);
+        if ('N;' === $trimmed) {
+            return true;
+        }
+
+        // Basic pattern check to determine if serialized
+        if (1 === preg_match('/^(a|O|s|i|b|d):/', $trimmed)) {
+            return false !== @unserialize($data, ['allowed_classes' => false]);
+        }
+
+        return false;
     }
 }
