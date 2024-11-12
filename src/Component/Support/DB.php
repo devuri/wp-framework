@@ -51,7 +51,7 @@ class DB
     public function all()
     {
         $query = 'SELECT * FROM ' . $this->table;
-        $stmt = $this->dBect()->prepare($query);
+        $stmt = $this->wpdb->prepare($query);
 
         try {
             $stmt->execute();
@@ -72,7 +72,7 @@ class DB
     public function find($id)
     {
         $query = 'SELECT * FROM ' . $this->table . ' WHERE id = :id LIMIT 1';
-        $stmt = $this->dBect()->prepare($query);
+        $stmt = $this->wpdb->prepare($query);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 
         try {
@@ -95,7 +95,7 @@ class DB
     public function where($column, $value)
     {
         $query = 'SELECT * FROM ' . $this->table . ' WHERE ' . $column . ' = :value';
-        $stmt = $this->dBect()->prepare($query);
+        $stmt = $this->wpdb->prepare($query);
         $stmt->bindParam(':value', $value, PDO::PARAM_STR);
 
         try {
@@ -118,7 +118,7 @@ class DB
     public function getOption($optionName, $default = null)
     {
         $query = "SELECT option_value FROM $this->table WHERE option_name = :option_name LIMIT 1";
-        $stmt = $this->dBect()->prepare($query);
+        $stmt = $this->wpdb->prepare($query);
         $stmt->bindValue(':option_name', $optionName, PDO::PARAM_STR);
 
         try {
