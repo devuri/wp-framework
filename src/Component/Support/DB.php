@@ -41,6 +41,9 @@ class DB
 
         // Set table name with prefix.
         $this->setTable($table_name_no_prefix);
+
+        // Establish and return a PDO database connection.
+        $this->dbConnect();
     }
 
     /**
@@ -150,7 +153,7 @@ class DB
      *
      * @return PDO
      */
-    private function connect()
+    private function dbConnect()
     {
         if (null !== $this->wpdb) {
             return $this->wpdb;
