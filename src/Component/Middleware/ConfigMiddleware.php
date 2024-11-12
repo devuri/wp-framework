@@ -14,6 +14,7 @@ namespace WPframework\Middleware;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use WPframework\Config;
 use WPframework\Support\ConstantBuilder;
 use WPframework\Support\SiteManager;
 use WPframework\Support\Switcher;
@@ -55,10 +56,6 @@ class ConfigMiddleware extends AbstractMiddleware
 
     private function isProd(): bool
     {
-        if (env('WP_ENVIRONMENT_TYPE') && \in_array(env('WP_ENVIRONMENT_TYPE'), [ 'secure', 'sec', 'production', 'prod' ], true)) {
-            return true;
-        }
-
-        return false;
+        return Config::isProd($this->siteManager->getEnvironment());
     }
 }

@@ -190,6 +190,11 @@ class SiteManager
         return $constants[$key] ?? null;
     }
 
+    public function getEnvironment(): string
+    {
+        return $this->environment;
+    }
+
     private function environmentInit(): void
     {
         $this->environment = $this->getRaydiumEnvironment();

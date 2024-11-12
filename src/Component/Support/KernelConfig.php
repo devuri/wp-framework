@@ -11,7 +11,6 @@
 
 namespace WPframework\Support;
 
-use Urisoft\DotAccess;
 use WPframework\Config;
 
 class KernelConfig

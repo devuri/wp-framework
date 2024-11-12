@@ -99,7 +99,7 @@ class Terminate
             </div>
             <div>
                 <?php
-                if ( ! $this->isProd(env('WP_ENVIRONMENT_TYPE')) && config('terminate.debugger')) {
+                if ( ! Config::isProd(env('WP_ENVIRONMENT_TYPE')) && config('terminate.debugger')) {
                     $this->outputDebugInfo();
                 }
         ?>
@@ -132,15 +132,6 @@ class Terminate
                 ]);
             }
         }
-    }
-
-    protected function isProd(string $environment): bool
-    {
-        if (\in_array($environment, [ 'secure', 'sec', 'production', 'prod' ], true)) {
-            return true;
-        }
-
-        return false;
     }
 
     private function pageHeader(string $pageTitle = 'Service Unavailable'): void

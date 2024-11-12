@@ -20,10 +20,12 @@ final class Config implements ConfigInterface
 {
     private $appPath;
     private static $composerJson;
+    public $composer;
 
     public function __construct(string $appPath)
     {
         $this->appPath = $appPath;
+        $this->composer = $this->composer();
     }
 
     /**
@@ -172,6 +174,15 @@ final class Config implements ConfigInterface
         }
 
         return self::loadComposerFile();
+    }
+
+    public static function isProd(string $environment): bool
+    {
+        if (\in_array($environment, [ 'secure', 'sec', 'production', 'prod' ], true)) {
+            return true;
+        }
+
+        return false;
     }
 
     protected function loadComposerFile(?string $composerJsonPath = null)
