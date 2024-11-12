@@ -61,7 +61,8 @@ export default defineConfig({
                     { text: 'SSH Keys', link: '/deployment/ssh-keys' },
 		            { text: 'SSH Key Pairs', link: '/deployment/ssh-keygen' },
 		            { text: 'Deploy Keys', link: '/deployment/deploy-keys' },
-		            { text: 'Auto Updates', link: '/deployment/auto-updates' }
+		            { text: 'Auto Updates', link: '/deployment/auto-updates' },
+		            { text: 'Disable Updates', link: '/deployment/disable-updates' }
                 ]
             },
             {
