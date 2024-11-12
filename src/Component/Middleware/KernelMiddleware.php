@@ -83,7 +83,7 @@ class KernelMiddleware extends AbstractMiddleware
         }
 
         // from site composer.json
-        $extrasPath = array_keys(config()->composer('extra.installer-paths'));
+        $extrasPath = array_keys(config()->composer->get('extra.installer-paths'));
 
         return $installerPaths === $extrasPath;
     }
