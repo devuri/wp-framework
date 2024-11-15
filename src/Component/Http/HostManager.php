@@ -49,7 +49,7 @@ class HostManager implements HostInterface
             }
         }
 
-        return 'default_domain.com';
+        return 'domain1.local';
     }
 
     /**

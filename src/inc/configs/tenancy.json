@@ -1,0 +1,39 @@
+{
+  "require-config": false,
+  "web-root": "public",
+  "database": {
+    "use_env": true,
+    "default": "mysql"
+  },
+  "tenant-management": {
+    "isolation": "database",
+    "creation-strategy": "auto",
+    "fallback-tenant": null
+  },
+  "cache": {
+    "enabled": true,
+    "adapter": "redis",
+    "prefix": "tenantcache"
+  },
+  "logging": {
+    "level": "info",
+    "dir": "storage/logs/multitenant",
+    "per-tenant-logs": true
+  },
+  "features": {
+    "tenant-specific-config": true,
+    "cross-tenant-data-access": false,
+    "tenant-domains": true,
+    "tenant-plugins": []
+  },
+  "security": {
+    "encryption": {
+      "enabled": true,
+      "type": "AES-256"
+    },
+    "rate_limiting": {
+      "enabled": true,
+      "requests_per_minute": 100
+    }
+  }
+}

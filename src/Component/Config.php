@@ -15,17 +15,38 @@ use InvalidArgumentException;
 use RuntimeException;
 use Urisoft\DotAccess;
 use WPframework\Interfaces\ConfigInterface;
+use WPframework\Support\DBFactory;
 
 final class Config implements ConfigInterface
 {
     public $composer;
+    public $tenancy;
     private $appPath;
+    private $configsDir;
     private static $composerJson;
+    private static $tenancyJson;
 
-    public function __construct(string $appPath)
+    public function __construct(?string $appPath = null)
     {
-        $this->appPath = $appPath;
-        $this->composer = $this->composer();
+        $this->appPath     = $appPath ?? APP_DIR_PATH;
+        $this->configsPath = $this->getConfigsPath($this->appPath);
+        $this->composer    = $this->composer();
+        $this->tenancy     = $this->tenancy();
+    }
+
+    public function getAppPath()
+    {
+        return $this->appPath;
+    }
+
+    public function getConfigsDir()
+    {
+        return $this->configsPath;
+    }
+
+    public static function wpdb()
+    {
+        return DBFactory::create();
     }
 
     /**
@@ -118,7 +139,7 @@ final class Config implements ConfigInterface
                 'adminbar'        => env('WP_REDIS_DISABLE_ADMINBAR', false),
                 'disable-metrics' => env('WP_REDIS_DISABLE_METRICS', false),
                 'disable-banners' => env('WP_REDIS_DISABLE_BANNERS', false),
-                'prefix'          => env('WP_REDIS_PREFIX', md5(env('WP_HOME')) . 'redis-cache'),
+                'prefix'          => env('WP_REDIS_PREFIX', md5(env('WP_HOME', APP_HTTP_HOST)) . 'redis-cache'),
                 'database'        => env('WP_REDIS_DATABASE', 0),
                 'timeout'         => env('WP_REDIS_TIMEOUT', 1),
                 'read-timeout'    => env('WP_REDIS_READ_TIMEOUT', 1),
@@ -132,7 +153,7 @@ final class Config implements ConfigInterface
 
     public function siteConfig(): array
     {
-        $options_file = $this->appPath . '/' . siteConfigsDir() . '/app.php';
+        $options_file = $this->configsPath . '/app.php';
 
         if (file_exists($options_file) && \is_array(@require $options_file)) {
             $siteConfigs = require $options_file;
@@ -176,7 +197,21 @@ final class Config implements ConfigInterface
         return self::loadComposerFile();
     }
 
-    public static function isProd(string $environment): bool
+    /**
+     * @return mixed
+     */
+    public function tenancy(?string $key = null)
+    {
+        self::loadTenancyFile();
+
+        if ( ! empty($key)) {
+            return $tenancy->get($key);
+        }
+
+        return self::loadTenancyFile();
+    }
+
+    public static function isProd(?string $environment): bool
     {
         if (\in_array($environment, [ 'secure', 'sec', 'production', 'prod' ], true)) {
             return true;
@@ -185,22 +220,104 @@ final class Config implements ConfigInterface
         return false;
     }
 
-    protected function loadComposerFile(?string $composerJsonPath = null)
+    public function json(?string $filePath = null)
     {
-        $composerJsonPath = $composerJsonPath ?? $this->appPath . "/composer.json";
-        if ( ! isset(self::$composerJson)) {
-            if ( ! file_exists($composerJsonPath)) {
-                throw new RuntimeException("composer.json file not found at {$composerJsonPath}");
-            }
-            $json = json_decode(file_get_contents($composerJsonPath), true);
-            if (JSON_ERROR_NONE !== json_last_error()) {
-                throw new RuntimeException("Error decoding composer.json: " . json_last_error_msg());
-            }
+        $jsonFilePath = $filePath;
 
-            self::$composerJson = $json;
+        if ( ! file_exists($jsonFilePath)) {
+            throw new RuntimeException("json file not found at {$jsonFilePath}");
         }
 
-        return new DotAccess(self::$composerJson);
+        $json = json_decode(file_get_contents($jsonFilePath), true);
+        if (JSON_ERROR_NONE !== json_last_error()) {
+            throw new RuntimeException("Error decoding json file {$jsonFilePath}: " . json_last_error_msg());
+        }
+        $jsonData = $json;
+
+        return new DotAccess($jsonData);
+    }
+
+    public function getActivePlugins()
+    {
+        return self::wpdb()->table('options')->getOption('active_plugins');
+    }
+
+    /**
+     * Retrieves the path for a tenant-specific file, with an option to enforce strict finding.
+     *
+     * In a multi-tenant application, this function attempts to find a file specific to the current tenant.
+     * If the file is not found and 'find_or_fail' is set to true, the function will return null.
+     * If the tenant-specific file does not exist (and 'find_or_fail' is false), it falls back to a default file path.
+     * If neither file is found, or the application is not in multi-tenant mode, null is returned.
+     *
+     * @param string $dir          The directory within the app path where the file should be located.
+     * @param bool   $find_or_fail Whether to fail if the tenant-specific file is not found.
+     *
+     * @return null|string The path to the file if found, or null otherwise.
+     */
+    public function getTenantFilePath(string $dir, bool $find_or_fail = false): ?string
+    {
+        if ($this->composer->get('extra.multitenant.is_active', false) && \defined('APP_TENANT_ID')) {
+            $tenant_id = APP_TENANT_ID;
+        } else {
+            return null;
+        }
+
+        $tenant_file_path = $this->configsPath . APP_TENANT_ID . "/app.php";
+
+        if (file_exists($tenant_file_path)) {
+            return $tenant_file_path;
+        }
+
+        if ($find_or_fail) {
+            throw new Exception('tenant config requires that each tenant must have their own app.php configuration.', 1);
+        }
+
+        return self::getDefault();
+    }
+
+    /*
+     * The tenant ID for the application.
+     *
+     * This sets the tenant ID based on the environment configuration. The `APP_TENANT_ID`
+     * can be configured in the `.env` file. Setting `APP_TENANT_ID` to false will disable the
+     * custom uploads directory behavior that is typically used in a multi-tenant setup. In a
+     * multi-tenant environment, `APP_TENANT_ID` is required and must always be set. The method
+     * uses `envTenantId()` function to retrieve the tenant ID from the environment settings.
+     */
+    public static function envTenantId(): ?string
+    {
+        if (\defined('APP_TENANT_ID')) {
+            return APP_TENANT_ID;
+        }
+        if (env('APP_TENANT_ID')) {
+            return env('APP_TENANT_ID');
+        }
+
+        return null;
+    }
+
+    protected function loadTenancyFile()
+    {
+        if ( ! self::$tenancyJson) {
+            self::$tenancyJson = $this->json($this->configsPath . "/tenancy.json");
+        }
+
+        return self::$tenancyJson;
+    }
+
+    protected function loadComposerFile()
+    {
+        if ( ! self::$composerJson) {
+            self::$composerJson = $this->json($this->appPath . "/composer.json");
+        }
+
+        return self::$composerJson;
+    }
+
+    private function getConfigsPath(string $appPath)
+    {
+        return $appPath . '/' . siteConfigsDir();
     }
 
     /**

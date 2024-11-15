@@ -30,17 +30,13 @@ class DB
         string $databaseName,
         string $username,
         string $password,
-        string $tablePrefix = 'wp_',
-        string $table_name_no_prefix = 'options'
+        string $tablePrefix = 'wp_'
     ) {
         $this->host = $host;
         $this->databaseName = $databaseName;
         $this->username = $username;
         $this->password = $password;
         $this->tablePrefix = $tablePrefix;
-
-        // Set table name with prefix.
-        $this->setTable($table_name_no_prefix);
 
         // Establish and return a PDO database connection.
         $this->dbConnect();
@@ -143,9 +139,11 @@ class DB
     /**
      * @param string $table_name_no_prefix
      */
-    protected function setTable(string $table_name_no_prefix): void
+    public function table(string $table_name_no_prefix = 'options'): self
     {
         $this->table = $this->tablePrefix . $table_name_no_prefix;
+
+        return $this;
     }
 
     /**
@@ -167,7 +165,7 @@ class DB
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
             ]);
         } catch (PDOException $e) {
-            Terminate::exit($e->getMessage());
+            Terminate::exit($e, 503);
         }
 
         return $this;

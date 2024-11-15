@@ -31,6 +31,10 @@
         }
     ],
     "extra": {
+		"multitenant": {
+		  "is_active": false,
+		  "uuid": null
+		},
         "wordpress-install-dir": "public/wp",
         "installer-paths": {
             "public/wp-content/mu-plugins/{$name}/": [

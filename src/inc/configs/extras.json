@@ -1,0 +1,20 @@
+{
+	"active-plugins": {
+		"query-monitor": "query-monitor/query-monitor",
+		"easy-page-generator": "easy-page-generator/easy-page-generator",
+		"elementor": "elementor/elementor",
+		"email-log": "email-log/email-log",
+		"instant-images": "instant-images/instant-images",
+		"system-info": "system-info/system-info",
+		"wp-auto-updates": "wp-auto-updates/wp-auto-update"
+	},
+	"installed-plugins": {
+		"query-monitor": "query-monitor/query-monitor",
+		"easy-page-generator": "easy-page-generator/easy-page-generator",
+		"elementor": "elementor/elementor",
+		"email-log": "email-log/email-log",
+		"instant-images": "instant-images/instant-images",
+		"system-info": "system-info/system-info",
+		"wp-auto-updates": "wp-auto-updates/wp-auto-update"
+	}
+}

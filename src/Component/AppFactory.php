@@ -25,6 +25,7 @@ class AppFactory
      * @var AppInit
      */
     private static $app;
+    private static $request;
 
     /**
      * @return AppInit
@@ -32,12 +33,13 @@ class AppFactory
     public static function create(string $appDirPath, ?string $environment = null): AppInit
     {
         $httpHost =  HttpFactory::init()->get_http_host();
+        self::$request = self::createRequest(new RequestFactory());
         \define('SITE_CONFIGS_DIR', 'configs');
         \define('APP_DIR_PATH', $appDirPath);
         \define('APP_HTTP_HOST', $httpHost);
         Log::init(new FileLogger());
         self::setEnvironment($environment);
-        self::$app = new AppInit();
+        self::$app = new AppInit(self::$request);
         self::setErrorHandler();
 
         return self::$app;
@@ -45,9 +47,7 @@ class AppFactory
 
     public static function run(): void
     {
-        $request = self::createRequest(new RequestFactory());
-
-        self::$app->run($request);
+        self::$app->run(self::$request);
     }
 
     /**
@@ -86,7 +86,8 @@ class AppFactory
                 'headers' => $request->getHeaders(),
             ]);
 
-            $response = $response->withHeader('Raydium-Exception', $e->getMessage());
+            // TODO only send this back in dev mode, security issue
+            // $response = $response->withHeader('Exception', $e->getMessage());
 
             return $response->withStatus(503);
         });

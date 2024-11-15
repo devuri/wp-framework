@@ -59,11 +59,11 @@ To properly set up the Landlord environment for your multi-tenant application in
 
    ```php
    # Landlord Database Configuration
-   LANDLORD_DB_NAME=      # The name of your Landlord database
-   LANDLORD_DB_USER=      # The username for your Landlord database access
-   LANDLORD_DB_PASSWORD=  # The password for your Landlord database access
-   LANDLORD_DB_HOST=localhost  # The hostname for your Landlord database server, typically 'localhost'
-   LANDLORD_DB_PREFIX=wp_lo6j2n6v_  # The prefix for your Landlord database tables, adjust as needed
+   TENANT_DB_NAME=      # The name of your Landlord database
+   TENANT_DB_USER=      # The username for your Landlord database access
+   TENANT_DB_PASSWORD=  # The password for your Landlord database access
+   TENANT_DB_HOST=localhost  # The hostname for your Landlord database server, typically 'localhost'
+   TENANT_DB_PREFIX=wp_lo6j2n6v_  # The prefix for your Landlord database tables, adjust as needed
    ```
 
 ## Domain and Tenant Mapping

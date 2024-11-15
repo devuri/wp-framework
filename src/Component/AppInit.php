@@ -46,10 +46,13 @@ class AppInit implements RequestHandlerInterface
     /**
      * AppInit constructor.
      */
-    public function __construct()
+    public function __construct(RequestInterface $request)
     {
-        $this->middlewareRegistry = new MiddlewareRegistry();
         $this->defaultHandler = new FinalHandler();
+
+        $this->errorHandler = function (Throwable $e, RequestInterface $request, ResponseInterface $response) {
+            return $response->withStatus(500);
+        };
     }
 
     /**
@@ -106,7 +109,7 @@ class AppInit implements RequestHandlerInterface
         try {
             $middlewareHandler = new MiddlewareDispatcher(
                 $this->defaultHandler,
-                $this->middlewareRegistry
+                new MiddlewareRegistry()
             );
 
             return $middlewareHandler->handle($request);

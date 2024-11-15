@@ -15,10 +15,12 @@ use Whoops\Run;
 use WPframework\Logger\FileLogger;
 use WPframework\Middleware\ConfigMiddleware;
 use WPframework\Middleware\DotenvMiddleware;
+use WPframework\Middleware\IgnitionMiddleware;
 use WPframework\Middleware\KernelMiddleware;
 use WPframework\Middleware\LoggingMiddleware;
 use WPframework\Middleware\SecurityHeadersMiddleware;
 use WPframework\Middleware\SpamDetectionMiddleware;
+use WPframework\Middleware\TenantIdMiddleware;
 use WPframework\Middleware\WhoopsMiddleware;
 use WPframework\Support\ConstantBuilder;
 use WPframework\Support\KernelConfig;
@@ -36,6 +38,8 @@ class CoreMiddleware
             'security' => SecurityHeadersMiddleware::class,
             // 'spam' => SpamDetectionMiddleware::class,
             'dotenv' => new DotenvMiddleware(),
+            'tenant' => new TenantIdMiddleware(self::configManager()),
+            'ignit' => IgnitionMiddleware::class,
             'config' => new ConfigMiddleware(self::configManager()),
             'kernel' => new KernelMiddleware($this->kernelConfig()),
             'logger' => new LoggingMiddleware(new FileLogger()),

@@ -12,6 +12,7 @@
 namespace WPframework\Support;
 
 use Psr\Http\Message\ServerRequestInterface;
+use WPframework\Config;
 use WPframework\EnvType;
 use WPframework\Interfaces\EnvSwitcherInterface as Switcher;
 
@@ -28,6 +29,7 @@ class SiteManager
         $this->configManager = $configManager;
         $this->errorLogsDir  = self::setErrorLogsDir(APP_DIR_PATH);
         $this->errorHandler  = false;
+        // Config::wpdb();
     }
 
     /**

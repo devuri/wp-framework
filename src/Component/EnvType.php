@@ -119,11 +119,11 @@ final class EnvType
      * @param string $appHttpHost
      * @param array  $availableFiles
      */
-    public function tryRegenerateFile(string $appPath, string $appHttpHost, array $availableFiles = []): void
+    public function tryRegenerateFile(string $appPath, string $appHttpHost, array $availableFiles = [], string $dbPrefix = ''): void
     {
         $mainEnvFile = "{$appPath}/.env";
-        if ( ! $this->filesystem->exists($mainEnvFile) && empty($availableFiles)) {
-            $this->createFile($mainEnvFile, $appHttpHost);
+        if ( ! $this->filesystem->exists($mainEnvFile)) {
+            $this->createFile($mainEnvFile, $appHttpHost, $dbPrefix);
         }
     }
 
@@ -179,7 +179,7 @@ final class EnvType
         WP_HOME='$home_url'
         WP_SITEURL="$site_url"
 
-        WP_ENVIRONMENT_TYPE='secure'
+        WP_ENVIRONMENT_TYPE='prod'
         WP_DEVELOPMENT_MODE='theme'
         DISABLE_WP_APPLICATION_PASSWORDS=true
         SUDO_ADMIN='1'
@@ -222,6 +222,7 @@ final class EnvType
         DB_PASSWORD=password
         DB_HOST=localhost
         DB_PREFIX=$dbprefix
+        DB_CHARSET='utf8'
 
         # optional (for docker environments)
         DB_ROOT_PASS=$dbrootpass

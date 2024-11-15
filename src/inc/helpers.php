@@ -70,6 +70,10 @@ function env($name, $default = null, $encrypt = false, $strtolower = false)
     $encryption_path = \defined('APP_PATH') ? APP_PATH : APP_DIR_PATH;
     $env_var = null;
 
+    if (empty($_ENV)) {
+        return $default;
+    }
+
     static $env_instance = null;
     if (null === $env_instance) {
         $env_instance = new Env(envWhitelist(), $encryption_path, false);
@@ -198,35 +202,6 @@ function cleanSensitiveEnv(array $sensitives): void
     }
 }
 
-/**
- * Retrieves all packages listed in the 'require' section of the composer.json file.
- *
- * @param string $app_path The path to the application root directory.
- *
- * @return array An array of required packages, or an empty array if the file doesn't exist or on error.
- */
-function get_packages(string $app_path): array
-{
-    $composer_path = $app_path . DIRECTORY_SEPARATOR . 'composer.json';
-
-    // Check if the composer.json file exists.
-    if ( ! is_file($composer_path)) {
-        return [];
-    }
-
-    // Attempt to decode the JSON content from composer.json.
-    $composer_json = json_decode(file_get_contents($composer_path), true);
-
-    // Check for JSON errors.
-    if (JSON_ERROR_NONE !== json_last_error()) {
-        error_log('json error');
-
-        return [];
-    }
-
-    return $composer_json['require'] ?? [];
-}
-
 function _configsDir(): string
 {
     return  __DIR__ . '/configs';
@@ -235,15 +210,15 @@ function _configsDir(): string
 /**
  * Determines if the application is configured to operate in multi-tenant mode.
  *
- * This is based on the presence and value of the `ALLOW_MULTITENANT` constant.
- * If `ALLOW_MULTITENANT` is defined and set to `true`, the application is
+ * This is based on the presence and value of the `IS_MULTITENANT` constant.
+ * If `IS_MULTITENANT` is defined and set to `true`, the application is
  * considered to be in multi-tenant mode.
  *
  * @return bool Returns `true` if the application is in multi-tenant mode, otherwise `false`.
  */
 function isMultitenantApp(): bool
 {
-    return \defined('ALLOW_MULTITENANT') && true === \constant('ALLOW_MULTITENANT');
+    return \defined('IS_MULTITENANT') && true === \constant('IS_MULTITENANT');
 }
 
 function getWpframeworkHttpEnv(): ?string
@@ -270,7 +245,7 @@ function getWpframeworkHttpEnv(): ?string
  */
 function setMultitenantUploadDirectory($dir): array
 {
-    $custom_dir = '/tenant/' . APP_TENANT_ID . '/uploads';
+    $custom_dir = '/' . APP_TENANT_ID . '/uploads';
 
     // Set the base directory and URL for the uploads.
     $dir['basedir'] = WP_CONTENT_DIR . $custom_dir;
@@ -295,10 +270,11 @@ function frameworkFooterLabel(): string
     $site_name  = esc_html(get_bloginfo('name'));
 
     $httpEnvConfig = \defined('HTTP_ENV_CONFIG') ? HTTP_ENV_CONFIG : null;
+    $tenantId = \defined('APP_TENANT_ID') ? APP_TENANT_ID : null;
 
     // admin only info.
     if (current_user_can('manage_options')) {
-        $tenant_id = APP_TENANT_ID;
+        $tenant_id = $tenantId;
         $http_env  = strtolower(esc_html($httpEnvConfig));
     } else {
         $tenant_id = null;

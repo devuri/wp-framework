@@ -99,7 +99,7 @@ class Terminate
             </div>
             <div>
                 <?php
-                if ( ! Config::isProd(env('WP_ENVIRONMENT_TYPE')) && config('terminate.debugger')) {
+                if ( ! Config::isProd(env('WP_ENVIRONMENT_TYPE')) || config('terminate.debugger')) {
                     $this->outputDebugInfo();
                 }
         ?>
