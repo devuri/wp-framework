@@ -79,7 +79,7 @@ class Tenancy
             Terminate::exit(new Exception('Landlord info is required for multi-tenant'), 403);
         }
 
-        $landlord = new DB('tenant', env('LANDLORD_DB_HOST'), env('LANDLORD_DB_NAME'), env('LANDLORD_DB_USER'), env('LANDLORD_DB_PASSWORD'), env('LANDLORD_DB_PREFIX'));
+        $landlord = new DB(env('LANDLORD_DB_HOST'), env('LANDLORD_DB_NAME'), env('LANDLORD_DB_USER'), env('LANDLORD_DB_PASSWORD'), env('LANDLORD_DB_PREFIX'), 'tenant');
         $hostd    = $landlord->where('domain', $appHttpHost);
 
         if ( ! $hostd) {

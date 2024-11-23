@@ -18,9 +18,9 @@ use WPframework\Interfaces\ConfigInterface;
 
 final class Config implements ConfigInterface
 {
+    public $composer;
     private $appPath;
     private static $composerJson;
-    public $composer;
 
     public function __construct(string $appPath)
     {
