@@ -297,10 +297,22 @@ final class Config implements ConfigInterface
         return null;
     }
 
+    public static function defaultConfigPath()
+    {
+        return _configsDir();
+    }
+
     protected function loadTenancyFile()
     {
+        $userTenancyfile = $this->configsPath . "/tenancy.json";
+        $defaultTenancyfile = self::defaultConfigPath() . "/tenancy.json";
+
         if ( ! self::$tenancyJson) {
-            self::$tenancyJson = $this->json($this->configsPath . "/tenancy.json");
+            if (file_exists($userTenancyfile)) {
+                self::$tenancyJson = $this->json($userTenancyfile);
+            } else {
+                self::$tenancyJson = $this->json($defaultTenancyfile);
+            }
         }
 
         return self::$tenancyJson;

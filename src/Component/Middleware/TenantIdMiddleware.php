@@ -52,6 +52,7 @@ class TenantIdMiddleware extends AbstractMiddleware
             throw new Exception("Tenant not found: {$tenantDomain[0]}", 404);
         }
 
+        // required.
         \define('APP_TENANT_ID', $tenant['uuid']);
         \define('IS_MULTITENANT', true);
         \define('LANDLORD_UUID', $this->config->composer->get('extra.multitenant.uuid', null));

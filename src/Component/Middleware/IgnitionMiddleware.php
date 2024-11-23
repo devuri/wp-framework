@@ -22,7 +22,6 @@ use WPframework\EnvType;
 class IgnitionMiddleware extends AbstractMiddleware
 {
     protected $envType;
-    protected $env;
     private $appPath;
     private $tenant;
     private $config;
@@ -65,8 +64,6 @@ class IgnitionMiddleware extends AbstractMiddleware
         // set env values.
         $_dotenv = Dotenv::createImmutable($tenantConfigPath, $envFiles, true);
         $_dotenv->load();
-
-        $this->env = $_ENV;
 
         return $handler->handle($request);
     }
