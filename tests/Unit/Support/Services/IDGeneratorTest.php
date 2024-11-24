@@ -46,11 +46,11 @@ class IDGeneratorTest extends TestCase
         $generator = new IDGenerator($config);
 
         $id1 = $generator->generateID();
-		$definedID1 = $id1->getTenantId($id1->getID());
-		$id1->getID();
+        $definedID1 = $id1->getTenantId($id1->getID());
+        $id1->getID();
 
         $id2 = $generator->generateID();
-		$definedID2 = $id2->getTenantId($id2->getID());
+        $definedID2 = $id2->getTenantId($id2->getID());
         $id2->getID();
 
         $this->assertEquals("SEQ_0000100000_USR", $definedID1);
@@ -106,6 +106,7 @@ class IDGeneratorTest extends TestCase
         $this->assertStringStartsWith("RND-", $id);
         $this->assertStringEndsWith("-TEST", $id);
     }
+
     private function loadConfig($filename)
     {
         $filePath = APP_TEST_PATH . "/fixtures/tenentconfigs/{$filename}";

@@ -17,10 +17,10 @@ use Urisoft\DotAccess;
 
 class IDGenerator
 {
+    public $constraints;
     private $Id;
     private $config;
     private $existingIDs;
-    public $constraints;
     private $format;
     private $randomLength;
     private $maxRetries;
@@ -63,11 +63,6 @@ class IDGenerator
         $this->validateConfig();
     }
 
-	protected function getConfig(string $key, $default = null)
-	{
-		return $this->config->get($key, $default);
-	}
-
     public function generateID()
     {
         switch ($this->format) {
@@ -92,50 +87,57 @@ class IDGenerator
                 throw new InvalidArgumentException("Invalid format specified.");
         }
 
-		$this->setTenantId($this->Id);
+        $this->setTenantId($this->Id);
 
         return $this;
     }
 
-	public function setTenantId($id): void
-	{
-		$this->existingIDs[$id] = [
-			'id' => $id,
-			'prefix' => $this->prefix,
-			'suffix' => $this->suffix,
-			'delimiter' => $this->delimiter,
-			'tenant_id' => $this->applyPrefixSuffix($id),
-		];
-	}
+    public function setTenantId($id): void
+    {
+        $this->existingIDs[$id] = [
+            'id' => $id,
+            'prefix' => $this->prefix,
+            'suffix' => $this->suffix,
+            'delimiter' => $this->delimiter,
+            'tenant_id' => $this->applyPrefixSuffix($id),
+        ];
+    }
 
-	public function getExistingIDs()
-	{
-		return $this->existingIDs;
-	}
+    public function getExistingIDs()
+    {
+        return $this->existingIDs;
+    }
 
 
-	public function getID()
-	{
-		return $this->Id;
-	}
+    public function getID()
+    {
+        return $this->Id;
+    }
 
-	/**
-	 * Retrieves the tenant ID based on the provided or current ID.
-	 *
-	 * If no ID is provided, it attempts to retrieve the tenant ID
-	 * associated with the current object's ID. If an ID is provided,
-	 * it looks for the tenant ID associated with that ID.
-	 *
-	 * @param string|null $id Optional. The ID to look up. Defaults to null.
-	 * @return mixed The tenant ID if found, or null if not available.
-	 */
-	public function getTenantId(?string $id = null)
-	{
-	    if (! $id) {
-	        return $this->existingIDs[$this->Id]['tenent_id'] ?? null;
-	    }
-	    return $this->existingIDs[$id] ?? null;
-	}
+    /**
+     * Retrieves the tenant ID based on the provided or current ID.
+     *
+     * If no ID is provided, it attempts to retrieve the tenant ID
+     * associated with the current object's ID. If an ID is provided,
+     * it looks for the tenant ID associated with that ID.
+     *
+     * @param null|string $id Optional. The ID to look up. Defaults to null.
+     *
+     * @return mixed The tenant ID if found, or null if not available.
+     */
+    public function getTenantId(?string $id = null)
+    {
+        if ( ! $id) {
+            return $this->existingIDs[$this->Id]['tenent_id'] ?? null;
+        }
+
+        return $this->existingIDs[$id] ?? null;
+    }
+
+    protected function getConfig(string $key, $default = null)
+    {
+        return $this->config->get($key, $default);
+    }
 
     private function generateNumberID()
     {
@@ -151,36 +153,38 @@ class IDGenerator
         return $this->enforceLengthConstraints($id);
     }
 
-	/**
-	 * Generate a hashed identifier based on a random string and specified hash algorithm.
-	 *
-	 * @throws InvalidArgumentException If the specified hashing algorithm is invalid or if idLength is not a positive integer.
-	 * @return string|null The generated hash ID or null if no algorithm is provided.
-	 * @see https://www.php.net/manual/en/function.hash-algos.php
-	 */
-	private function generateHashID()
-	{
-	    if (!$this->hashAlgorithm) {
-	        return null;
-	    }
+    /**
+     * Generate a hashed identifier based on a random string and specified hash algorithm.
+     *
+     * @throws InvalidArgumentException If the specified hashing algorithm is invalid or if idLength is not a positive integer.
+     *
+     * @return null|string The generated hash ID or null if no algorithm is provided.
+     *
+     * @see https://www.php.net/manual/en/function.hash-algos.php
+     */
+    private function generateHashID()
+    {
+        if ( ! $this->hashAlgorithm) {
+            return null;
+        }
 
-	    $randomString = bin2hex(random_bytes(16));
+        $randomString = bin2hex(random_bytes(16));
 
-	    if (!in_array($this->hashAlgorithm, hash_algos(), true)) {
-	        throw new InvalidArgumentException("Invalid algorithm format specified, hash must be a valid hashing algorithm.");
-	    }
+        if ( ! \in_array($this->hashAlgorithm, hash_algos(), true)) {
+            throw new InvalidArgumentException("Invalid algorithm format specified, hash must be a valid hashing algorithm.");
+        }
 
-	    $hash = hash($this->hashAlgorithm, $randomString);
-	    $hashChunk = substr($hash, 0, $this->idLength);
+        $hash = hash($this->hashAlgorithm, $randomString);
+        $hashChunk = substr($hash, 0, $this->idLength);
 
-	    return $this->enforceLengthConstraints($hashChunk);
-	}
+        return $this->enforceLengthConstraints($hashChunk);
+    }
 
     private function generateRandomID()
     {
         for ($attempt = 0; $attempt < $this->maxRetries; $attempt++) {
             $stringID = $this->randomNumericString($this->randomLength);
-			$randomID = $this->enforceLengthConstraints($stringID);
+            $randomID = $this->enforceLengthConstraints($stringID);
 
             if ( ! isset($this->existingIDs[$randomID])) {
                 return $randomID;
@@ -215,11 +219,11 @@ class IDGenerator
             throw new InvalidArgumentException("Invalid format. Allowed values: uuid, number, hash, random.");
         }
 
-		if (!empty($this->idLength)) {
-	        if (!is_int($this->idLength) || $this->idLength <= 0) {
-	            throw new InvalidArgumentException("idLength must be a positive integer.");
-	        }
-	    }
+        if ( ! empty($this->idLength)) {
+            if ( ! \is_int($this->idLength) || $this->idLength <= 0) {
+                throw new InvalidArgumentException("idLength must be a positive integer.");
+            }
+        }
 
         if ('random' === $this->format && empty($this->randomLength)) {
             throw new InvalidArgumentException("random_length is required for format 'random'.");
@@ -243,11 +247,11 @@ class IDGenerator
 
     private function enforceLengthConstraints($id)
     {
-		if($this->randomLength) {
-			$minLength = $this->randomLength;
-		} else {
-			$minLength = $this->constraints['min_length'];
-		}
+        if ($this->randomLength) {
+            $minLength = $this->randomLength;
+        } else {
+            $minLength = $this->constraints['min_length'];
+        }
 
         $maxLength = $this->constraints['max_length'];
 
