@@ -202,13 +202,13 @@ final class Config implements ConfigInterface
      */
     public function tenancy(?string $key = null)
     {
-        self::loadTenancyFile();
+        $this->loadTenancyFile();
 
         if ( ! empty($key)) {
             return $tenancy->get($key);
         }
 
-        return self::loadTenancyFile();
+        return $this->loadTenancyFile();
     }
 
     public static function isProd(?string $environment): bool

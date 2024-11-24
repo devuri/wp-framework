@@ -1,0 +1,12 @@
+{
+  "format": "number",
+  "sequence_start": 1000,
+  "id_length": 8,
+  "prefix": "SEQ",
+  "suffix": "USR",
+  "delimiter": "_",
+  "constraints": {
+    "min_length": 10,
+    "max_length": 12
+  }
+}

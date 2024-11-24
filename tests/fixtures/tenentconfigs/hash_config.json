@@ -1,0 +1,12 @@
+{
+  "format": "hash",
+  "hash_algorithm": "sha256",
+  "id_length": 16,
+  "prefix": "HASH",
+  "suffix": "",
+  "delimiter": "",
+  "constraints": {
+    "min_length": 16,
+    "max_length": 16
+  }
+}

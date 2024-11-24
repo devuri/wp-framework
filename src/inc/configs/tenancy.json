@@ -5,6 +5,26 @@
     "use_env": true,
     "default": "mysql"
   },
+  "id": {
+    "format": "random",
+    "random_length": 6,
+    "random_retries": 5,
+    "prefix": "id",
+    "suffix": "t",
+    "delimiter": "-",
+    "sequence_start": 1000,
+    "id_length": 16,
+    "hash_algorithm": "sha256",
+    "collision_policy": "append_random_suffix",
+    "constraints": {
+      "min_length": 6,
+      "max_length": 16,
+      "allowed_characters": "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-",
+      "restricted_characters": "!@#$%^&*()"
+    },
+    "strategy": "random",
+    "audit_logs": true
+  },
   "tenant-management": {
     "isolation": "database",
     "creation-strategy": "auto",

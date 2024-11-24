@@ -1,0 +1,10 @@
+{
+  "format": "uuid",
+  "prefix": "UUID",
+  "suffix": "",
+  "delimiter": ":",
+  "constraints": {
+    "min_length": 36,
+    "max_length": 36
+  }
+}

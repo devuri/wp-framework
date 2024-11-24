@@ -1,0 +1,15 @@
+{
+  "format": "random",
+  "random_length": 6,
+  "random_retries": 5,
+  "prefix": "RND",
+  "suffix": "TEST",
+  "delimiter": "-",
+  "constraints": {
+    "min_length": 8,
+    "max_length": 12,
+    "allowed_characters": "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-",
+    "restricted_characters": "!@#$%^&*()"
+  },
+  "audit_logs": true
+}
