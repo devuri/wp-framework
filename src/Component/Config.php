@@ -21,10 +21,12 @@ final class Config implements ConfigInterface
 {
     public $composer;
     public $tenancy;
+    public $tenants;
     private $appPath;
     private $configsDir;
     private static $composerJson;
     private static $tenancyJson;
+    private static $tenantsJson;
 
     public function __construct(?string $appPath = null)
     {
@@ -32,6 +34,7 @@ final class Config implements ConfigInterface
         $this->configsPath = $this->getConfigsPath($this->appPath);
         $this->composer    = $this->composer();
         $this->tenancy     = $this->tenancy();
+        $this->tenants     = $this->tenants();
     }
 
     public function getAppPath()
@@ -211,6 +214,14 @@ final class Config implements ConfigInterface
         return $this->loadTenancyFile();
     }
 
+	/**
+     * @return mixed
+     */
+    public function tenants()
+    {
+        return $this->loadTenants();
+    }
+
     public static function isProd(?string $environment): bool
     {
         if (\in_array($environment, [ 'secure', 'sec', 'production', 'prod' ], true)) {
@@ -317,6 +328,28 @@ final class Config implements ConfigInterface
 
         return self::$tenancyJson;
     }
+
+	/**
+	 * Loads tenants from a JSON file for faster setup of multi-tenancy.
+	 * This method looks for a tenants.json file in the config directory.
+	 * If the file does not exist, it defaults to an empty array.
+	 *
+	 * @return array The list of tenants loaded from the JSON file or an empty array.
+	 */
+	protected function loadTenants()
+	{
+	    $definedTenants = $this->configsPath . "/tenants.json";
+
+	    if (!self::$tenantsJson) {
+	        if (file_exists($definedTenants)) {
+	            self::$tenantsJson = $this->json($definedTenants);
+	        } else {
+	            self::$tenantsJson = [];
+	        }
+	    }
+
+	    return self::$tenantsJson;
+	}
 
     protected function loadComposerFile()
     {

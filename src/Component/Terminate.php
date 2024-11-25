@@ -21,8 +21,8 @@ class Terminate
     public function __construct(Throwable $exception, ?int $statusCode = 500, ?ExitInterface $exit = null)
     {
         $this->exitHandler = $exit ?? new ExitHandler();
-        $this->statusCode = $statusCode;
-        $this->exception = new HttpException($exception->getMessage(), $this->statusCode, 0, $exception);
+        $this->statusCode  = $statusCode;
+        $this->exception   = new HttpException($exception->getMessage(), $this->statusCode, 0, $exception);
     }
 
     /**
