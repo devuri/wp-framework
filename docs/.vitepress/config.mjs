@@ -82,6 +82,7 @@ export default defineConfig({
                 collapsible: true,
                 collapsed: true,
                 items: [
+                    { text: 'Setup Guide', link: '/multi-tenant/setup' },
                     { text: 'Overview', link: '/multi-tenant/overview' },
                     { text: 'Configuration', link: '/multi-tenant/tenancy-config' },
                     { text: 'Isolation', link: '/multi-tenant/isolation' },
