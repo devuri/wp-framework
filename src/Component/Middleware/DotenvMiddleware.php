@@ -76,11 +76,11 @@ class DotenvMiddleware extends AbstractMiddleware
     protected function validateTenantdB($_dotenv): void
     {
         try {
-            $_dotenv->required('TENANT_DB_HOST')->notEmpty();
-            $_dotenv->required('TENANT_DB_NAME')->notEmpty();
-            $_dotenv->required('TENANT_DB_USER')->notEmpty();
-            $_dotenv->required('TENANT_DB_PASSWORD')->notEmpty();
-            $_dotenv->required('TENANT_DB_PREFIX')->notEmpty();
+            $_dotenv->required('LANDLORD_DB_HOST')->notEmpty();
+            $_dotenv->required('LANDLORD_DB_NAME')->notEmpty();
+            $_dotenv->required('LANDLORD_DB_USER')->notEmpty();
+            $_dotenv->required('LANDLORD_DB_PASSWORD')->notEmpty();
+            $_dotenv->required('LANDLORD_DB_PREFIX')->notEmpty();
         } catch (Exception $e) {
             Terminate::exit(new Exception('Landlord info is required for multi-tenant'), 403);
         }

@@ -125,7 +125,7 @@ class TenantIdMiddleware extends AbstractMiddleware
     private function getDBPrefix(string $tenantId): ?string
     {
         if (self::isLandlord()) {
-            return env('TENANT_DB_PREFIX');
+            return env('LANDLORD_DB_PREFIX');
         }
 
         return null;
