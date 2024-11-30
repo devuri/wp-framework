@@ -224,10 +224,10 @@ class KernelConfig
     protected function getDefaultConfigFile(): ?string
     {
         $defaultConfigFile = "{$this->appPath}/{$this->configFilename}.php";
-        $configsConfigFile = "{$this->appPath}/{$this->configsDir}/{$this->configFilename}.php";
+        $userConfigFile = "{$this->appPath}/{$this->configsDir}/{$this->configFilename}.php";
 
-        if (file_exists($configsConfigFile)) {
-            return $configsConfigFile;
+        if (file_exists($userConfigFile)) {
+            return $userConfigFile;
         }
         if (file_exists($defaultConfigFile)) {
             return $defaultConfigFile;

@@ -17,23 +17,28 @@ define( 'YOUR_CUSTOM_CONSTANT', 'value' );
 
 Your `wp-config.php` file might look like this:
 ```php
-<?php
+
+use WPframework\AppFactory;
+
+// This is the bootstrap file for the web application.
+if (file_exists(dirname(__DIR__) . '/vendor/autoload.php')) {
+    require_once dirname(__DIR__) . '/vendor/autoload.php';
+} else {
+    exit('Cannot find the vendor autoload file.');
+}
 
 // Add your custom constants here
 define( 'YOUR_CUSTOM_CONSTANT', 'value' );
 
+
 /* That's all, stop editing! Happy publishing. */
 
-if ( file_exists(__DIR__ . '/../bootstrap.php') ) {
-    require_once __DIR__ . '/../bootstrap.php';
-}
+$siteAppFactory = AppFactory::create(dirname(__DIR__));
+AppFactory::run();
 
-if ( ! defined( 'ABSPATH' ) ) {
-    define( 'ABSPATH', dirname( __FILE__ ) . '/' );
-}
+// Set the table prefix.
+$table_prefix = env('DB_PREFIX');
 
-// Sets up WordPress.
-require_once ABSPATH . 'wp-settings.php';
 ```
 
 > [!CAUTION]
