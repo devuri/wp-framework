@@ -28,9 +28,9 @@ use WPframework\Support\KernelConfig;
 class CoreMiddleware
 {
     /**
-     * @return (\WPframework\Middleware\ConfigMiddleware|\WPframework\Middleware\DotenvMiddleware|\WPframework\Middleware\KernelMiddleware|\WPframework\Middleware\LoggingMiddleware|\WPframework\Middleware\WhoopsMiddleware)[]
+     * @return (ConfigMiddleware|DotenvMiddleware|KernelMiddleware|LoggingMiddleware|WhoopsMiddleware)[]
      *
-     * @psalm-return array{dotenv: \WPframework\Middleware\DotenvMiddleware, config: \WPframework\Middleware\ConfigMiddleware, kernel: \WPframework\Middleware\KernelMiddleware, logger: \WPframework\Middleware\LoggingMiddleware, whoops: \WPframework\Middleware\WhoopsMiddleware}
+     * @psalm-return array{dotenv: DotenvMiddleware, config: ConfigMiddleware, kernel: KernelMiddleware, logger: LoggingMiddleware, whoops: WhoopsMiddleware}
      */
     public function getAll(): array
     {

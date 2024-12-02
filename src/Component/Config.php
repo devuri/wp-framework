@@ -214,7 +214,7 @@ final class Config implements ConfigInterface
         return $this->loadTenancyFile();
     }
 
-	/**
+    /**
      * @return mixed
      */
     public function tenants()
@@ -329,27 +329,27 @@ final class Config implements ConfigInterface
         return self::$tenancyJson;
     }
 
-	/**
-	 * Loads tenants from a JSON file for faster setup of multi-tenancy.
-	 * This method looks for a tenants.json file in the config directory.
-	 * If the file does not exist, it defaults to an empty array.
-	 *
-	 * @return array The list of tenants loaded from the JSON file or an empty array.
-	 */
-	protected function loadTenants()
-	{
-	    $definedTenants = $this->configsPath . "/tenants.json";
+    /**
+     * Loads tenants from a JSON file for faster setup of multi-tenancy.
+     * This method looks for a tenants.json file in the config directory.
+     * If the file does not exist, it defaults to an empty array.
+     *
+     * @return array The list of tenants loaded from the JSON file or an empty array.
+     */
+    protected function loadTenants()
+    {
+        $definedTenants = $this->configsPath . "/tenants.json";
 
-	    if (!self::$tenantsJson) {
-	        if (file_exists($definedTenants)) {
-	            self::$tenantsJson = $this->json($definedTenants);
-	        } else {
-	            self::$tenantsJson = [];
-	        }
-	    }
+        if ( ! self::$tenantsJson) {
+            if (file_exists($definedTenants)) {
+                self::$tenantsJson = $this->json($definedTenants);
+            } else {
+                self::$tenantsJson = [];
+            }
+        }
 
-	    return self::$tenantsJson;
-	}
+        return self::$tenantsJson;
+    }
 
     protected function loadComposerFile()
     {
