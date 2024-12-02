@@ -85,6 +85,10 @@ class DB
 
     public function getUser(string $user_login)
     {
+        if ( ! $this->tableExist() ) {
+            return null;
+        }
+
         $query = 'SELECT * FROM ' . $this->table . ' WHERE user_login = :user_login LIMIT 1';
         $stmt = $this->wpdb->prepare($query);
         $stmt->bindParam(':user_login', $user_login, PDO::PARAM_STR);
@@ -94,8 +98,15 @@ class DB
 
             return $stmt->fetch(PDO::FETCH_OBJ) ?: false;
         } catch (PDOException $e) {
-            throw PDOException($e);
+            throw new \PDOException($e);
         }
+    }
+
+    public function tableExist()
+    {
+        $qt = $this->wpdb->query("SHOW TABLES LIKE '{$this->table}'");
+
+        return $qt->fetchColumn();
     }
 
     /**
