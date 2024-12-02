@@ -83,6 +83,21 @@ class DB
         }
     }
 
+    public function getUser(string $user_login)
+    {
+        $query = 'SELECT * FROM ' . $this->table . ' WHERE user_login = :user_login LIMIT 1';
+        $stmt = $this->wpdb->prepare($query);
+        $stmt->bindParam(':user_login', $user_login, PDO::PARAM_STR);
+
+        try {
+            $stmt->execute();
+
+            return $stmt->fetch(PDO::FETCH_OBJ) ?: false;
+        } catch (PDOException $e) {
+            throw PDOException($e);
+        }
+    }
+
     /**
      * Get records based on a specified condition.
      *
