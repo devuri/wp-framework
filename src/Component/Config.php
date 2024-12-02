@@ -61,6 +61,7 @@ final class Config implements ConfigInterface
     {
         return [
             'error_handler'    => env('ERROR_HANDLER', false),
+            'prod'             => [ 'secure', 'sec', 'production', 'prod' ],
             'config_file'      => 'config',
             'terminate'        => [
                 'debugger' => false,

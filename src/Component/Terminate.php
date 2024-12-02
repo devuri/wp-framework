@@ -98,16 +98,59 @@ class Terminate
                 </p>
             </div>
             <div>
-                <?php
-                if ( ! Config::isProd(env('WP_ENVIRONMENT_TYPE')) || config('terminate.debugger')) {
-                    $this->outputDebugInfo();
-                }
-        ?>
+                <?php if ( self::showStackTrace() ) { $this->outputDebugInfo(); } ?>
             </div>
         <?php
 
         $this->pageFooter();
     }
+
+	/**
+	 * Determines whether to display a stack trace.
+	 *
+	 * This method checks various conditions to decide if a stack trace should be
+	 * shown. If the application is in a production environment, the stack trace
+	 * will not be displayed. Otherwise, it considers the `terminate.debugger`
+	 * configuration value or whether the application is not in a production
+	 * environment to make the determination.
+	 *
+	 * @return bool True if the stack trace should be displayed, false otherwise.
+	 */
+	protected static function showStackTrace()
+	{
+	    if (self::isInProdEnvironment()) {
+	        return false;
+	    } elseif (config('terminate.debugger') || !self::isInProdEnvironment()) {
+	        return true;
+	    }
+
+	    return false;
+	}
+
+	/**
+	 * Determines if the application is running in a production environment.
+	 *
+	 * This method checks the current environment against a list of production
+	 * environment identifiers. The list of identifiers can be configured via the
+	 * `prod` configuration key or will default to common production identifiers
+	 * such as 'secure', 'sec', 'production', and 'prod'.
+	 *
+	 * @return bool True if the application is in a production environment, false otherwise.
+	 */
+	protected static function isInProdEnvironment(): bool
+	{
+	    if (config('prod') && is_array(config('prod'))) {
+	        $prodEnvironments = config('prod');
+	    } else {
+	        $prodEnvironments = ['secure', 'sec', 'production', 'prod'];
+	    }
+
+	    if (\in_array(env('WP_ENVIRONMENT_TYPE'), $prodEnvironments, true)) {
+	        return true;
+	    }
+
+	    return false;
+	}
 
     /**
      * Outputs detailed debug information if in a non-production environment.
@@ -145,19 +188,19 @@ class Terminate
             <title><?php echo $pageTitle; ?></title>
             <?php self::pageStyles(); ?>
         </head>
-		<body id="page">
-		<?php
+        <body id="page">
+        <?php
     }
 
     private function pageFooter(): void
     {
         ?>
         <footer align="center">
-			Status Code:<span style="color:#afafaf"><?php echo (string) $this->statusCode; ?></span>
-			</footer>
-			</body>
-		</html>
-		<?php
+            Status Code:<span style="color:#afafaf"><?php echo (string) $this->statusCode; ?></span>
+            </footer>
+            </body>
+        </html>
+        <?php
     }
 
     private static function pageStyles(): void
@@ -194,7 +237,7 @@ class Terminate
                 text-transform: uppercase;
             }
             samp {
-            	color: unset;
+                color: unset;
                 background: none;
                 font-size: 1em;
             }
