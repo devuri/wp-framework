@@ -16,6 +16,12 @@ The `configs/app.php` file in the Raydium Framework is a crucial component for s
 'error_handler' => 'oops', // Options: 'oops', 'symfony', or null
 ```
 
+- **Production Environment Identifiers** (array): This configuration specifies an array of identifiers that represent production environments. These identifiers are used to determine the application's operational environment and tailor functionality accordingly.
+
+```php
+'prod' => ['secure', 'sec', 'production', 'prod'],
+```
+
 ### Application Termination
 
 - **Debugger**: Control whether to display detailed error information on application termination. Useful for development but should be disabled in production for security reasons.

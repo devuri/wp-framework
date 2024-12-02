@@ -24,9 +24,16 @@ return [
     'error_handler'    => env('ERROR_HANDLER', false),
 
 	/**
-	 * Production Environments
+	 * List of production environment identifiers.
+	 *
+	 * This configuration specifies the identifiers that represent production
+	 * environments. These identifiers are used to determine the application's
+	 * operational environment and tailor functionality accordingly.
+	 *
+	 * @var array<string> $prod List of production environment identifiers.
 	 */
-	'prod'    => [ 'secure', 'sec', 'production', 'prod' ],
+	'prod' => ['secure', 'sec', 'production', 'prod'],
+
 
     /*
      * Determines whether to display error details upon application termination.
