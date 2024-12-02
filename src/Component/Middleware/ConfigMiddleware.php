@@ -56,8 +56,7 @@ class ConfigMiddleware extends AbstractMiddleware
         $userAuth = $this->authCheck($authCookie, $loginCookie);
 
         if ($this->isAdminRoute($request) && ! $userAuth['auth']) {
-
-            if ( ! self::isInstallOrUpgrade() ) {
+            if ( ! self::isInstallOrUpgrade()) {
                 throw new Exception("Authentication Is Required");
             }
 
@@ -126,12 +125,12 @@ class ConfigMiddleware extends AbstractMiddleware
 
     protected static function isInstallBlocked(): bool
     {
-        return \defined('RAYDIUM_INSTALL_PROTECTION') && true === constant('RAYDIUM_INSTALL_PROTECTION');
+        return \defined('RAYDIUM_INSTALL_PROTECTION') && true === \constant('RAYDIUM_INSTALL_PROTECTION');
     }
 
     protected static function isInstallOrUpgrade(): bool
     {
-        return \defined('WP_INSTALLING') && true === constant('WP_INSTALLING');
+        return \defined('WP_INSTALLING') && true === \constant('WP_INSTALLING');
     }
 
     private function isProd(): bool
