@@ -56,7 +56,14 @@ class ConfigMiddleware extends AbstractMiddleware
         $userAuth = $this->authCheck($authCookie, $loginCookie);
 
         if ($this->isAdminRoute($request) && ! $userAuth['auth']) {
-            throw new Exception("Authentication Is Required", 404);
+
+            if ( ! self::isInstallOrUpgrade() ) {
+                throw new Exception("Authentication Is Required");
+            }
+
+            if (self::isInstallOrUpgrade() && self::isInstallBlocked()) {
+                throw new Exception("It seems you're performing a new installation or upgrade. Install protection is currently enabled, so you'll need to disable it to continue.");
+            }
         }
 
         // TODO block admin routes with authCheck.
@@ -115,6 +122,16 @@ class ConfigMiddleware extends AbstractMiddleware
         $pattern = '/\/wp(?:\/.*)?\/wp-admin\/.*$/';
 
         return 1 === preg_match($pattern, $request->getUri()->getPath());
+    }
+
+    protected static function isInstallBlocked(): bool
+    {
+        return \defined('RAYDIUM_INSTALL_PROTECTION') && true === constant('RAYDIUM_INSTALL_PROTECTION');
+    }
+
+    protected static function isInstallOrUpgrade(): bool
+    {
+        return \defined('WP_INSTALLING') && true === constant('WP_INSTALLING');
     }
 
     private function isProd(): bool
