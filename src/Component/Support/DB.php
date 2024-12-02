@@ -85,7 +85,7 @@ class DB
 
     public function getUser(string $user_login)
     {
-        if ( ! $this->tableExist() ) {
+        if ( ! $this->tableExist()) {
             return null;
         }
 
@@ -98,7 +98,7 @@ class DB
 
             return $stmt->fetch(PDO::FETCH_OBJ) ?: false;
         } catch (PDOException $e) {
-            throw new \PDOException($e);
+            throw new PDOException($e);
         }
     }
 
