@@ -13,6 +13,7 @@ namespace WPframework\Middleware\Handlers;
 
 use Whoops\Run;
 use WPframework\Logger\FileLogger;
+use WPframework\Middleware\AuthMiddleware;
 use WPframework\Middleware\ConfigMiddleware;
 use WPframework\Middleware\DotenvMiddleware;
 use WPframework\Middleware\IgnitionMiddleware;
@@ -24,6 +25,7 @@ use WPframework\Middleware\TenantIdMiddleware;
 use WPframework\Middleware\WhoopsMiddleware;
 use WPframework\Support\ConstantBuilder;
 use WPframework\Support\KernelConfig;
+use WPframework\Support\Services\AuthManager;
 
 class CoreMiddleware
 {
@@ -41,6 +43,7 @@ class CoreMiddleware
             'tenant' => new TenantIdMiddleware(self::configManager()),
             'ignit' => IgnitionMiddleware::class,
             'config' => new ConfigMiddleware(self::configManager()),
+            'auth' => new AuthMiddleware(new AuthManager()),
             'kernel' => new KernelMiddleware($this->kernelConfig()),
             'logger' => new LoggingMiddleware(new FileLogger()),
             'whoops' => new WhoopsMiddleware(new Run()),

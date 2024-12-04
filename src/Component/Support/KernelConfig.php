@@ -122,17 +122,6 @@ class KernelConfig
          */
         $this->configManager->addConstant('WP_DEFAULT_THEME', $this->configs->get('default_theme'));
 
-        // home url md5 value.
-        $this->configManager->addConstant('COOKIEHASH', md5(env('WP_HOME')));
-
-        // Defines cookie-related override for WordPress constants.
-        $this->configManager->addConstant('USER_COOKIE', 'wpc_user_' . COOKIEHASH);
-        $this->configManager->addConstant('PASS_COOKIE', 'wpc_pass_' . COOKIEHASH);
-        $this->configManager->addConstant('AUTH_COOKIE', 'wpc_' . COOKIEHASH);
-        $this->configManager->addConstant('SECURE_AUTH_COOKIE', 'wpc_sec_' . COOKIEHASH);
-        $this->configManager->addConstant('LOGGED_IN_COOKIE', 'wpc_logged_in_' . COOKIEHASH);
-        $this->configManager->addConstant('TEST_COOKIE', md5('wpc_test_cookie' . env('WP_HOME')));
-
         // SUCURI
         $this->configManager->addConstant('ENABLE_SUCURI_WAF', $this->configs->get('security.sucuri_waf'));
         // $this->configManager->addConstant( 'SUCURI_DATA_STORAGE', ABSPATH . '../../storage/logs/sucuri' );
