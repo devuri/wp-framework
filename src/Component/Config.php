@@ -226,7 +226,7 @@ final class Config implements ConfigInterface
         return $this->loadTenants();
     }
 
-	/**
+    /**
      * @return mixed
      */
     public function kiosk()
@@ -373,9 +373,9 @@ final class Config implements ConfigInterface
         return self::$composerJson;
     }
 
-	protected function loadKioskFile()
+    protected function loadKioskFile()
     {
-		$definedKiosk = $this->configsPath ."/kiosk.json";
+        $definedKiosk = $this->configsPath . "/kiosk.json";
 
         if ( ! self::$kioskJson) {
             if (file_exists($definedKiosk)) {

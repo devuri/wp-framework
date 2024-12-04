@@ -26,7 +26,7 @@ class AuthManager
             $this->authValidator = $authValidator;
         }
 
-		$this->config = new Config();
+        $this->config = new Config();
     }
 
     public function setValidator(): void
@@ -99,7 +99,7 @@ class AuthManager
      * verifies if the user is a kiosk user. If not, it returns `false`. Otherwise,
      * it checks if the kiosk user's role is 'admin'.
      *
-     * @return bool|null Returns `true` if the user is an admin, `false` if not a kiosk user.
+     * @return null|bool Returns `true` if the user is an admin, `false` if not a kiosk user.
      */
     public function isAdmin(): ?bool
     {
@@ -109,12 +109,12 @@ class AuthManager
             return false;
         }
 
-        return (($kioskUser['role'] ?? null) === 'admin');
+        return ($kioskUser['role'] ?? null) === 'admin';
     }
 
     public function isKioskUser(): ?array
     {
-        if(! $this->currentUser) {
+        if ( ! $this->currentUser) {
             return false;
         }
 
