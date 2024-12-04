@@ -58,6 +58,10 @@ class AuthManager
         $authCookie = $this->getAuthCookie();
         $loginCookie = $this->getLoggedInCookie();
 
+        if (empty($authCookie) && empty($loginCookie)) {
+            return null;
+        }
+
         $cookie = null;
         if ($authCookie) {
             $cookie = $authCookie;
