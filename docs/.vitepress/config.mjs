@@ -107,6 +107,7 @@ export default defineConfig({
                     { text: 'Environment', link: '/reference/environment-vars' },
                     { text: 'Plugin', link: '/reference/plugin' },
                     { text: 'App', link: '/reference/app-component' },
+                    { text: 'Kiosk', link: '/reference/kiosk' },
                     { text: 'Kernel', link: '/reference/kernel' },
                     { text: 'Setup', link: '/reference/setup' },
                     { text: 'Tenancy', link: '/reference/tenancy' },

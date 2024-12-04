@@ -22,11 +22,13 @@ final class Config implements ConfigInterface
     public $composer;
     public $tenancy;
     public $tenants;
+    public $kiosk;
     private $appPath;
     private $configsDir;
     private static $composerJson;
     private static $tenancyJson;
     private static $tenantsJson;
+    private static $kioskJson;
 
     public function __construct(?string $appPath = null)
     {
@@ -35,6 +37,7 @@ final class Config implements ConfigInterface
         $this->composer    = $this->composer();
         $this->tenancy     = $this->tenancy();
         $this->tenants     = $this->tenants();
+        $this->kiosk       = $this->kiosk();
     }
 
     public function getAppPath()
@@ -223,6 +226,15 @@ final class Config implements ConfigInterface
         return $this->loadTenants();
     }
 
+	/**
+     * @return mixed
+     */
+    public function kiosk()
+    {
+        return $this->loadKioskFile();
+    }
+
+
     public static function isProd(?string $environment): bool
     {
         if (\in_array($environment, [ 'secure', 'sec', 'production', 'prod' ], true)) {
@@ -359,6 +371,21 @@ final class Config implements ConfigInterface
         }
 
         return self::$composerJson;
+    }
+
+	protected function loadKioskFile()
+    {
+		$definedKiosk = $this->configsPath ."/kiosk.json";
+
+        if ( ! self::$kioskJson) {
+            if (file_exists($definedKiosk)) {
+                self::$kioskJson = $this->json($definedKiosk);
+            } else {
+                self::$kioskJson = [];
+            }
+        }
+
+        return self::$kioskJson;
     }
 
     private function getConfigsPath(string $appPath)

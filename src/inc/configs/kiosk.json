@@ -1,0 +1,40 @@
+{
+    "alice": {
+		"id": "23566",
+        "username": "alice",
+        "email": "alice.johnson@example.com",
+        "name": "Alice Johnson",
+        "role": "admin",
+        "permissions": [
+          "read",
+          "write",
+          "deploy",
+          "manage_kiosk"
+        ],
+        "active": true
+    },
+    "bsmith": {
+		"id": "325523",
+        "username": "bsmith",
+        "email": "bob.smith@example.com",
+        "name": "Bob Smith",
+        "role": "editor",
+        "permissions": [
+          "read",
+          "write",
+          "deploy"
+        ],
+        "active": true
+    },
+    "charlie": {
+		"id": "523563",
+        "username": "charlie",
+        "email": "charlie.lee@example.com",
+        "name": "Charlie Lee",
+        "role": "viewer",
+        "permissions": [
+          "read"
+        ],
+        "active": false
+    }
+}
