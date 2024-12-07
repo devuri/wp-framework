@@ -154,6 +154,7 @@ class SiteManager
         $this->configManager->addConstant('PASS_COOKIE', 'wpx_pass_' . COOKIEHASH);
         $this->configManager->addConstant('AUTH_COOKIE', 'wpx_auth_' . COOKIEHASH);
         $this->configManager->addConstant('SECURE_AUTH_COOKIE', 'wpx_sec_' . COOKIEHASH);
+        $this->configManager->addConstant('RECOVERY_MODE_COOKIE', 'wpx_rec_' . COOKIEHASH);
         $this->configManager->addConstant('LOGGED_IN_COOKIE', 'wpx_logged_in_' . COOKIEHASH);
         $this->configManager->addConstant('TEST_COOKIE', md5('wpx_test_cookie' . env('WP_HOME')));
 

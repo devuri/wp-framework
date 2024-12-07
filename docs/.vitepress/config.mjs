@@ -74,7 +74,8 @@ export default defineConfig({
                     { text: 'Environments', link: '/customization/environments' },
                     { text: 'Environment File', link: '/customization/environment-file' },
                     { text: 'Constants', link: '/customization/constants' },
-		            { text: 'GitHub Token', link: '/customization/auth-json' }
+		            { text: 'GitHub Token', link: '/customization/auth-json' },
+					{ text: 'Kiosk', link: '/customization/kiosk' }
                 ]
             },
             {
@@ -107,7 +108,6 @@ export default defineConfig({
                     { text: 'Environment', link: '/reference/environment-vars' },
                     { text: 'Plugin', link: '/reference/plugin' },
                     { text: 'App', link: '/reference/app-component' },
-                    { text: 'Kiosk', link: '/reference/kiosk' },
                     { text: 'Kernel', link: '/reference/kernel' },
                     { text: 'Setup', link: '/reference/setup' },
                     { text: 'Tenancy', link: '/reference/tenancy' },
