@@ -22,7 +22,7 @@ class Terminate
     {
         $this->exitHandler = $exit ?? new ExitHandler();
         $this->statusCode  = $statusCode;
-        $this->exception   = new HttpException($exception->getMessage(), $this->statusCode, 0, $exception);
+        $this->exception   = new HttpException($exception->getMessage(), $this->statusCode, $exception);
     }
 
     /**
@@ -31,11 +31,11 @@ class Terminate
      *
      * @param Throwable $exception The exception to log.
      */
-    public static function exit(?Throwable $exception, ?int $statusCode = 500): void
+    public static function exit(?Throwable $exception, ?int $statusCode = 500, string $pageTitle = 'Service Unavailable'): void
     {
         $terminator = new self($exception, $statusCode);
         $terminator->sendHttpStatusCode();
-        $terminator->renderPage();
+        $terminator->renderPage($pageTitle);
         $terminator->logException($exception);
         $terminator->exitHandler->terminate(1);
     }
@@ -86,9 +86,9 @@ class Terminate
     /**
      * Renders the error page with a given message and status code.
      */
-    protected function renderPage(): void
+    protected function renderPage(string $pageTitle): void
     {
-        $this->pageHeader();
+        $this->pageHeader($pageTitle);
         ?>
             <div id="error-page" class="">
                 <h1>Exception</h1>
@@ -180,7 +180,7 @@ class Terminate
         }
     }
 
-    private function pageHeader(string $pageTitle = 'Service Unavailable'): void
+    private function pageHeader(string $pageTitle): void
     {
         ?>
         <!DOCTYPE html><html lang='en'>

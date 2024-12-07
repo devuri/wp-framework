@@ -41,11 +41,11 @@ class AuthMiddleware extends AbstractMiddleware
 
         if ($this->isAdminRoute($request) && ! $userAuth) {
             if ( ! self::isInstallOrUpgrade()) {
-                throw new Exception("Authentication Is Required");
+                throw new Exception("Route Authentication Is Required", 401);
             }
 
             if (self::isInstallOrUpgrade() && self::isInstallBlocked()) {
-                throw new Exception("It seems you're performing a new installation or upgrade. Install protection is currently enabled, so you'll need to disable it to continue.");
+                throw new Exception("It seems you're performing a new installation or upgrade. Install protection is currently enabled, so you'll need to disable it to continue.", 403);
             }
         }
 

@@ -74,6 +74,11 @@ class AppFactory
     private static function setErrorHandler(): void
     {
         self::$app->setErrorHandler(function (Throwable $e, RequestInterface $request, \Psr\Http\Message\ResponseInterface $response) {
+            $response = $response->withStatus(
+                $e->getCode(),
+                $e->getMessage()
+            );
+
             Log::error($e->getMessage(), [
                 'method' => $request->getMethod(),
                 'uri' => (string) $request->getUri(),
@@ -89,7 +94,7 @@ class AppFactory
             // TODO only send this back in dev mode, security issue
             // $response = $response->withHeader('Exception', $e->getMessage());
 
-            return $response->withStatus(503);
+            return $response;
         });
     }
 

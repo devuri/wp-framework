@@ -16,6 +16,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Throwable;
+use WPframework\Exceptions\HttpException;
 use WPframework\Http\Message\Response;
 use WPframework\Middleware\Handlers\FinalHandler;
 use WPframework\Middleware\Handlers\MiddlewareDispatcher;
@@ -44,6 +45,11 @@ class AppInit implements RequestHandlerInterface
     protected $exception;
 
     /**
+     * @var ResponseInterface
+     */
+    protected $response;
+
+    /**
      * AppInit constructor.
      */
     public function __construct(RequestInterface $request)
@@ -51,7 +57,14 @@ class AppInit implements RequestHandlerInterface
         $this->defaultHandler = new FinalHandler();
 
         $this->errorHandler = function (Throwable $e, RequestInterface $request, ResponseInterface $response) {
-            return $response->withStatus(500);
+            $this->exception =  $e;
+
+            $this->response = (new Response())->withStatus(
+                $this->exception->getCode(),
+                $this->exception->getMessage()
+            );
+
+            return $this->response;
         };
     }
 
@@ -114,6 +127,8 @@ class AppInit implements RequestHandlerInterface
 
             return $middlewareHandler->handle($request);
         } catch (Throwable $e) {
+            $e = $this->httpException($e);
+
             return $this->handleException($e, $request);
         }
     }
@@ -141,11 +156,14 @@ class AppInit implements RequestHandlerInterface
      */
     protected function handleException(Throwable $except, RequestInterface $request): ResponseInterface
     {
-        $response = new Response();
-
         $this->exception = $except;
 
-        return ($this->errorHandler)($except, $request, $response);
+        $this->response = (new Response())->withStatus(
+            $this->exception->getCode(),
+            $this->exception->getMessage()
+        );
+
+        return ($this->errorHandler)($this->exception, $request, $this->response);
     }
 
     /**
@@ -162,9 +180,24 @@ class AppInit implements RequestHandlerInterface
         }
 
         if ($this->exception) {
-            Terminate::exit($this->exception, $response->getStatusCode());
+            Terminate::exit(
+                $this->exception,
+                $response->getStatusCode(),
+                $response->getReasonPhrase()
+            );
         }
 
         http_response_code($response->getStatusCode());
+    }
+
+    private function httpException(Throwable $ex)
+    {
+		$statusCode = $ex->getCode();
+
+        if ($statusCode >= 100 && $statusCode <= 599) {
+            return $ex;
+        }
+
+		return new HttpException($ex->getMessage());
     }
 }
