@@ -214,6 +214,7 @@ class Terminate
 	        <link href="https://fonts.bunny.net/css?family=figtree:300,400,500,600" rel="stylesheet" />
 
             <title><?php echo $pageTitle; ?></title>
+			<?php self::pageStyles(); ?>
         </head>
         <body id="page" style="background: #efefef;">
         <?php
@@ -229,4 +230,33 @@ class Terminate
         </html>
         <?php
     }
+
+	private static function pageStyles(): void
+	{
+	?>
+	<style type="text/css">
+		html {
+			background: #f1f1f1;
+		}
+		body {
+			color: #444;
+			margin: 2em auto;
+			font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+			padding: 0;
+		}
+		samp {
+			color: unset;
+			background: none;
+			font-size: 1em;
+		}
+		ul li {
+			margin-bottom: 10px;
+			font-size: 14px ;
+		}
+		a {
+			color: #0073aa;
+		}
+	</style>
+	<?php
+	}
 }
