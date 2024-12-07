@@ -179,26 +179,70 @@ class AppInit implements RequestHandlerInterface
      */
     protected function emitResponse(ResponseInterface $response): void
     {
-        foreach ($response->getHeaders() as $name => $values) {
-            foreach ($values as $value) {
-                header(\sprintf('%s: %s', $name, $value), false);
-            }
+        if (false === headers_sent()) {
+            $this->emitHeaders($response->getHeaders());
+            http_response_code($response->getStatusCode());
         }
 
         if ($this->exception) {
-            Terminate::exit(
-                $this->exception,
-                $response->getStatusCode(),
-                $response->getReasonPhrase(),
-                [
-                    'host' => $this->request->getUri()->getHost(),
-                    'path' => $this->request->getUri()->getPath(),
-                    'query' => $this->request->getUri()->getQuery(),
-                ]
-            );
+            $this->terminateWithException($this->exception, $response);
         }
+    }
 
-        http_response_code($response->getStatusCode());
+    /**
+     * Handles exception termination with context.
+     *
+     * @param Throwable         $exception
+     * @param ResponseInterface $response
+     */
+    protected function terminateWithException(Throwable $exception, ResponseInterface $response): void
+    {
+        Terminate::exit(
+            $exception,
+            $response->getStatusCode(),
+            $response->getReasonPhrase(),
+            [
+                'host' => $this->request->getUri()->getHost(),
+                'path' => $this->request->getUri()->getPath(),
+                'query' => $this->request->getUri()->getQuery(),
+            ]
+        );
+    }
+
+    /**
+     * Sends HTTP headers based on the provided array of headers.
+     *
+     * This method iterates over the given headers and sends them using the `header()` function.
+     * For headers specified in the `$appendHeaders` list, multiple values are appended rather than replaced.
+     * For other headers, replacement behavior is controlled by the `$replaceByDefault` parameter.
+     *
+     * @param array $headers          An associative array of headers to send. The array key is the header name,
+     *                                and the value is an array of header values. Example:
+     *                                [
+     *                                'Content-Type' => ['text/html; charset=UTF-8'],
+     *                                'Set-Cookie' => ['cookie1=value1', 'cookie2=value2']
+     *                                ].
+     * @param bool  $replaceByDefault Whether to replace existing headers by default.
+     *                                If true, headers not in `$appendHeaders` will replace existing headers.
+     *                                Defaults to false.
+     * @param array $appendHeaders    A list of headers (case-insensitive) for which multiple values
+     *                                should be appended rather than replaced.
+     *                                Defaults to `['set-cookie']`.
+     *
+     * @return void
+     */
+    private function emitHeaders(array $headers, bool $replaceByDefault = false, array $appendHeaders = ['set-cookie']): void
+    {
+        foreach ($headers as $name => $values) {
+            $lowerName = strtolower($name);
+            $replace = ! \in_array($lowerName, $appendHeaders, true) ? $replaceByDefault : false;
+
+            foreach ($values as $index => $value) {
+                $header = \sprintf('%s: %s', $name, $value);
+                header($header, $replace);
+                $replace = false;
+            }
+        }
     }
 
     /**

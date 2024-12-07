@@ -21,6 +21,7 @@ use WPframework\Middleware\KernelMiddleware;
 use WPframework\Middleware\LoggingMiddleware;
 use WPframework\Middleware\SecurityHeadersMiddleware;
 use WPframework\Middleware\SpamDetectionMiddleware;
+use WPframework\Middleware\StatusMiddleware;
 use WPframework\Middleware\TenantIdMiddleware;
 use WPframework\Middleware\WhoopsMiddleware;
 use WPframework\Support\ConstantBuilder;
@@ -42,6 +43,7 @@ class CoreMiddleware
             'dotenv' => new DotenvMiddleware(),
             'tenant' => new TenantIdMiddleware(self::configManager()),
             'ignit' => IgnitionMiddleware::class,
+            'status' => StatusMiddleware::class,
             'config' => new ConfigMiddleware(self::configManager()),
             'auth' => new AuthMiddleware(new AuthManager()),
             'kernel' => new KernelMiddleware($this->kernelConfig()),
