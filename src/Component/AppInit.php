@@ -190,14 +190,25 @@ class AppInit implements RequestHandlerInterface
         http_response_code($response->getStatusCode());
     }
 
+    /**
+     * Handles exceptions and ensures they are converted to an HTTP exception if necessary.
+     *
+     * This method checks the status code of the given exception and returns it directly
+     * if the code is within the valid HTTP status code range (100-599). Otherwise, it creates
+     * and returns a new `HttpException` with the message from the original exception.
+     *
+     * @param Throwable $ex The exception to process.
+     *
+     * @return Throwable An instance of the original exception if valid, or a new `HttpException` otherwise.
+     */
     private function httpException(Throwable $ex)
     {
-		$statusCode = $ex->getCode();
+        $statusCode = $ex->getCode();
 
         if ($statusCode >= 100 && $statusCode <= 599) {
             return $ex;
         }
 
-		return new HttpException($ex->getMessage());
+        return new HttpException($ex->getMessage());
     }
 }
