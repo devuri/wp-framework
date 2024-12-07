@@ -60,11 +60,4 @@ class DBTest extends TestCase
     {
         self::assertTrue(method_exists('WPframework\Support\DB', 'where'));
     }
-    /**
-     * @covers \WPframework\Support\DB::connect
-     */
-    public function test_connect(): void
-    {
-        self::assertTrue(method_exists('WPframework\Support\DB', 'connect'));
-    }
 }

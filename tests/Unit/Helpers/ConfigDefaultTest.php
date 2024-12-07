@@ -30,7 +30,8 @@ class ConfigDefaultTest extends TestCase
 
     public function test_app_config_returns_expected_structure_and_values(): void
     {
-        $configs = Config::siteConfig(APP_TEST_PATH);
+        $siteConfig = new Config(APP_TEST_PATH);
+        $configs = $siteConfig->siteConfig();
 
         // Assert overall structure
         $this->assertIsArray($configs);

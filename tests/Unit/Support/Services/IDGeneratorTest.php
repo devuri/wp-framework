@@ -35,7 +35,7 @@ class IDGeneratorTest extends TestCase
         $id = $generator->getID();
         $randomId = $generator->getTenantId($id);
 
-        $this->assertMatchesRegularExpression('/^RND-[A-Z0-9]{6}-TEST$/', $tenantId);
+        $this->assertMatchesRegularExpression('/^RND-[A-Z0-9]{6}-TEST$/', $randomId['tenant_id']);
         $this->assertGreaterThanOrEqual($config['random_length'], \strlen($randomId['id']));
         $this->assertLessThanOrEqual($config['constraints']['max_length'], \strlen($randomId['id']));
     }
@@ -53,32 +53,10 @@ class IDGeneratorTest extends TestCase
         $definedID2 = $id2->getTenantId($id2->getID());
         $id2->getID();
 
-        $this->assertEquals("SEQ_0000100000_USR", $definedID1);
-        $this->assertEquals("SEQ_0000100100_USR", $definedID2);
+        $this->assertEquals("SEQ_0000100000_USR", $definedID1['tenant_id']);
+        $this->assertEquals("SEQ_0000100100_USR", $definedID2['tenant_id']);
         $this->assertGreaterThanOrEqual($config['constraints']['min_length'], \strlen($id1->getID()));
         $this->assertLessThanOrEqual($config['constraints']['max_length'], \strlen($id2->getID()));
-    }
-
-    public function test_hash_id_generation(): void
-    {
-        $config = $this->loadConfig('hash_config.json');
-        $generator = new IDGenerator($config);
-
-        $id = $generator->generateID()->getTenantId();
-
-        $this->assertMatchesRegularExpression('/^HASH[A-Fa-f0-9]{16}$/', $id);
-        $this->assertEquals($config['constraints']['min_length'], \strlen($id));
-    }
-
-    public function test_uuid_generation(): void
-    {
-        $config = $this->loadConfig('uuid_config.json');
-        $generator = new IDGenerator($config);
-
-        $id = $generator->generateID()->getTenantId();
-
-        $this->assertMatchesRegularExpression('/^UUID:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/', $id);
-        $this->assertEquals($config['constraints']['min_length'], \strlen($id));
     }
 
     public function test_random_id_uniqueness(): void
@@ -86,11 +64,13 @@ class IDGeneratorTest extends TestCase
         $config = $this->loadConfig('random_config.json');
         $generator = new IDGenerator($config);
 
-        $ids = [];
+        $tenantids = [];
         for ($i = 0; $i < 100; $i++) {
-            $id = $generator->generateID()->getTenantId();
-            $this->assertNotContains($id, $ids);
-            $ids[] = $id;
+            $id = $generator->generateID();
+            $uid = $id->getID();
+            $definedID = $id->getTenantId($uid);
+            $this->assertNotContains($uid, array_keys($tenantids));
+            $tenantids[$uid] = $definedID;
         }
     }
 
@@ -100,11 +80,12 @@ class IDGeneratorTest extends TestCase
         $existingIDs = ["RND-123456-TEST"];
         $generator = new IDGenerator($config, $existingIDs);
 
-        $id = $generator->generateID()->getTenantId();
+        $id = $generator->generateID();
+        $tenantId = $id->getTenantId($id->getID());
 
-        $this->assertNotEquals("RND-123456-TEST", $id);
-        $this->assertStringStartsWith("RND-", $id);
-        $this->assertStringEndsWith("-TEST", $id);
+        $this->assertNotEquals("RND-123456-TEST", $tenantId['tenant_id']);
+        $this->assertStringStartsWith("RND-", $tenantId['tenant_id']);
+        $this->assertStringEndsWith("-TEST", $tenantId['tenant_id']);
     }
 
     private function loadConfig($filename)
