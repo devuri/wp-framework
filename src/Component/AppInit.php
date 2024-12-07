@@ -45,6 +45,11 @@ class AppInit implements RequestHandlerInterface
     protected $exception;
 
     /**
+     * @var RequestInterface
+     */
+    protected $request;
+
+    /**
      * @var ResponseInterface
      */
     protected $response;
@@ -119,6 +124,8 @@ class AppInit implements RequestHandlerInterface
      */
     public function handle(RequestInterface $request): ResponseInterface
     {
+        $this->request = $request;
+
         try {
             $middlewareHandler = new MiddlewareDispatcher(
                 $this->defaultHandler,
@@ -157,7 +164,6 @@ class AppInit implements RequestHandlerInterface
     protected function handleException(Throwable $except, RequestInterface $request): ResponseInterface
     {
         $this->exception = $except;
-
         $this->response = (new Response())->withStatus(
             $this->exception->getCode(),
             $this->exception->getMessage()
@@ -183,7 +189,12 @@ class AppInit implements RequestHandlerInterface
             Terminate::exit(
                 $this->exception,
                 $response->getStatusCode(),
-                $response->getReasonPhrase()
+                $response->getReasonPhrase(),
+                [
+                    'host' => $this->request->getUri()->getHost(),
+                    'path' => $this->request->getUri()->getPath(),
+                    'query' => $this->request->getUri()->getQuery(),
+                ]
             );
         }
 

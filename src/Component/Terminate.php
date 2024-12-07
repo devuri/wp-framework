@@ -13,16 +13,19 @@ class Terminate
     protected $exitHandler;
     protected $exception;
     protected $statusCode;
+    protected $request;
 
     /**
      * @param Throwable $exception
      * @param int       $statusCode
+     * @param array     $request
      */
-    public function __construct(Throwable $exception, ?int $statusCode = 500, ?ExitInterface $exit = null)
+    public function __construct(Throwable $exception, ?int $statusCode = 500, array $request = [], ?ExitInterface $exit = null)
     {
+        $this->request    = $request;
+        $this->statusCode = $statusCode;
+        $this->exception  = new HttpException($exception->getMessage(), $this->statusCode, $exception);
         $this->exitHandler = $exit ?? new ExitHandler();
-        $this->statusCode  = $statusCode;
-        $this->exception   = new HttpException($exception->getMessage(), $this->statusCode, $exception);
     }
 
     /**
@@ -30,10 +33,11 @@ class Terminate
      * and logging the exception.
      *
      * @param Throwable $exception The exception to log.
+     * @param array     $request
      */
-    public static function exit(?Throwable $exception, ?int $statusCode = 500, string $pageTitle = 'Service Unavailable'): void
+    public static function exit(?Throwable $exception, ?int $statusCode = 500, string $pageTitle = 'Service Unavailable', array $request = []): void
     {
-        $terminator = new self($exception, $statusCode);
+        $terminator = new self($exception, $statusCode, $request);
         $terminator->sendHttpStatusCode();
         $terminator->renderPage($pageTitle);
         $terminator->logException($exception);
@@ -94,7 +98,7 @@ class Terminate
                 <h1>Exception</h1>
                 <p><?php echo htmlspecialchars($this->exception->getMessage(), ENT_QUOTES, 'UTF-8'); ?></p>
                 <p>
-                    <a class="button btn" href="/">Retry</a>
+                    <?php echo $this->linkUrl(); ?>
                 </p>
             </div>
             <div>
@@ -105,6 +109,14 @@ class Terminate
         <?php
 
         $this->pageFooter();
+    }
+
+    protected function linkUrl(): string
+    {
+        $path = htmlspecialchars(($this->request['path'] ?? null), ENT_QUOTES);
+        $linkedUrl = "{$path}";
+
+        return '<a class="button btn" href="' . $linkedUrl . '">Retry</a>';
     }
 
     /**

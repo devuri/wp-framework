@@ -122,7 +122,7 @@ class SiteManagerTest extends TestCase
         $this->assertEquals('password', $configManager->getConstant('DB_PASSWORD'));
         $this->assertEquals('127.0.0.1', $configManager->getConstant('DB_HOST'));
         $this->assertEquals('utf8mb4', $configManager->getConstant('DB_CHARSET'));
-        $this->assertEquals('',$configManager->getConstant('DB_COLLATE'));
+        $this->assertEquals('', $configManager->getConstant('DB_COLLATE'));
     }
 
     public function test_set_salts(): void
