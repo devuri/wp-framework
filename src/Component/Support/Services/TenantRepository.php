@@ -22,8 +22,8 @@ class TenantRepository
         if (empty($tenants)) {
             $this->tenants = (new Configs())->config['tenants'];
         } else {
-			$this->tenants = $tenants;
-		}
+            $this->tenants = $tenants;
+        }
     }
 
     public function findById(array $tenantDomain)
@@ -33,9 +33,9 @@ class TenantRepository
 
     public function getTenant(string $domain)
     {
-		if ( ! $this->tenants) {
-			return null;
-		}
+        if ( ! $this->tenants) {
+            return null;
+        }
 
         return $this->tenants()->get($domain, null);
     }

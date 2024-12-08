@@ -122,3 +122,11 @@ if (!defined('MONTH_IN_SECONDS')) {
 if (!defined('YEAR_IN_SECONDS')) {
     define('YEAR_IN_SECONDS', 365 * DAY_IN_SECONDS);
 }
+
+if (!defined('AUTH_COOKIE')) {
+    define('AUTH_COOKIE', '');
+}
+
+if (!defined('LOGGED_IN_COOKIE')) {
+    define('LOGGED_IN_COOKIE', '');
+}

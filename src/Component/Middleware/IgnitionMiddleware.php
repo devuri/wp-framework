@@ -16,15 +16,15 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Symfony\Component\Filesystem\Filesystem;
-use WPframework\Support\Configs;
 use WPframework\EnvType;
+use WPframework\Support\Configs;
 
 class IgnitionMiddleware extends AbstractMiddleware
 {
     protected $envType;
     private $appPath;
     private $tenant;
-    private $config;
+    private $configs;
 
     public function __construct()
     {

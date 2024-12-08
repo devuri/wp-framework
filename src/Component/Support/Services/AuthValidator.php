@@ -11,6 +11,7 @@
 
 namespace WPframework\Support\Services;
 
+use PDOException;
 use WPframework\Support\DBFactory;
 
 class AuthValidator

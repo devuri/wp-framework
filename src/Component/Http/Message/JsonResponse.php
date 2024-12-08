@@ -14,6 +14,7 @@ namespace WPframework\Http\Message;
 use JsonException;
 use Nyholm\Psr7\Response;
 
+// @phpstan-ignore-next-line
 class JsonResponse extends Response
 {
     /**
