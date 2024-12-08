@@ -2,16 +2,17 @@
 
 > Install Protection is a Raydium Framework Safeguard Against Website Takeovers.
 
-Install protection within the Raydium Framework is a critical security measure designed to prevent unauthorized website takeovers. This feature ensures that access to the WordPress installation and update mechanisms is strictly controlled, preventing unauthorized users from re-installing WordPress with their own credentials and thus taking over the site. This documentation details the implementation and significance of install protection to thwart such security breaches.
+Install protection within the Raydium Framework is critical security measure designed to prevent unauthorized website takeovers. This feature ensures that access to the WordPress installation and update mechanisms is strictly controlled, preventing unauthorized users from re-installing WordPress with their own credentials and thus taking over the site.
 
 ## Implementing Install Protection
 
 **Activate Install Protection:**
-- Define the `RAYDIUM_INSTALL_PROTECTION` constant in the framework configuration file (`configs/config.php`) to enable install protection. Setting this constant to `true` enforces the protection mechanism.
+- Define the `RAYDIUM_INSTALL_PROTECTION` constant in the framework configuration file (`configs/config.php`) or upstream in `wp-config.php` to enable install protection. Setting this constant to `true` enforces the protection mechanism.
 
 ```php
 define('RAYDIUM_INSTALL_PROTECTION', true);
 ```
+
 
 > [!IMPORTANT]
 > WordPress database upgrades may require you to disable this flag, if you find that you cant access the admin area then it may be that a database upgrade is needed usually this happens after major WordPress updates, in that case simply set the flag to false run the database upgrades and re-enable it.
