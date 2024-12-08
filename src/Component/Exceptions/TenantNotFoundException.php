@@ -9,10 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace WPframework\Interfaces;
+namespace WPframework\Exceptions;
 
-interface ConfigInterface
+use Exception;
+
+class TenantNotFoundException extends Exception
 {
-    public static function getDefault(): array;
-    public function siteConfig(): array;
+    // TenantNotFoundException
 }

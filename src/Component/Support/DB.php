@@ -30,17 +30,13 @@ class DB
         string $databaseName,
         string $username,
         string $password,
-        string $tablePrefix = 'wp_',
-        string $table_name_no_prefix = 'options'
+        string $tablePrefix = 'wp_'
     ) {
         $this->host = $host;
         $this->databaseName = $databaseName;
         $this->username = $username;
         $this->password = $password;
         $this->tablePrefix = $tablePrefix;
-
-        // Set table name with prefix.
-        $this->setTable($table_name_no_prefix);
 
         // Establish and return a PDO database connection.
         $this->dbConnect();
@@ -85,6 +81,32 @@ class DB
         } catch (PDOException $e) {
             Terminate::exit($e);
         }
+    }
+
+    public function getUser(string $user_login)
+    {
+        if ( ! $this->tableExist()) {
+            return null;
+        }
+
+        $query = 'SELECT * FROM ' . $this->table . ' WHERE user_login = :user_login LIMIT 1';
+        $stmt = $this->wpdb->prepare($query);
+        $stmt->bindParam(':user_login', $user_login, PDO::PARAM_STR);
+
+        try {
+            $stmt->execute();
+
+            return $stmt->fetch(PDO::FETCH_OBJ) ?: false;
+        } catch (PDOException $e) {
+            throw new PDOException($e);
+        }
+    }
+
+    public function tableExist()
+    {
+        $qt = $this->wpdb->query("SHOW TABLES LIKE '{$this->table}'");
+
+        return $qt->fetchColumn();
     }
 
     /**
@@ -143,9 +165,11 @@ class DB
     /**
      * @param string $table_name_no_prefix
      */
-    protected function setTable(string $table_name_no_prefix): void
+    public function table(string $table_name_no_prefix = 'options'): self
     {
         $this->table = $this->tablePrefix . $table_name_no_prefix;
+
+        return $this;
     }
 
     /**
@@ -167,7 +191,7 @@ class DB
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
             ]);
         } catch (PDOException $e) {
-            Terminate::exit($e->getMessage());
+            Terminate::exit($e, 503);
         }
 
         return $this;

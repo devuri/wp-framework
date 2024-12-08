@@ -13,30 +13,41 @@ namespace WPframework\Middleware\Handlers;
 
 use Whoops\Run;
 use WPframework\Logger\FileLogger;
+use WPframework\Middleware\AuthMiddleware;
 use WPframework\Middleware\ConfigMiddleware;
 use WPframework\Middleware\DotenvMiddleware;
+use WPframework\Middleware\HttpsOnlyMiddleware;
+use WPframework\Middleware\IgnitionMiddleware;
 use WPframework\Middleware\KernelMiddleware;
 use WPframework\Middleware\LoggingMiddleware;
 use WPframework\Middleware\SecurityHeadersMiddleware;
 use WPframework\Middleware\SpamDetectionMiddleware;
+use WPframework\Middleware\StatusMiddleware;
+use WPframework\Middleware\TenantIdMiddleware;
 use WPframework\Middleware\WhoopsMiddleware;
 use WPframework\Support\ConstantBuilder;
 use WPframework\Support\KernelConfig;
+use WPframework\Support\Services\AuthManager;
 
 class CoreMiddleware
 {
     /**
-     * @return (\WPframework\Middleware\ConfigMiddleware|\WPframework\Middleware\DotenvMiddleware|\WPframework\Middleware\KernelMiddleware|\WPframework\Middleware\LoggingMiddleware|\WPframework\Middleware\WhoopsMiddleware)[]
+     * @return (ConfigMiddleware|DotenvMiddleware|KernelMiddleware|LoggingMiddleware|WhoopsMiddleware)[]
      *
-     * @psalm-return array{dotenv: \WPframework\Middleware\DotenvMiddleware, config: \WPframework\Middleware\ConfigMiddleware, kernel: \WPframework\Middleware\KernelMiddleware, logger: \WPframework\Middleware\LoggingMiddleware, whoops: \WPframework\Middleware\WhoopsMiddleware}
+     * @psalm-return array{dotenv: DotenvMiddleware, config: ConfigMiddleware, kernel: KernelMiddleware, logger: LoggingMiddleware, whoops: WhoopsMiddleware}
      */
     public function getAll(): array
     {
         return [
             'security' => SecurityHeadersMiddleware::class,
+            // 'https' => HttpsOnlyMiddleware::class,
             // 'spam' => SpamDetectionMiddleware::class,
             'dotenv' => new DotenvMiddleware(),
+            'tenant' => new TenantIdMiddleware(self::configManager()),
+            'ignit' => IgnitionMiddleware::class,
+            'status' => StatusMiddleware::class,
             'config' => new ConfigMiddleware(self::configManager()),
+            'auth' => new AuthMiddleware(new AuthManager()),
             'kernel' => new KernelMiddleware($this->kernelConfig()),
             'logger' => new LoggingMiddleware(new FileLogger()),
             'whoops' => new WhoopsMiddleware(new Run()),

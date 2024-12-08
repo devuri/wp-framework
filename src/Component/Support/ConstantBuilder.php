@@ -40,6 +40,7 @@ class ConstantBuilder
      */
     public function __construct()
     {
+        $this->constants = [];
         $this->errorNotice = false;
     }
 

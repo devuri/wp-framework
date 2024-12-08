@@ -13,20 +13,31 @@ namespace WPframework\Middleware;
 
 use Dotenv\Dotenv;
 use Dotenv\Exception\InvalidPathException;
+use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use WPframework\EnvType;
-use WPframework\Support\Tenancy;
 
 class DotenvMiddleware extends AbstractMiddleware
 {
     protected $envType;
-    protected $env;
 
     public function __construct()
     {
+        if ( ! \defined('APP_DIR_PATH')) {
+            throw new InvalidArgumentException('Error: APP_DIR_PATH is not setup', 1);
+        }
+
+        if ( ! \defined('APP_HTTP_HOST')) {
+            throw new InvalidArgumentException('Error: APP_HTTP_HOST is not setup', 2);
+        }
+
+        if ( ! \defined('SITE_CONFIGS_DIR')) {
+            throw new InvalidArgumentException('Error: SITE_CONFIGS_DIR is not setup', 3);
+        }
+
         $this->envType = new EnvType(new Filesystem());
     }
 
@@ -45,9 +56,7 @@ class DotenvMiddleware extends AbstractMiddleware
             APP_DIR_PATH
         );
 
-        $_dotenv = Dotenv::createImmutable(APP_DIR_PATH, $envFiles, true);
-
-        $this->tenantSetup()->init($_dotenv);
+        $_dotenv = Dotenv::createImmutable(APP_DIR_PATH, $envFiles);
 
         try {
             $_dotenv->load();
@@ -57,16 +66,23 @@ class DotenvMiddleware extends AbstractMiddleware
             throw new InvalidPathException($e->getMessage());
         }
 
-        $this->env = $_ENV;
+        self::validateTenantdB($_dotenv);
+
+        $request = $request->withAttribute('envFiles', $envFiles);
 
         return $handler->handle($request);
     }
 
-    /**
-     * Bootstrap multitenancy.
-     */
-    protected function tenantSetup(): Tenancy
+    protected function validateTenantdB($_dotenv): void
     {
-        return new Tenancy(APP_DIR_PATH, SITE_CONFIGS_DIR);
+        try {
+            $_dotenv->required('LANDLORD_DB_HOST')->notEmpty();
+            $_dotenv->required('LANDLORD_DB_NAME')->notEmpty();
+            $_dotenv->required('LANDLORD_DB_USER')->notEmpty();
+            $_dotenv->required('LANDLORD_DB_PASSWORD')->notEmpty();
+            $_dotenv->required('LANDLORD_DB_PREFIX')->notEmpty();
+        } catch (Exception $e) {
+            Terminate::exit(new Exception('Landlord info is required for multi-tenant'), 403);
+        }
     }
 }

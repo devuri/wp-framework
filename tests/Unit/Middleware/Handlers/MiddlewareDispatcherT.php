@@ -68,7 +68,7 @@ class ShortCircuitMiddleware implements MiddlewareInterface
  *
  * @internal
  */
-class MiddlewareDispatcherTest extends TestCase
+abstract class MiddlewareDispatcherT extends TestCase
 {
     public function test_handle_without_middleware_delegates_to_final_handler(): void
     {

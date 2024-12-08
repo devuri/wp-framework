@@ -74,7 +74,8 @@ export default defineConfig({
                     { text: 'Environments', link: '/customization/environments' },
                     { text: 'Environment File', link: '/customization/environment-file' },
                     { text: 'Constants', link: '/customization/constants' },
-		            { text: 'GitHub Token', link: '/customization/auth-json' }
+		            { text: 'GitHub Token', link: '/customization/auth-json' },
+					{ text: 'Kiosk', link: '/customization/kiosk' }
                 ]
             },
             {
@@ -82,6 +83,7 @@ export default defineConfig({
                 collapsible: true,
                 collapsed: true,
                 items: [
+                    { text: 'Setup Guide', link: '/multi-tenant/setup' },
                     { text: 'Overview', link: '/multi-tenant/overview' },
                     { text: 'Configuration', link: '/multi-tenant/tenancy-config' },
                     { text: 'Isolation', link: '/multi-tenant/isolation' },

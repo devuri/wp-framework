@@ -60,18 +60,4 @@ class MiddlewareRegistryTest extends TestCase
     {
         self::assertTrue(method_exists('WPframework\Middleware\Handlers\MiddlewareRegistry', 'setDefault'));
     }
-    /**
-     * @covers \WPframework\Middleware\Handlers\MiddlewareRegistry::getDefaults
-     */
-    public function test_get_defaults(): void
-    {
-        self::assertTrue(method_exists('WPframework\Middleware\Handlers\MiddlewareRegistry', 'getDefaults'));
-    }
-    /**
-     * @covers \WPframework\Middleware\Handlers\MiddlewareRegistry::configManager
-     */
-    public function test_config_manager(): void
-    {
-        self::assertTrue(method_exists('WPframework\Middleware\Handlers\MiddlewareRegistry', 'configManager'));
-    }
 }

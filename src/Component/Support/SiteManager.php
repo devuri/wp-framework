@@ -12,6 +12,7 @@
 namespace WPframework\Support;
 
 use Psr\Http\Message\ServerRequestInterface;
+use WPframework\Support\Configs;
 use WPframework\EnvType;
 use WPframework\Interfaces\EnvSwitcherInterface as Switcher;
 
@@ -28,6 +29,7 @@ class SiteManager
         $this->configManager = $configManager;
         $this->errorLogsDir  = self::setErrorLogsDir(APP_DIR_PATH);
         $this->errorHandler  = false;
+        // Config::wpdb();
     }
 
     /**
@@ -35,14 +37,19 @@ class SiteManager
      */
     public function constants(): self
     {
+        $this->setSalts();
+        $this->setCookies();
+
+        // bootstrap
         $this->setDatabase();
         $this->setSiteUrl();
+        $this->setForceSsl();
         $this->setAssetUrl();
+
+        // optimizers.
         $this->setMemory();
         $this->setOptimize();
-        $this->setForceSsl();
         $this->setAutosave();
-        $this->setSalts();
 
         return $this;
     }
@@ -136,6 +143,22 @@ class SiteManager
         $this->configManager->addConstant('DB_HOST', env('DB_HOST') ?? self::default('db_host'));
         $this->configManager->addConstant('DB_CHARSET', env('DB_CHARSET') ?? 'utf8mb4');
         $this->configManager->addConstant('DB_COLLATE', env('DB_COLLATE') ?? '');
+    }
+
+    public function setCookies(): void
+    {
+        $this->configManager->addConstant('COOKIEHASH', md5(env('WP_HOME')));
+
+        // Defines cookie-related override for WordPress constants.
+        $this->configManager->addConstant('USER_COOKIE', 'wpx_user_' . COOKIEHASH);
+        $this->configManager->addConstant('PASS_COOKIE', 'wpx_pass_' . COOKIEHASH);
+        $this->configManager->addConstant('AUTH_COOKIE', 'wpx_auth_' . COOKIEHASH);
+        $this->configManager->addConstant('SECURE_AUTH_COOKIE', 'wpx_sec_' . COOKIEHASH);
+        $this->configManager->addConstant('RECOVERY_MODE_COOKIE', 'wpx_rec_' . COOKIEHASH);
+        $this->configManager->addConstant('LOGGED_IN_COOKIE', 'wpx_logged_in_' . COOKIEHASH);
+        $this->configManager->addConstant('TEST_COOKIE', md5('wpx_test_cookie' . env('WP_HOME')));
+
+        // @see https://github.com/WordPress/WordPress/blob/6.5.1/wp-includes/default-constants.php#L241
     }
 
     public function setSalts(): void

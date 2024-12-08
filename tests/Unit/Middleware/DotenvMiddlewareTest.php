@@ -46,13 +46,7 @@ class DotenvMiddlewareTest extends TestCase
     {
         self::assertTrue(method_exists('WPframework\Middleware\DotenvMiddleware', 'process'));
     }
-    /**
-     * @covers \WPframework\Middleware\DotenvMiddleware::tenantSetup
-     */
-    public function test_tenant_setup(): void
-    {
-        self::assertTrue(method_exists('WPframework\Middleware\DotenvMiddleware', 'tenantSetup'));
-    }
+
     /**
      * @covers \WPframework\Middleware\DotenvMiddleware::log
      */

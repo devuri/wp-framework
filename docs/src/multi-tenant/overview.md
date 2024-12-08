@@ -1,160 +1,201 @@
-# Multi-Tenant Application
+# Multi-Tenant Overview
 
-## Overview
+Multi-tenancy in **Raydium** is an architecture that enables managing multiple independent websites or tenants within a single installation. It centralizes resources while maintaining tenant-specific customizations and configurations, making it ideal for SaaS applications, multi-tenant networks, or scenarios requiring efficient and scalable management of multiple entities.
 
-This document provides a guide to the architecture and operational flow of our Multi-Tenant Application. The framework is designed to support multiple tenants (websites), each with its unique configuration and customization capabilities, on a shared infrastructure.
+---
 
-> [!IMPORTANT]
-> Raydoum Multi-Tenant WordPress applications are functional, but we are in the early stages of developing this feature. While it works, it is important to proceed with caution. Be sure to thoroughly test your applications.
+## What is Multi-Tenancy?
 
-### Step 1: Backup Your Site
+Multi-tenancy allows a single application instance to support multiple tenants (independent websites or applications). Each tenant operates as if they have their own isolated environment, while sharing common resources like plugins, themes, and the core application. This setup minimizes redundancy and streamlines operations.
 
-Before making any changes, ensure you have a full backup of your WordPress files and database.
+Examples of where this architecture is useful include:
+- Regional websites for a single organization.
+- SaaS platforms where each client has their own custom instance.
+- A network of blogs or ecommerce stores with unique settings per site.
 
-Install and activate the [Tenancy plugin](#), this will create the required database tables and admin area on the main site ( referred to as the Landlord site ).
+---
 
-### Enabling Multi-Tenancy Configuration
+## Key Benefits of Multi-Tenancy
 
-To activate the multi-tenant functionality within your setup, follow these steps:
+- **Efficiency**: Reduces resource duplication by sharing common infrastructure.
+- **Flexibility**: Provides tenant-specific configurations while maintaining a unified base.
+- **Scalability**: Easily add or manage tenants without significant overhead.
+- **Maintainability**: Centralized management of updates and patches, reducing maintenance effort.
 
-1. **Access Configuration Files:**
+---
 
-   - Ensure you're in your application's root directory. Look for the `configs` directory. If it doesn't exist, you'll need to create it to store your configuration files.
+## Multi-Tenant Framework Architecture
 
-2. **Modify Tenancy Configuration:**
+### Shared Infrastructure
+- Tenants operate on a single installation of Raydium, sharing plugins, themes, and core files.
+- This approach simplifies resource management and ensures uniformity across tenants.
 
-   - In the `configs` directory, locate the `tenancy.php` file. If it's not present, you should create it. This file will hold your tenancy-related configurations.
-   - Here's an example of default values you might find or include in `tenancy.php`:
-     ```php
-     // Default settings in tenancy.php
-     define('ALLOW_MULTITENANT', false); // Flag to enable/disable multi-tenancy
-     define('LANDLORD_UUID', null); // Identifier for the landlord or primary tenant
-     define('REQUIRE_TENANT_CONFIG', false); // Whether tenant-specific config is mandatory
-     define('TENANCY_WEB_ROOT', 'public'); // Root directory for web assets
-     ```
+### Tenant Isolation
+Tenants maintain independence through:
+- **Database Isolation**: Tenant data can be stored in separate databases or isolated logically within a single database.
+- **Configuration Isolation**: Unique configurations can be assigned to each tenant for customization.
+- **File Storage Isolation**: Media files and other assets are stored in tenant-specific directories (e.g., `/wp-content/{tenant_id}/uploads`).
 
-3. **Activate Multi-Tenant Mode:**
+### Centralized Configuration
+Global settings for all tenants are defined in `configs/tenancy.json`, while tenant-specific overrides are stored in dedicated directories. This structure ensures centralized control with the flexibility to customize for each tenant.
 
-   - To enable the multi-tenant, you need to change the `ALLOW_MULTITENANT` setting from `false` to `true`. This action activates the multi-tenancy capabilities of your application, allowing it to handle requests for multiple tenants.
-     ```php
-     define('ALLOW_MULTITENANT', true); // Enable multi-tenancy
-     ```
+---
 
-4. **Set the Landlord UUID:**
-   - Additionally, you'll need to specify the UUID for the landlord (main tenant). This unique identifier is typically provided at the bottom of the plugin's main page after you've enabled the Tenancy Manager Plugin. If you have this information, update the following line accordingly:
-   ```php
-   define('LANDLORD_UUID', 'your-landlord-uuid-here');
-   ```
-   Replace `'your-landlord-uuid-here'` with your actual landlord UUID.
+## Key Components of the Multi-Tenant Framework
 
-### Step 3: Configuring Landlord Environment Settings
+### Global Configuration (`configs/tenancy.json`)
+This file defines how the multi-tenant framework operates, including settings for database isolation, caching, logging, and security.
 
-To properly set up the Landlord environment for your multi-tenant application installation, follow these steps to ensure a proper database connection:
+#### Example: `configs/tenancy.json`
+```json
+{
+  "require-config": false,
+  "web-root": "public",
+  "database": {
+    "use_env": true,
+    "default": "mysql"
+  },
+  "tenant-management": {
+    "isolation": "database",
+    "creation-strategy": "auto"
+  },
+  "cache": {
+    "enabled": true,
+    "adapter": "redis",
+    "prefix": "tenantcache"
+  },
+  "logging": {
+    "level": "info",
+    "per-tenant-logs": true
+  }
+}
+```
 
-1. **Backup Your Existing Environment File**: Before making any changes, it's crucial to back up your current `.env` file.
+Key settings include:
+- **`database.isolation`**: Determines whether tenants share a single database or use separate ones.
+- **`cache.adapter`**: Specifies caching mechanisms (e.g., Redis for performance improvements).
+- **`tenant-management.creation-strategy`**: Controls how tenants are created (e.g., automatically when a new domain is added).
+- **`logging.per-tenant-logs`**: Enables tenant-specific logging for easier troubleshooting.
 
-2. **Create a New `.env` File**: In the root directory of application installation, create a new `.env` [environment file](../customization/environment-file). This file will store the environment-specific configurations for the Landlord database (settings in this env file are discarded after initial setup of the Landlord).
+---
 
-3. **Configure Landlord Database Settings**: Inside the newly created `.env` file, input the following configuration settings. These settings should match those of the main site (also referred to as the Landlord site) where the Tenancy plugin is installed. Adjust the values to reflect your specific Landlord database credentials:
+### Tenant-Specific Configuration
+Each tenant can have a dedicated directory (`configs/{tenant_id}/`) containing custom configuration files. These configurations override the global settings where applicable.
 
-   ```php
-   # Landlord Database Configuration
-   LANDLORD_DB_NAME=      # The name of your Landlord database
-   LANDLORD_DB_USER=      # The username for your Landlord database access
-   LANDLORD_DB_PASSWORD=  # The password for your Landlord database access
-   LANDLORD_DB_HOST=localhost  # The hostname for your Landlord database server, typically 'localhost'
-   LANDLORD_DB_PREFIX=wp_lo6j2n6v_  # The prefix for your Landlord database tables, adjust as needed
-   ```
+#### Example Directory Structure
+```
+configs/
+├── tenancy.json
+├── tenants.json (optional)
+├── alpha/
+│   ├── .env
+│   ├── app.php
+│   ├── config.php
+```
 
-## Domain and Tenant Mapping
+File descriptions:
+- **`.env`**: Stores environment-specific variables like database credentials and secrets.
+- **`app.php`**: Contains application-specific settings for the tenant.
+- **`config.php`**: Holds other tenant-specific configurations required by the application.
 
-- Tenants are uniquely identified by a Universal Unique Identifier (UUID).
-- The mapping between a tenant's domain (derived from HTTP_HOST) and its UUID is crucial.
+---
 
-## Installation Steps
+### Tenant Management
 
-> **Note**: The uploads directory will be set to `/public/app/tenant/a345ea9515c/uploads`. Make sure to transfer or replicate your site files to this new directory. This setup uses the `tenant_id` for isolated file storage per tenant.
+#### Database-Driven Management (Default)
+Tenant data, such as UUIDs, domains, and statuses, is stored in a database table. This dynamic and scalable approach is recommended for large applications or scenarios with frequent updates.
 
-## Configuration and Environment Files
+#### File-Based Management (Optional)
+For smaller applications or development environments, tenant data can be stored in a JSON file (`configs/tenants.json`).
 
-The framework supports distinct configurations for each tenant, enabling customized settings per site within a multi-tenant environment.
+##### Example: `configs/tenants.json`
+```json
+{
+  "alpha": {
+    "id": 1,
+    "uuid": "h456i789j012",
+    "name": "Alpha Version Limited",
+    "domain": "alpha.domain1.local",
+    "status": "active"
+  }
+}
+```
 
-> In the following example our tenant UUID is `a345ea9515c`:
+---
 
-- Tenant-specific configuration files are located as follows:
-  - `.env`: `"path/configs/a345ea9515c/.env"`
-  - `app.php`: `"path/configs/a345ea9515c/app.php"`
-  - `config.php`: `"path/configs/a345ea9515c/config.php"`
+### Domain Mapping
+Tenants are associated with unique domains or subdomains (e.g., `tenant1.example.com`). This mapping can be:
+- **Database-Driven**: Handled dynamically via backend queries.
+- **File-Based**: Defined in `tenants.json` for simpler setups.
 
-#### Locations
+---
 
-- **Environment File**: Located at `path/configs/{tenant_id}/.env`, it stores environment-specific variables.
-- **PHP Configuration**: Found at `path/configs/{tenant_id}/config.php`, this file contains PHP configuration file overrides.
-- **Framework Options**: Found at `path/configs/{tenant_id}/app.php`, this file contains an array of [configuration options](../reference/configuration) specific to the tenant.
+### Media File Storage
+Tenant media files are stored in isolated directories to prevent conflicts and ensure separation.
 
-#### Loading Mechanism
+Example structure:
+```
+/wp-content/{tenant_id}/uploads
+```
 
-1. **Tenant-Specific**: The framework first attempts to load configurations from the tenant's directory.
-2. **Fallback**: In the absence of tenant-specific files, it defaults to the global `config.php` or in the case of [configuration options](../reference/configuration) `app.php`.
-3. **Overrides**: Global settings in the default config can be overridden by tenant-specific files for flexibility.
+This setup ensures each tenant has its own space for uploads and assets.
 
-**`REQUIRE_TENANT_CONFIG` Setting:**
+---
 
-> **Note:** The `REQUIRE_TENANT_CONFIG` constant mandates the presence of tenant-specific [configuration options](../reference/configuration) `app.php`. When enabled (`true`), it requires that each tenant must have their own configuration file located at `config/{tenant_id}/app.php`. Conversely, when disabled (`false`), we can use a global `app.php` file. The default setting for this constant is `false`.
+### Plugins and Themes
+Plugins and themes are shared across tenants to optimize resource usage. Tenant-specific customizations can be achieved through:
+- **Dynamic Configuration**: Adjust behavior using tenant-specific environment variables.
+- **Overrides**: Apply tenant-specific code or settings as needed.
 
-This toggles the enforcement of tenant-specific settings within the application. When enabled (`true`), it requires each tenant to have a dedicated `config/{tenant_id}/app.php` [configuration options](../reference/configuration) file, ensuring tailored settings per tenant. In the absence of a tenant-specific [configuration options](../reference/configuration) file, the application will signal an error, highlighting the necessity for individual configurations. By default, this setting is disabled (`false`), allowing for a shared `app.php` [configuration options](../reference/configuration) across tenants, simplifying setup for environments where distinct tenant configurations are not critical.
+---
 
-#### Benefits
+## Setting Up Multi-Tenancy
 
-- Enables per-tenant customizations.
-- Provides a fallback to ensure system stability.
-- Allows global settings to be overridden at the tenant level.
+### 1. Enable Multi-Tenancy
+Update the `composer.json` file to activate multi-tenancy. Add the following to the `extra` section:
+```json
+"extra": {
+    "multitenant": {
+        "is_active": true,
+        "uuid": "81243057"
+    }
+}
+```
 
-This approach ensures a balance between customization for individual tenants and consistency across the framework.
+### 2. Configure Global Settings
+Define your global settings in `configs/tenancy.json`. Include database configurations, caching preferences, and tenant management strategies.
 
-## Tenant-Specific Variables
+### 3. Add Tenant-Specific Files
+For each tenant, create a directory under `configs/{tenant_id}/` and include:
+- **`.env`** for environment variables.
+- **`app.php`** for tenant-specific application settings.
 
-- Each tenant's `.env` file can contain specific environment variables, such as:
-  - `APP_TENANT_ID=a345ea9515c`
-  - Optionally, `APP_TENANT_SECRET` for additional security.
+### 4. Map Domains to Tenants
+Ensure each tenant’s domain is properly mapped to their configuration. Use database-driven mapping or define mappings in `tenants.json`.
 
-## Customizing Tenant Configurations
+---
 
-- Utilize `env('APP_TENANT_ID')` within the application to access and modify configurations dynamically for each tenant. It is also set as `APP_TENANT_ID` constant during initialization steps.
+## Best Practices
 
-## Isolated Uploads Directory
+1. **Backup Regularly**: Always create backups of files and databases before making significant changes.
+2. **Test Thoroughly**: Test each tenant to ensure proper isolation and functionality.
+3. **Choose Meaningful Tenant IDs**: Use unique identifiers (e.g., UUIDs) for each tenant to avoid conflicts.
+4. **Monitor Performance**: Shared infrastructure can lead to resource bottlenecks. Use caching and database optimization to maintain performance.
+5. **Plan for Growth**: For large-scale deployments, prioritize database-driven management and scalable infrastructure.
 
-- Media files for each tenant are stored in a separate directory, typically structured as `wp-content/tenant/{tenant_id}/uploads`. Depending on the framework's setup, the default path might vary, but it generally follows the format `app/tenant/{tenant_id}/uploads`.
+---
 
-## Shared Resources
+## When to Use Multi-Tenancy
 
-- Plugins and Themes are shared across tenants, optimizing resources and simplifying management.
-- The shared resource paths are defined in the [configuration options](../reference/configuration) `app.php` file and the framework's `composer.json`.
+### Suitable Use Cases
+- Centralized management of multiple websites or applications.
+- SaaS platforms requiring unique configurations for each client.
+- Applications with shared resources and moderate tenant overlap.
 
-## Plugin and Theme Management
+### Scenarios Requiring Alternatives
+- Strict data isolation requirements (consider single-tenant setups).
+- High-demand tenants needing dedicated resources (e.g., separate installations).
 
-- An MU (Must-Use) plugin controls the availability of specific plugins and themes for each tenant.
-- The `IS_MULTITENANT` constant aids in configuring resource availability and is particularly useful during tenant migrations or when converting a tenant to a standalone installation.
+---
 
-## Suitability for Multi-Tenant Architecture
-
-While the Multi-Tenant Application offers efficient resource sharing and management, it's crucial to assess its suitability based on your specific needs:
-
-### Considerations
-
-- **Isolation**: Full isolation might require alternative solutions if stringent separation is needed.
-- **Performance**: High-demand applications may benefit from dedicated resources.
-- **Security**: Additional measures might be necessary to meet specific security standards.
-- **Customization**: Extensive per-tenant customizations could complicate the multi-tenant model.
-
-### Evaluation
-
-> [!CAUTION]
->
-> Thoroughly evaluate your use case before adopting a multi-tenant architecture. For certain scenarios, a single-tenant or dedicated solution might be more appropriate.
-
-The Multi-Tenant Application excels in scenarios prioritizing efficient management and shared infrastructure. It's an ideal choice if these factors align with your project goals.
-
-> Every project is unique, so it's important to choose an architecture that fits your specific requirements and constraints.
-
-**Note: This documentation is continually evolving, and we welcome community contributions and feedback. If you have suggestions or notice areas needing improvement, please contribute via pull requests or contact our development team. Your input is invaluable in refining this guide.**
+The multi-tenant framework in Raydium provides a powerful and flexible solution for managing multiple tenants efficiently. By combining shared infrastructure with isolated tenant configurations, it supports diverse use cases while optimizing resource usage. Proper planning and adherence to best practices will ensure a smooth and scalable implementation.
