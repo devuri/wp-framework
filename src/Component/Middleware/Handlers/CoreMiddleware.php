@@ -19,6 +19,7 @@ use WPframework\Middleware\DotenvMiddleware;
 use WPframework\Middleware\IgnitionMiddleware;
 use WPframework\Middleware\KernelMiddleware;
 use WPframework\Middleware\LoggingMiddleware;
+use WPframework\Middleware\HttpsOnlyMiddleware;
 use WPframework\Middleware\SecurityHeadersMiddleware;
 use WPframework\Middleware\SpamDetectionMiddleware;
 use WPframework\Middleware\StatusMiddleware;
@@ -39,6 +40,7 @@ class CoreMiddleware
     {
         return [
             'security' => SecurityHeadersMiddleware::class,
+            //'https' => HttpsOnlyMiddleware::class,
             // 'spam' => SpamDetectionMiddleware::class,
             'dotenv' => new DotenvMiddleware(),
             'tenant' => new TenantIdMiddleware(self::configManager()),
