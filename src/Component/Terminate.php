@@ -98,7 +98,7 @@ class Terminate
                 <h1 style="font-style: oblique;font-weight: 400;margin-bottom: 1em;">
                     Exception
                 </h1>
-                <div style="margin-bottom: 2em;">
+                <div style="margin-bottom: 2em; font-size: large;">
                     <p>
                         <?php echo htmlspecialchars($this->exception->getMessage(), ENT_QUOTES, 'UTF-8'); ?>
                     </p>
@@ -205,7 +205,6 @@ class Terminate
         ?>
         <!DOCTYPE html><html lang='en'>
         <head>
-			<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
             <link href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.min.css" rel="stylesheet">
             <meta charset="utf-8">
 			<meta name="robots" content="noindex, nofollow">
@@ -218,7 +217,7 @@ class Terminate
             <title><?php echo $pageTitle; ?></title>
 			<?php self::pageStyles(); ?>
         </head>
-        <body id="page" style="background: #efefef;">
+        <body id="page" style="background: #efefef; font-family: figtree;">
         <?php
     }
 

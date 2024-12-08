@@ -65,7 +65,7 @@ class AuthMiddleware extends AbstractMiddleware
      */
     protected function isAdminRoute(ServerRequestInterface $request): bool
     {
-        $pattern = '/\/wp(?:\/.*)?\/wp-admin\/.*$/';
+        $pattern = '/\/wp(?:\/[^\/]*)?\/wp-admin(?:\/.*)?$/';
 
         return 1 === preg_match($pattern, $request->getUri()->getPath());
     }
