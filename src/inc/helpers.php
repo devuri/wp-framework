@@ -17,10 +17,10 @@ use Urisoft\DotAccess;
 use Urisoft\Encryption;
 use Urisoft\Env;
 use WPframework\AppInit;
-use WPframework\Support\Configs;
 use WPframework\Http\Asset;
 use WPframework\Logger\FileLogger;
 use WPframework\Logger\Log;
+use WPframework\Support\Configs;
 use WPframework\Terminate;
 
 /**

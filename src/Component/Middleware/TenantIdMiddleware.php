@@ -15,8 +15,8 @@ use Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use WPframework\Support\Configs;
 use WPframework\Exceptions\TenantNotFoundException;
+use WPframework\Support\Configs;
 use WPframework\Support\ConstantBuilder;
 use WPframework\Support\Services\TenantRepository;
 use WPframework\Support\Services\TenantResolver;
@@ -43,6 +43,8 @@ class TenantIdMiddleware extends AbstractMiddleware
         }
 
         $this->tenantResolver = self::tenantResolver();
+
+        $tenantDomain = [];
 
         try {
             $tenantDomain = $this->resolveTenantIdFromRequest($request);

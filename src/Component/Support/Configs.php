@@ -11,6 +11,7 @@
 
 namespace WPframework\Support;
 
+use Exception;
 use InvalidArgumentException;
 use RuntimeException;
 use Urisoft\DotAccess;
@@ -20,10 +21,11 @@ class Configs implements ConfigsInterface
 {
     public $config;
     protected $appPath;
+    protected $configsPath;
     protected $configsDir;
     protected array $configCache = [];
 
-	public function __construct(array $preloadConfigs = ['tenancy', 'tenants', 'kiosk'], ?string $appPath = null)
+    public function __construct(array $preloadConfigs = ['tenancy', 'tenants', 'kiosk'], ?string $appPath = null)
     {
         $this->appPath     = $appPath ?? APP_DIR_PATH;
         $this->configsPath = $this->getConfigsPath($this->appPath);
@@ -33,7 +35,7 @@ class Configs implements ConfigsInterface
         }
 
         $this->loadConfigFile('composer');
-		$this->configCache['app'] = new DotAccess($this->appOptions());
+        $this->configCache['app'] = new DotAccess($this->appOptions());
         $this->config = $this->configCache;
     }
 
@@ -213,7 +215,7 @@ class Configs implements ConfigsInterface
      */
     public function getTenantFilePath(string $dir, bool $find_or_fail = false): ?string
     {
-        if ($this->composer->get('extra.multitenant.is_active', false) && \defined('APP_TENANT_ID')) {
+        if ($this->config['composer']->get('extra.multitenant.is_active', false) && \defined('APP_TENANT_ID')) {
             $tenant_id = APP_TENANT_ID;
         } else {
             return null;
@@ -278,24 +280,41 @@ class Configs implements ConfigsInterface
         }
     }
 
-	/**
-	 * Loads and merges a JSON configuration file into the configuration cache.
-	 *
-	 * This method attempts to load a configuration file from multiple sources,
-	 * merges configuration data from user-defined and default paths, and caches
-	 * the result for future use. Special handling is provided for `composer.json`,
-	 * which is directly processed if it exists.
-	 *
-	 * @param string $file        The base name of the configuration file (without the `.json` extension).
-	 * @param string|null $defaultPath Optional. A fallback path to look for the configuration file
-	 *                                  if it is not found in the user-defined configuration path.
-	 *                                  Defaults to the result of `self::defaultConfigPath()`.
-	 *
-	 * @return DotAccess|null Returns an instance of `DotAccess` containing the merged configuration data,
-	 *                        or `null` if the configuration file does not exist.
-	 *
-	 * @throws \RuntimeException If the configuration file does not exist in any of the expected locations.
-	 */
+    public function appOptions(): array
+    {
+        $optionsFile = $this->configsPath . '/app.php';
+
+        if (file_exists($optionsFile) && \is_array(@require $optionsFile)) {
+            $appOptions = require $optionsFile;
+        } else {
+            $appOptions = [];
+        }
+
+        if ( ! \is_array($appOptions)) {
+            throw new InvalidArgumentException('Error: Config::siteConfig must be of type array', 1);
+        }
+
+        return self::multiMerge(self::getDefault(), $appOptions);
+    }
+
+    /**
+     * Loads and merges a JSON configuration file into the configuration cache.
+     *
+     * This method attempts to load a configuration file from multiple sources,
+     * merges configuration data from user-defined and default paths, and caches
+     * the result for future use. Special handling is provided for `composer.json`,
+     * which is directly processed if it exists.
+     *
+     * @param string      $file        The base name of the configuration file (without the `.json` extension).
+     * @param null|string $defaultPath Optional. A fallback path to look for the configuration file
+     *                                 if it is not found in the user-defined configuration path.
+     *                                 Defaults to the result of `self::defaultConfigPath()`.
+     *
+     * @throws RuntimeException If the configuration file does not exist in any of the expected locations.
+     *
+     * @return null|DotAccess Returns an instance of `DotAccess` containing the merged configuration data,
+     *                        or `null` if the configuration file does not exist.
+     */
     protected function loadConfigFile(string $file, ?string $defaultPath = null)
     {
         $fileName = "$file.json";
@@ -357,22 +376,5 @@ class Configs implements ConfigsInterface
         }
 
         return $merged;
-    }
-
-    public function appOptions(): array
-    {
-        $optionsFile = $this->configsPath . '/app.php';
-
-        if (file_exists($optionsFile) && \is_array(@require $optionsFile)) {
-            $appOptions = require $optionsFile;
-        } else {
-            $appOptions = [];
-        }
-
-        if ( ! \is_array($appOptions)) {
-            throw new InvalidArgumentException('Error: Config::siteConfig must be of type array', 1);
-        }
-
-        return self::multiMerge(self::getDefault(), $appOptions);
     }
 }

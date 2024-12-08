@@ -11,8 +11,6 @@
 
 namespace WPframework\Support;
 
-use WPframework\Support\Configs;
-
 class KernelConfig
 {
     private $appPath;

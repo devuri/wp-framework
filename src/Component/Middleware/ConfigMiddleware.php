@@ -56,6 +56,6 @@ class ConfigMiddleware extends AbstractMiddleware
 
     private function isProd(): bool
     {
-        return Config::isProd($this->siteManager->getEnvironment());
+        return Configs::isProd($this->siteManager->getEnvironment());
     }
 }

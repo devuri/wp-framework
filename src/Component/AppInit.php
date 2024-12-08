@@ -60,6 +60,7 @@ class AppInit implements RequestHandlerInterface
     public function __construct(RequestInterface $request)
     {
         $this->defaultHandler = new FinalHandler();
+        $this->request = $request;
 
         $this->errorHandler = function (Throwable $e, RequestInterface $request, ResponseInterface $response) {
             $this->exception =  $e;
