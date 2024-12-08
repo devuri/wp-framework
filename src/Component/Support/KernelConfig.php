@@ -52,6 +52,8 @@ class KernelConfig
      */
     public function setKernelConstants(): void
     {
+        $this->configManager->addConstant('RAYDIUM_INSTALL_PROTECTION', true);
+
         // set app http host.
         $this->configManager->addConstant('APP_HTTP_HOST', $this->appHttpHost);
 

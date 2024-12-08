@@ -47,8 +47,8 @@ class CoreMiddleware
             'ignit' => IgnitionMiddleware::class,
             'status' => StatusMiddleware::class,
             'config' => new ConfigMiddleware(self::configManager()),
-            'auth' => new AuthMiddleware(new AuthManager()),
             'kernel' => new KernelMiddleware($this->kernelConfig()),
+            'auth' => new AuthMiddleware(new AuthManager()),
             'logger' => new LoggingMiddleware(new FileLogger()),
             'whoops' => new WhoopsMiddleware(new Run()),
         ];
