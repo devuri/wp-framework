@@ -76,6 +76,7 @@ export default defineConfig({
                     { text: 'Constants', link: '/customization/constants' },
 		            { text: 'GitHub Token', link: '/customization/auth-json' },
 					{ text: 'Kiosk', link: '/customization/kiosk' }
+					{ text: 'Install Protection', link: '/customization/install-protection' },
                 ]
             },
             {
@@ -104,7 +105,6 @@ export default defineConfig({
                     { text: 'Lifecycle', link: '/reference/lifecycle' },
                     { text: 'Configs', link: '/reference/configuration' },
                     { text: 'Constants', link: '/reference/app-constants' },
-                    { text: 'Install Protection', link: '/reference/install-protection' },
                     { text: 'Environment', link: '/reference/environment-vars' },
                     { text: 'Plugin', link: '/reference/plugin' },
                     { text: 'App', link: '/reference/app-component' },
