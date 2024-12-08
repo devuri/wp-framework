@@ -16,7 +16,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Symfony\Component\Filesystem\Filesystem;
-use WPframework\Config;
+use WPframework\Support\Configs;
 use WPframework\EnvType;
 
 class IgnitionMiddleware extends AbstractMiddleware
@@ -47,8 +47,8 @@ class IgnitionMiddleware extends AbstractMiddleware
             return $handler->handle($request);
         }
 
-        $this->config  = new Config();
-        $tenantConfigPath = $this->config->getConfigsDir() . '/' . $this->tenant['uuid'];
+        $this->configs  = new Configs();
+        $tenantConfigPath = $this->configs->getConfigsDir() . '/' . $this->tenant['uuid'];
         $envFiles = $this->envType->filterFiles(
             EnvType::supportedFiles(),
             $tenantConfigPath

@@ -17,7 +17,7 @@ use Urisoft\DotAccess;
 use Urisoft\Encryption;
 use Urisoft\Env;
 use WPframework\AppInit;
-use WPframework\Config;
+use WPframework\Support\Configs;
 use WPframework\Http\Asset;
 use WPframework\Logger\FileLogger;
 use WPframework\Logger\Log;
@@ -95,7 +95,7 @@ function envWhitelist(): array
 
     if (\is_null($whitelist)) {
         $framework = new Urisoft\SimpleConfig(_configsDir(), ['whitelist']);
-        // $app = new Urisoft\SimpleConfig( siteConfigsDir(), ['whitelist'] );
+        // $app = new Urisoft\SimpleConfig( appOptionsDir(), ['whitelist'] );
         $whitelist = $framework->get('whitelist');
     }
 
@@ -106,7 +106,7 @@ function envWhitelist(): array
     return $whitelisted;
 }
 
-function siteConfigsDir(): ?string
+function appOptionsDir(): ?string
 {
     return \defined('SITE_CONFIGS_DIR') ? SITE_CONFIGS_DIR : null;
 }
@@ -115,31 +115,20 @@ function siteConfigsDir(): ?string
  * Retrieves configuration data using dot notation.
  *
  * This function allows easy access to nested configuration data through dot notation syntax.
- * When a specific dot notation key is provided, it returns the associated value from the
- * configuration. If no key is specified, the full configuration object is returned.
  *
- * @param null|string $key     Optional. The dot notation key to retrieve the data for.
- *                             If null, the entire configuration object is returned. Default null.
- * @param mixed       $default Optional. The default value to return if the specified key is not found. Default null.
- *
- * @return mixed The value associated with the specified key or the default value if the key
- *               is not found. If no key is provided (null), the full configuration object is returned.
+ * @return mixed The full configuration object is returned.
  *
  * @see https://github.com/devuri/dot-access DotAccess library for dot notation access.
  */
-function config(?string $key = null, $default = null)
+function configs()
 {
     static $siteConfig = null;
 
     if (null === $siteConfig) {
-        $siteConfig = new Config(APP_DIR_PATH);
+        $siteConfig = new Configs(['tenancy', 'tenants', 'kiosk'], APP_DIR_PATH);
     }
 
-    if (null === $key) {
-        return $siteConfig;
-    }
-
-    return $siteConfig->get($key, $default);
+    return $siteConfig;
 }
 
 /**

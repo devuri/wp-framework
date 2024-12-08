@@ -11,6 +11,7 @@
 
 namespace WPframework\Middleware;
 
+use Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -21,21 +22,21 @@ class HttpsOnlyMiddleware implements MiddlewareInterface
     /**
      * Process the incoming request and enforce HTTPS for specific routes.
      *
-     * @param ServerRequestInterface $request
+     * @param ServerRequestInterface  $request
      * @param RequestHandlerInterface $handler
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $uri = $request->getUri();
 
-		if( $this->isAdminRoute($request) && $uri->getScheme() !== 'https' ) {
-			throw new \Exception('Access to this resource requires HTTPS.', 403);
-		}
+        if ($this->isAdminRoute($request) && 'https' !== $uri->getScheme()) {
+            throw new Exception('Access to this resource requires HTTPS.', 403);
+        }
 
         return $handler->handle($request);
     }
 
-	/**
+    /**
      * Check if a given URL or route matches the WordPress admin route pattern.
      *
      * @param ServerRequestInterface $request

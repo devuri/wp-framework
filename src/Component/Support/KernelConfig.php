@@ -11,7 +11,7 @@
 
 namespace WPframework\Support;
 
-use WPframework\Config;
+use WPframework\Support\Configs;
 
 class KernelConfig
 {
@@ -29,7 +29,7 @@ class KernelConfig
         $this->appHttpHost = APP_HTTP_HOST;
         $this->configManager = $configManager;
         $this->configsDir = SITE_CONFIGS_DIR;
-        $this->configs = config()->get();
+        $this->configs = new Configs();
         $this->tenantId = $this->envTenantId();
 
         /*
@@ -58,16 +58,16 @@ class KernelConfig
         $this->configManager->addConstant('APP_HTTP_HOST', $this->appHttpHost);
 
         // define public web root dir.
-        $this->configManager->addConstant('PUBLIC_WEB_DIR', $this->appPath . '/' . $this->configs->get('directory.web_root_dir'));
+        $this->configManager->addConstant('PUBLIC_WEB_DIR', $this->appPath . '/' . $this->configs->config['app']->get('directory.web_root_dir'));
 
         // wp dir path
-        $this->configManager->addConstant('WP_DIR_PATH', PUBLIC_WEB_DIR . '/' . $this->configs->get('directory.wp_dir_path'));
+        $this->configManager->addConstant('WP_DIR_PATH', PUBLIC_WEB_DIR . '/' . $this->configs->config['app']->get('directory.wp_dir_path'));
 
         // define assets dir.
-        $this->configManager->addConstant('APP_ASSETS_DIR', PUBLIC_WEB_DIR . '/' . $this->configs->get('directory.asset_dir'));
+        $this->configManager->addConstant('APP_ASSETS_DIR', PUBLIC_WEB_DIR . '/' . $this->configs->config['app']->get('directory.asset_dir'));
 
         // Directory PATH.
-        $this->configManager->addConstant('APP_CONTENT_DIR', $this->configs->get('directory.content_dir'));
+        $this->configManager->addConstant('APP_CONTENT_DIR', $this->configs->config['app']->get('directory.content_dir'));
         $this->configManager->addConstant('WP_CONTENT_DIR', PUBLIC_WEB_DIR . '/' . APP_CONTENT_DIR);
         $this->configManager->addConstant('WP_CONTENT_URL', env('WP_HOME') . '/' . APP_CONTENT_DIR);
 
@@ -80,38 +80,38 @@ class KernelConfig
          *
          * @link https://github.com/devuri/custom-wordpress-theme-dir
          */
-        if ($this->configs->get('directory.theme_dir')) {
-            $this->configManager->addConstant('APP_THEME_DIR', $this->configs->get('directory.theme_dir'));
+        if ($this->configs->config['app']->get('directory.theme_dir')) {
+            $this->configManager->addConstant('APP_THEME_DIR', $this->configs->config['app']->get('directory.theme_dir'));
         }
 
         // Plugins.
-        $this->configManager->addConstant('WP_PLUGIN_DIR', PUBLIC_WEB_DIR . '/' . $this->configs->get('directory.plugin_dir'));
-        $this->configManager->addConstant('WP_PLUGIN_URL', env('WP_HOME') . '/' . $this->configs->get('directory.plugin_dir'));
+        $this->configManager->addConstant('WP_PLUGIN_DIR', PUBLIC_WEB_DIR . '/' . $this->configs->config['app']->get('directory.plugin_dir'));
+        $this->configManager->addConstant('WP_PLUGIN_URL', env('WP_HOME') . '/' . $this->configs->config['app']->get('directory.plugin_dir'));
 
         // Must-Use Plugins.
-        $this->configManager->addConstant('WPMU_PLUGIN_DIR', PUBLIC_WEB_DIR . '/' . $this->configs->get('directory.mu_plugin_dir'));
-        $this->configManager->addConstant('WPMU_PLUGIN_URL', env('WP_HOME') . '/' . $this->configs->get('directory.mu_plugin_dir'));
+        $this->configManager->addConstant('WPMU_PLUGIN_DIR', PUBLIC_WEB_DIR . '/' . $this->configs->config['app']->get('directory.mu_plugin_dir'));
+        $this->configManager->addConstant('WPMU_PLUGIN_URL', env('WP_HOME') . '/' . $this->configs->config['app']->get('directory.mu_plugin_dir'));
 
         // Disable any kind of automatic upgrade.
         // this will be handled via composer.
-        $this->configManager->addConstant('AUTOMATIC_UPDATER_DISABLED', $this->configs->get('disable_updates'));
+        $this->configManager->addConstant('AUTOMATIC_UPDATER_DISABLED', $this->configs->config['app']->get('disable_updates'));
 
         // Sudo admin (granted more privilages uses user ID).
-        $this->configManager->addConstant('WP_SUDO_ADMIN', $this->configs->get('sudo_admin'));
+        $this->configManager->addConstant('WP_SUDO_ADMIN', $this->configs->config['app']->get('sudo_admin'));
 
         // A group of users with higher administrative privileges.
-        $this->configManager->addConstant('SUDO_ADMIN_GROUP', $this->configs->get('sudo_admin_group'));
+        $this->configManager->addConstant('SUDO_ADMIN_GROUP', $this->configs->config['app']->get('sudo_admin_group'));
 
         /*
          * Prevent Admin users from deactivating plugins, true or false.
          *
          * @link https://gist.github.com/devuri/034ccb7c833f970192bb64317814da3b
          */
-        $this->configManager->addConstant('CAN_DEACTIVATE_PLUGINS', $this->configs->get('can_deactivate'));
+        $this->configManager->addConstant('CAN_DEACTIVATE_PLUGINS', $this->configs->config['app']->get('can_deactivate'));
 
         // SQLite database location and filename.
-        $this->configManager->addConstant('DB_DIR', $this->appPath . '/' . $this->configs->get('directory.sqlite_dir'));
-        $this->configManager->addConstant('DB_FILE', $this->configs->get('directory.sqlite_file'));
+        $this->configManager->addConstant('DB_DIR', $this->appPath . '/' . $this->configs->config['app']->get('directory.sqlite_dir'));
+        $this->configManager->addConstant('DB_FILE', $this->configs->config['app']->get('directory.sqlite_file'));
 
         /*
          * Slug of the default theme for this installation.
@@ -120,10 +120,10 @@ class KernelConfig
          *
          * @see WP_Theme::get_core_default_theme()
          */
-        $this->configManager->addConstant('WP_DEFAULT_THEME', $this->configs->get('default_theme'));
+        $this->configManager->addConstant('WP_DEFAULT_THEME', $this->configs->config['app']->get('default_theme'));
 
         // SUCURI
-        $this->configManager->addConstant('ENABLE_SUCURI_WAF', $this->configs->get('security.sucuri_waf'));
+        $this->configManager->addConstant('ENABLE_SUCURI_WAF', $this->configs->config['app']->get('security.sucuri_waf'));
         // $this->configManager->addConstant( 'SUCURI_DATA_STORAGE', ABSPATH . '../../storage/logs/sucuri' );
 
         /*
@@ -135,23 +135,23 @@ class KernelConfig
          *
          * @return void
          */
-        $this->configManager->addConstant('WP_REDIS_DISABLED', $this->configs->get('redis.disabled'));
+        $this->configManager->addConstant('WP_REDIS_DISABLED', $this->configs->config['app']->get('redis.disabled'));
 
-        $this->configManager->addConstant('WP_REDIS_PREFIX', $this->configs->get('redis.prefix'));
-        $this->configManager->addConstant('WP_REDIS_DATABASE', $this->configs->get('redis.database'));
-        $this->configManager->addConstant('WP_REDIS_HOST', $this->configs->get('redis.host'));
-        $this->configManager->addConstant('WP_REDIS_PORT', $this->configs->get('redis.port'));
-        $this->configManager->addConstant('WP_REDIS_PASSWORD', $this->configs->get('redis.password'));
+        $this->configManager->addConstant('WP_REDIS_PREFIX', $this->configs->config['app']->get('redis.prefix'));
+        $this->configManager->addConstant('WP_REDIS_DATABASE', $this->configs->config['app']->get('redis.database'));
+        $this->configManager->addConstant('WP_REDIS_HOST', $this->configs->config['app']->get('redis.host'));
+        $this->configManager->addConstant('WP_REDIS_PORT', $this->configs->config['app']->get('redis.port'));
+        $this->configManager->addConstant('WP_REDIS_PASSWORD', $this->configs->config['app']->get('redis.password'));
 
-        $this->configManager->addConstant('WP_REDIS_DISABLE_ADMINBAR', $this->configs->get('redis.adminbar'));
-        $this->configManager->addConstant('WP_REDIS_DISABLE_METRICS', $this->configs->get('redis.disable-metrics'));
-        $this->configManager->addConstant('WP_REDIS_DISABLE_BANNERS', $this->configs->get('redis.disable-banners'));
+        $this->configManager->addConstant('WP_REDIS_DISABLE_ADMINBAR', $this->configs->config['app']->get('redis.adminbar'));
+        $this->configManager->addConstant('WP_REDIS_DISABLE_METRICS', $this->configs->config['app']->get('redis.disable-metrics'));
+        $this->configManager->addConstant('WP_REDIS_DISABLE_BANNERS', $this->configs->config['app']->get('redis.disable-banners'));
 
-        $this->configManager->addConstant('WP_REDIS_TIMEOUT', $this->configs->get('redis.timeout'));
-        $this->configManager->addConstant('WP_REDIS_READ_TIMEOUT', $this->configs->get('redis.read-timeout'));
+        $this->configManager->addConstant('WP_REDIS_TIMEOUT', $this->configs->config['app']->get('redis.timeout'));
+        $this->configManager->addConstant('WP_REDIS_READ_TIMEOUT', $this->configs->config['app']->get('redis.read-timeout'));
 
         // web app security key
-        $this->configManager->addConstant('WEBAPP_ENCRYPTION_KEY', $this->configs->get('security.encryption_key'));
+        $this->configManager->addConstant('WEBAPP_ENCRYPTION_KEY', $this->configs->config['app']->get('security.encryption_key'));
     }
 
 

@@ -141,7 +141,7 @@ class Terminate
         if (self::isInProdEnvironment()) {
             return false;
         }
-        if (config('terminate.debugger') || ! self::isInProdEnvironment()) {
+        if (configs()->get('terminate.debugger') || ! self::isInProdEnvironment()) {
             return true;
         }
 
@@ -160,8 +160,10 @@ class Terminate
      */
     protected static function isInProdEnvironment(): bool
     {
-        if (config('prod') && \is_array(config('prod'))) {
-            $prodEnvironments = config('prod');
+        $production = configs()->get('prod');
+
+        if ($production && \is_array($production)) {
+            $prodEnvironments = $production;
         } else {
             $prodEnvironments = ['secure', 'sec', 'production', 'prod'];
         }
@@ -231,9 +233,9 @@ class Terminate
         <?php
     }
 
-	private static function pageStyles(): void
-	{
-	?>
+    private static function pageStyles(): void
+    {
+        ?>
 	<style type="text/css">
 		html {
 			background: #f1f1f1;
@@ -258,5 +260,5 @@ class Terminate
 		}
 	</style>
 	<?php
-	}
+    }
 }

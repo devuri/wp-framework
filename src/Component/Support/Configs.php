@@ -9,35 +9,32 @@
  * file that was distributed with this source code.
  */
 
-namespace WPframework;
+namespace WPframework\Support;
 
 use InvalidArgumentException;
 use RuntimeException;
 use Urisoft\DotAccess;
-use WPframework\Interfaces\ConfigInterface;
-use WPframework\Support\DBFactory;
+use WPframework\Interfaces\ConfigsInterface;
 
-final class Config implements ConfigInterface
+class Configs implements ConfigsInterface
 {
-    public $composer;
-    public $tenancy;
-    public $tenants;
-    public $kiosk;
-    private $appPath;
-    private $configsDir;
-    private static $composerJson;
-    private static $tenancyJson;
-    private static $tenantsJson;
-    private static $kioskJson;
+    public $config;
+    protected $appPath;
+    protected $configsDir;
+    protected array $configCache = [];
 
-    public function __construct(?string $appPath = null)
+	public function __construct(array $preloadConfigs = ['tenancy', 'tenants', 'kiosk'], ?string $appPath = null)
     {
         $this->appPath     = $appPath ?? APP_DIR_PATH;
         $this->configsPath = $this->getConfigsPath($this->appPath);
-        $this->composer    = $this->composer();
-        $this->tenancy     = $this->tenancy();
-        $this->tenants     = $this->tenants();
-        $this->kiosk       = $this->kiosk();
+
+        foreach ($preloadConfigs as $config) {
+            $this->loadConfigFile($config);
+        }
+
+        $this->loadConfigFile('composer');
+		$this->configCache['app'] = new DotAccess($this->appOptions());
+        $this->config = $this->configCache;
     }
 
     public function getAppPath()
@@ -158,82 +155,18 @@ final class Config implements ConfigInterface
         ];
     }
 
-    public function siteConfig(): array
-    {
-        $options_file = $this->configsPath . '/app.php';
-
-        if (file_exists($options_file) && \is_array(@require $options_file)) {
-            $siteConfigs = require $options_file;
-        } else {
-            $siteConfigs = [];
-        }
-
-        if ( ! \is_array($siteConfigs)) {
-            throw new InvalidArgumentException('Error: Config::siteConfig must be of type array', 1);
-        }
-
-        return self::multiMerge(self::getDefault(), $siteConfigs);
-    }
-
     public function get(?string $key = null, $default = null)
     {
-        static $_options = null;
-
-        if (null === $_options) {
-            $_options = new DotAccess($this->siteConfig());
+        if ( ! isset($this->configCache['app'])) {
+            $this->configCache['app'] = new DotAccess($this->appOptions());
         }
 
         if (null === $key) {
-            return $_options;
+            return $this->configCache['app'];
         }
 
-        return $_options->get($key, $default);
+        return $this->configCache['app']->get($key, $default);
     }
-
-    /**
-     * @return mixed
-     */
-    public function composer(?string $key = null)
-    {
-        $composer = self::loadComposerFile();
-
-        if ( ! empty($key)) {
-            return $composer->get($key);
-        }
-
-        return self::loadComposerFile();
-    }
-
-    /**
-     * @return mixed
-     */
-    public function tenancy(?string $key = null)
-    {
-        $this->loadTenancyFile();
-
-        if ( ! empty($key)) {
-            return $tenancy->get($key);
-        }
-
-        return $this->loadTenancyFile();
-    }
-
-    /**
-     * @return mixed
-     */
-    public function tenants()
-    {
-        return $this->loadTenants();
-    }
-
-    /**
-     * @return mixed
-     */
-    public function kiosk()
-    {
-        return $this->loadKioskFile();
-    }
-
 
     public static function isProd(?string $environment): bool
     {
@@ -252,13 +185,12 @@ final class Config implements ConfigInterface
             throw new RuntimeException("json file not found at {$jsonFilePath}");
         }
 
-        $json = json_decode(file_get_contents($jsonFilePath), true);
+        $jsonData = json_decode(file_get_contents($jsonFilePath), true);
         if (JSON_ERROR_NONE !== json_last_error()) {
             throw new RuntimeException("Error decoding json file {$jsonFilePath}: " . json_last_error_msg());
         }
-        $jsonData = $json;
 
-        return new DotAccess($jsonData);
+        return $jsonData;
     }
 
     public function getActivePlugins()
@@ -326,71 +258,77 @@ final class Config implements ConfigInterface
         return _configsDir();
     }
 
-    protected function loadTenancyFile()
+    /**
+     * Get a loaded configuration by key.
+     */
+    public function getConfig(string $key): ?array
     {
-        $userTenancyfile = $this->configsPath . "/tenancy.json";
-        $defaultTenancyfile = self::defaultConfigPath() . "/tenancy.json";
-
-        if ( ! self::$tenancyJson) {
-            if (file_exists($userTenancyfile)) {
-                self::$tenancyJson = $this->json($userTenancyfile);
-            } else {
-                self::$tenancyJson = $this->json($defaultTenancyfile);
-            }
-        }
-
-        return self::$tenancyJson;
+        return $this->configCache[$key] ?? null;
     }
 
     /**
-     * Loads tenants from a JSON file for faster setup of multi-tenancy.
-     * This method looks for a tenants.json file in the config directory.
-     * If the file does not exist, it defaults to an empty array.
-     *
-     * @return array The list of tenants loaded from the JSON file or an empty array.
+     * Clear the configuration cache or optionally for a specific key.
      */
-    protected function loadTenants()
+    public function clearConfigCache(?string $key = null): void
     {
-        $definedTenants = $this->configsPath . "/tenants.json";
+        if ($key) {
+            unset($this->configCache[$key]);
+        } else {
+            $this->configCache = [];
+        }
+    }
 
-        if ( ! self::$tenantsJson) {
-            if (file_exists($definedTenants)) {
-                self::$tenantsJson = $this->json($definedTenants);
-            } else {
-                self::$tenantsJson = [];
+	/**
+	 * Loads and merges a JSON configuration file into the configuration cache.
+	 *
+	 * This method attempts to load a configuration file from multiple sources,
+	 * merges configuration data from user-defined and default paths, and caches
+	 * the result for future use. Special handling is provided for `composer.json`,
+	 * which is directly processed if it exists.
+	 *
+	 * @param string $file        The base name of the configuration file (without the `.json` extension).
+	 * @param string|null $defaultPath Optional. A fallback path to look for the configuration file
+	 *                                  if it is not found in the user-defined configuration path.
+	 *                                  Defaults to the result of `self::defaultConfigPath()`.
+	 *
+	 * @return DotAccess|null Returns an instance of `DotAccess` containing the merged configuration data,
+	 *                        or `null` if the configuration file does not exist.
+	 *
+	 * @throws \RuntimeException If the configuration file does not exist in any of the expected locations.
+	 */
+    protected function loadConfigFile(string $file, ?string $defaultPath = null)
+    {
+        $fileName = "$file.json";
+
+        // Special handling for composer.json
+        if ('composer.json' === $fileName && ! isset($this->configCache[$file])) {
+            $composerFile = $this->appPath . "/" . $fileName;
+            if (file_exists($composerFile)) {
+                $configData = $this->json($composerFile);
+                $this->configCache[$file] = new DotAccess($configData);
             }
+
+            return $this->configCache[$file] ?? null;
         }
 
-        return self::$tenantsJson;
+        // General configuration file handling
+        $userFile = $this->configsPath . "/" . $fileName;
+        $defaultFile = $defaultPath ? $defaultPath . "/" . $fileName : self::defaultConfigPath() . "/" . $fileName;
+
+        // Load and merge data from user and default files
+        $defaultData = file_exists($defaultFile) ? $this->json($defaultFile) : [];
+        $userData = file_exists($userFile) ? $this->json($userFile) : [];
+
+        // Merge the data and cache it
+        $configData = self::multiMerge($defaultData, $userData);
+        $this->configCache[$file] = new DotAccess($configData);
+
+        return $this->configCache[$file];
     }
 
-    protected function loadComposerFile()
+    protected function getConfigsPath(string $appPath)
     {
-        if ( ! self::$composerJson) {
-            self::$composerJson = $this->json($this->appPath . "/composer.json");
-        }
-
-        return self::$composerJson;
-    }
-
-    protected function loadKioskFile()
-    {
-        $definedKiosk = $this->configsPath . "/kiosk.json";
-
-        if ( ! self::$kioskJson) {
-            if (file_exists($definedKiosk)) {
-                self::$kioskJson = $this->json($definedKiosk);
-            } else {
-                self::$kioskJson = [];
-            }
-        }
-
-        return self::$kioskJson;
-    }
-
-    private function getConfigsPath(string $appPath)
-    {
-        return $appPath . '/' . siteConfigsDir();
+        return $appPath . '/' . appOptionsDir();
     }
 
     /**
@@ -406,7 +344,7 @@ final class Config implements ConfigInterface
      *
      * @return array The merged array.
      */
-    private static function multiMerge(array $array1, array $array2): array
+    protected static function multiMerge(array $array1, array $array2): array
     {
         $merged = $array1;
 
@@ -419,5 +357,22 @@ final class Config implements ConfigInterface
         }
 
         return $merged;
+    }
+
+    public function appOptions(): array
+    {
+        $optionsFile = $this->configsPath . '/app.php';
+
+        if (file_exists($optionsFile) && \is_array(@require $optionsFile)) {
+            $appOptions = require $optionsFile;
+        } else {
+            $appOptions = [];
+        }
+
+        if ( ! \is_array($appOptions)) {
+            throw new InvalidArgumentException('Error: Config::siteConfig must be of type array', 1);
+        }
+
+        return self::multiMerge(self::getDefault(), $appOptions);
     }
 }

@@ -15,7 +15,7 @@ use Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use WPframework\Config;
+use WPframework\Support\Configs;
 use WPframework\Exceptions\TenantNotFoundException;
 use WPframework\Support\ConstantBuilder;
 use WPframework\Support\Services\TenantRepository;
@@ -23,7 +23,7 @@ use WPframework\Support\Services\TenantResolver;
 
 class TenantIdMiddleware extends AbstractMiddleware
 {
-    private $config;
+    private $configs;
     private $tenantResolver;
     private $tenantSetup;
     private $isMultitenant;
@@ -32,8 +32,8 @@ class TenantIdMiddleware extends AbstractMiddleware
     public function __construct(ConstantBuilder $configManager)
     {
         $this->configManager = $configManager;
-        $this->config        = new Config();
-        $this->isMultitenant = self::isMultitenantApp($this->config->composer);
+        $this->configs       = new Configs();
+        $this->isMultitenant = self::isMultitenantApp($this->configs->config['composer']);
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
@@ -55,12 +55,12 @@ class TenantIdMiddleware extends AbstractMiddleware
         // required.
         \define('APP_TENANT_ID', $tenant['uuid']);
         \define('IS_MULTITENANT', true);
-        \define('LANDLORD_UUID', $this->config->composer->get('extra.multitenant.uuid', null));
+        \define('LANDLORD_UUID', $this->configs->config['composer']->get('extra.multitenant.uuid', null));
 
         // allow overrides.
-        $this->configManager->define('REQUIRE_TENANT_CONFIG', $this->config->tenancy->get('require-config', false));
-        $this->configManager->define('TENANCY_WEB_ROOT', $this->config->tenancy->get('web-root', 'public'));
-        $this->configManager->define('PUBLIC_WEB_DIR', $this->config->getAppPath() . '/' . TENANCY_WEB_ROOT);
+        $this->configManager->define('REQUIRE_TENANT_CONFIG', $this->configs->config['tenancy']->get('require-config', false));
+        $this->configManager->define('TENANCY_WEB_ROOT', $this->configs->config['tenancy']->get('web-root', 'public'));
+        $this->configManager->define('PUBLIC_WEB_DIR', $this->configs->getAppPath() . '/' . TENANCY_WEB_ROOT);
         $this->configManager->define('APP_CONTENT_DIR', 'wp-content');
 
         return $handler->handle($request);

@@ -11,14 +11,14 @@
 
 namespace WPframework\Support\Services;
 
-use WPframework\Config;
+use WPframework\Support\Configs;
 
 class AuthManager
 {
     protected $authValidator;
     protected $currentUser;
     private $cookies = [];
-    private $config;
+    private $configs;
 
     public function __construct(?AuthValidator $authValidator = null)
     {
@@ -26,7 +26,7 @@ class AuthManager
             $this->authValidator = $authValidator;
         }
 
-        $this->config = new Config();
+        $this->configs = new Configs();
     }
 
     public function setValidator(): void
@@ -127,7 +127,7 @@ class AuthManager
 
     protected function getKioskUser(string $username): ?array
     {
-        return $this->config->kiosk->get($username, null);
+        return $this->configs->config['kiosk']->get($username, null);
     }
 
     /**

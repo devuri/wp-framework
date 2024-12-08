@@ -12,7 +12,7 @@
 namespace WPframework\Support;
 
 use Psr\Http\Message\ServerRequestInterface;
-use WPframework\Config;
+use WPframework\Support\Configs;
 use WPframework\EnvType;
 use WPframework\Interfaces\EnvSwitcherInterface as Switcher;
 

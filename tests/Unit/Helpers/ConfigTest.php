@@ -24,7 +24,7 @@ class ConfigTest extends TestCase
 {
     public function test_config_function_with_valid_key(): void
     {
-        $result = config('directory.plugin_dir');
+        $result = configs()->get('directory.plugin_dir');
 
         $this->assertEquals('wp-content/plugins', $result);
     }
@@ -33,7 +33,7 @@ class ConfigTest extends TestCase
     {
         $keyToTest = 'nonexistent.key';
 
-        $result = config($keyToTest);
+        $result = configs()->get($keyToTest);
 
         $this->assertNull($result);
     }
@@ -53,7 +53,7 @@ class ConfigTest extends TestCase
             "publickey_dir" => "pubkeys",
         ];
 
-        $result = config('directory');
+        $result = configs()->get('directory');
 
         $this->assertIsArray($result);
 

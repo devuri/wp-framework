@@ -14,7 +14,7 @@ namespace WPframework\Middleware;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use WPframework\Config;
+use WPframework\Support\Configs;
 use WPframework\Support\ConstantBuilder;
 use WPframework\Support\SiteManager;
 use WPframework\Support\Switcher;

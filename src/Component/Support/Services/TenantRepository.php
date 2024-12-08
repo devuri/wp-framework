@@ -11,17 +11,19 @@
 
 namespace WPframework\Support\Services;
 
-use WPframework\Config;
+use WPframework\Support\Configs;
 
 class TenantRepository
 {
-    private static $loadTenants = null;
+    private $tenants = null;
 
     public function __construct(array $tenants = [])
     {
-        if (null === self::$loadTenants) {
-            self::$loadTenants = new Config();
-        }
+        if (empty($tenants)) {
+            $this->tenants = (new Configs())->config['tenants'];
+        } else {
+			$this->tenants = $tenants;
+		}
     }
 
     public function findById(array $tenantDomain)
@@ -29,17 +31,17 @@ class TenantRepository
         return self::getTenant($tenantDomain[0]);
     }
 
-    public static function getTenant(string $domain)
+    public function getTenant(string $domain)
     {
-        if ( ! self::$loadTenants->tenants) {
-            return null;
-        }
+		if ( ! $this->tenants) {
+			return null;
+		}
 
-        return self::tenants()->get($domain, null);
+        return $this->tenants()->get($domain, null);
     }
 
-    private static function tenants()
+    private function tenants()
     {
-        return self::$loadTenants->tenants;
+        return $this->tenants;
     }
 }

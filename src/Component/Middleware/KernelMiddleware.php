@@ -17,6 +17,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use WPframework\Http\Message\Response;
 use WPframework\Support\KernelConfig;
+use WPframework\Support\Configs;
 
 class KernelMiddleware extends AbstractMiddleware
 {
@@ -83,7 +84,7 @@ class KernelMiddleware extends AbstractMiddleware
         }
 
         // from site composer.json
-        $extrasPath = array_keys(config()->composer->get('extra.installer-paths'));
+        $extrasPath = array_keys(configs()->config['composer']->get('extra.installer-paths'));
 
         return $installerPaths === $extrasPath;
     }
