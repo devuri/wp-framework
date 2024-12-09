@@ -122,7 +122,7 @@ class Terminate
         $path = htmlspecialchars(($this->request['path'] ?? null), ENT_QUOTES);
         $linkedUrl = "{$path}";
 
-        return '<a class="btn btn-outline-dark" href="' . $linkedUrl . '">Retry</a>';
+        return '<a class="btn btn-outline" href="' . $linkedUrl . '">Retry</a>';
     }
 
     /**
@@ -257,6 +257,12 @@ class Terminate
 		a {
 			color: #0073aa;
 		}
+        .btn-outline {
+            border: solid thin;
+            border-radius: 4px;
+            padding: 6px 12px;
+        }
+
 	</style>
 	<?php
     }

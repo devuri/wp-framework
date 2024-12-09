@@ -21,11 +21,9 @@ use WPframework\Support\KernelConfig;
 
 class KernelMiddleware extends AbstractMiddleware
 {
-    /**
-     * @var KernelConfig
-     */
     private $kernelConfig;
     private $pathError;
+    private $configs;
 
     /**
      * Constructor to inject the response factory.
@@ -47,7 +45,9 @@ class KernelMiddleware extends AbstractMiddleware
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $this->kernelConfig->setKernelConstants();
+        $this->configs = new Configs();
+        
+        $this->kernelConfig->setKernelConstants($this->configs);
 
         $isProd = $request->getAttribute('isProd', false);
 
@@ -66,11 +66,10 @@ class KernelMiddleware extends AbstractMiddleware
 
     protected function isValidInstallerPath(bool $isProd): bool
     {
-        $config = $this->kernelConfig->getConfig();
-        $publicWebRoot = $config->get('directory.web_root_dir');
-        $contentDir = $config->get('directory.content_dir');
-        $plugin = $config->get('directory.plugin_dir');
-        $muPlugins = $config->get('directory.mu_plugin_dir');
+        $publicWebRoot = $this->configs->config['app']->get('directory.web_root_dir');
+        $contentDir = $this->configs->config['app']->get('directory.content_dir');
+        $plugin = $this->configs->config['app']->get('directory.plugin_dir');
+        $muPlugins = $this->configs->config['app']->get('directory.mu_plugin_dir');
 
         // set by the framework.
         $installerPaths = [
