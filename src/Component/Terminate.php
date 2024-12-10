@@ -105,6 +105,7 @@ class Terminate
                 </div>
                 <p>
                     <?php echo $this->linkUrl(); ?>
+                    <?php echo $this->homeUrl(); ?>
                 </p>
             </div>
             <div>
@@ -123,6 +124,14 @@ class Terminate
         $linkedUrl = "{$path}";
 
         return '<a class="btn btn-outline" href="' . $linkedUrl . '">Retry</a>';
+    }
+
+    protected function homeUrl(): string
+    {
+        $host = htmlspecialchars(($this->request['host'] ?? null), ENT_QUOTES);
+        $linkedhomeUrl = "{$host}";
+
+        return '<a class="btn btn-outline" href="http://' . $linkedhomeUrl . '">Go Home</a>';
     }
 
     /**
