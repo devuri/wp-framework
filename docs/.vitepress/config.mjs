@@ -89,6 +89,7 @@ export default defineConfig({
                     { text: 'Configuration', link: '/multi-tenant/tenancy-config' },
                     { text: 'Isolation', link: '/multi-tenant/isolation' },
                     { text: 'Architecture', link: '/multi-tenant/architecture' }
+                    { text: 'Domains', link: '/multi-tenant/domains' }
                 ]
             },
             {
