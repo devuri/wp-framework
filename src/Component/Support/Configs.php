@@ -39,6 +39,14 @@ class Configs implements ConfigsInterface
         $this->config = $this->configCache;
     }
 
+    /**
+     * @param string $file The base name of the configuration file (without the `.json` extension).
+     */
+    public function addConfig(string $file): void
+    {
+        $this->loadConfigFile($file);
+    }
+
     public function getAppPath()
     {
         return $this->appPath;
