@@ -68,7 +68,12 @@ class DotenvMiddleware extends AbstractMiddleware
             throw new InvalidPathException($e->getMessage());
         }
 
-        self::validateTenantdB($_dotenv);
+		$this->configs       = new Configs();
+		$this->isMultitenant = self::isMultitenantApp($this->configs->config['composer']);
+
+		if($this->isMultitenant){
+			self::validateTenantdB($_dotenv);
+		}
 
         $request = $request->withAttribute('envFiles', $envFiles);
 

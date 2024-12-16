@@ -32,12 +32,13 @@ class TenantIdMiddleware extends AbstractMiddleware
     public function __construct(ConstantBuilder $configManager)
     {
         $this->configManager = $configManager;
-        $this->configs       = new Configs();
-        $this->isMultitenant = self::isMultitenantApp($this->configs->config['composer']);
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
+		$this->configs       = new Configs();
+		$this->isMultitenant = self::isMultitenantApp($this->configs->config['composer']);
+
         if ( ! $this->isMultitenant) {
             return $handler->handle($request);
         }
@@ -103,18 +104,6 @@ class TenantIdMiddleware extends AbstractMiddleware
     private function isValidTenantId(string $tenantId): bool
     {
         return preg_match('/^[a-zA-Z0-9_-]+$/', $tenantId);
-    }
-
-    /**
-     * Determines if the application is configured to operate in multi-tenant mode.
-     *
-     * @param mixed $composerConfig
-     *
-     * @return bool Returns `true` if the application is in multi-tenant mode, otherwise `false`.
-     */
-    private static function isMultitenantApp($composerConfig): bool
-    {
-        return $composerConfig->get('extra.multitenant.is_active', false);
     }
 
     /**
