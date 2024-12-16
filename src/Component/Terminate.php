@@ -128,10 +128,9 @@ class Terminate
 
     protected function homeUrl(): string
     {
-        $host = htmlspecialchars(($this->request['host'] ?? null), ENT_QUOTES);
-        $linkedhomeUrl = "{$host}";
+        $linkedhomeUrl = env('WP_HOME', '#');
 
-        return '<a class="btn btn-outline" href="http://' . $linkedhomeUrl . '">Go Home</a>';
+        return '<a class="btn btn-outline" href="' . $linkedhomeUrl . '">Go Home</a>';
     }
 
     /**
