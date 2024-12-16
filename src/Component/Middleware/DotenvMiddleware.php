@@ -13,14 +13,12 @@ namespace WPframework\Middleware;
 
 use Dotenv\Dotenv;
 use Dotenv\Exception\InvalidPathException;
-use Exception;
 use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use WPframework\EnvType;
-use WPframework\Terminate;
 
 class DotenvMiddleware extends AbstractMiddleware
 {
@@ -68,23 +66,8 @@ class DotenvMiddleware extends AbstractMiddleware
             throw new InvalidPathException($e->getMessage());
         }
 
-        self::validateTenantdB($_dotenv);
-
         $request = $request->withAttribute('envFiles', $envFiles);
 
         return $handler->handle($request);
-    }
-
-    protected function validateTenantdB($_dotenv): void
-    {
-        try {
-            $_dotenv->required('LANDLORD_DB_HOST')->notEmpty();
-            $_dotenv->required('LANDLORD_DB_NAME')->notEmpty();
-            $_dotenv->required('LANDLORD_DB_USER')->notEmpty();
-            $_dotenv->required('LANDLORD_DB_PASSWORD')->notEmpty();
-            $_dotenv->required('LANDLORD_DB_PREFIX')->notEmpty();
-        } catch (Exception $e) {
-            Terminate::exit(new Exception('Landlord info is required for multi-tenant'), 403);
-        }
     }
 }

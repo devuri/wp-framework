@@ -70,4 +70,16 @@ abstract class AbstractMiddleware implements MiddlewareInterface
 
         return $merged;
     }
+
+    /**
+     * Determines if the application is configured to operate in multi-tenant mode.
+     *
+     * @param mixed $composerConfig
+     *
+     * @return bool Returns `true` if the application is in multi-tenant mode, otherwise `false`.
+     */
+    private static function isMultitenantApp($composerConfig): bool
+    {
+        return $composerConfig->get('extra.multitenant.is_active', false);
+    }
 }

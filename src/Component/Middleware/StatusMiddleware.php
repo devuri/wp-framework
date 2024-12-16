@@ -33,7 +33,7 @@ class StatusMiddleware implements MiddlewareInterface
         if ('/health-status' === $request->getUri()->getPath()) {
             $status = $this->checkSystemStatus();
 
-            $request = $request->withAttribute('healthStatus', $status);
+            $request = $request->withAttribute('healthStatus', $status)->withAttribute('isRoute', true);
 
             // return new JsonResponse($status, $status['healthy'] ? 200 : 503);
         }
