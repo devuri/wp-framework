@@ -13,14 +13,12 @@ namespace WPframework\Middleware;
 
 use Dotenv\Dotenv;
 use Dotenv\Exception\InvalidPathException;
-use Exception;
 use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use WPframework\EnvType;
-use WPframework\Terminate;
 
 class DotenvMiddleware extends AbstractMiddleware
 {

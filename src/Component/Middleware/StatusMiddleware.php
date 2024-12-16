@@ -35,7 +35,7 @@ class StatusMiddleware implements MiddlewareInterface
 
             $request = $request->withAttribute('healthStatus', $status)->withAttribute('isRoute', true);
 
-            //return new JsonResponse($status, $status['healthy'] ? 200 : 503);
+            // return new JsonResponse($status, $status['healthy'] ? 200 : 503);
         }
 
         return $handler->handle($request);

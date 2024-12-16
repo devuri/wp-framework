@@ -71,7 +71,7 @@ abstract class AbstractMiddleware implements MiddlewareInterface
         return $merged;
     }
 
-	/**
+    /**
      * Determines if the application is configured to operate in multi-tenant mode.
      *
      * @param mixed $composerConfig

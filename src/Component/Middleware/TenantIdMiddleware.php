@@ -36,8 +36,8 @@ class TenantIdMiddleware extends AbstractMiddleware
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-		$this->configs       = new Configs();
-		$this->isMultitenant = self::isMultitenantApp($this->configs->config['composer']);
+        $this->configs       = new Configs();
+        $this->isMultitenant = self::isMultitenantApp($this->configs->config['composer']);
 
         if ( ! $this->isMultitenant) {
             return $handler->handle($request);
@@ -66,7 +66,7 @@ class TenantIdMiddleware extends AbstractMiddleware
         $this->configManager->define('PUBLIC_WEB_DIR', $this->configs->getAppPath() . '/' . TENANCY_WEB_ROOT);
         $this->configManager->define('APP_CONTENT_DIR', 'wp-content');
 
-		$request = $request->withAttribute('isMultitenant', $this->isMultitenant);
+        $request = $request->withAttribute('isMultitenant', $this->isMultitenant);
 
         return $handler->handle($request);
     }

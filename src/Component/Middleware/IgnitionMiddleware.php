@@ -65,16 +65,16 @@ class IgnitionMiddleware extends AbstractMiddleware
 
         // set env values.
         $_dotenv = Dotenv::createImmutable($tenantConfigPath, $envFiles, true);
-		$_dotenv->load();
+        $_dotenv->load();
 
-		if($this->isMultitenant){
-			self::validateTenantdB($_dotenv);
-		}
+        if ($this->isMultitenant) {
+            self::validateTenantdB($_dotenv);
+        }
 
         return $handler->handle($request);
     }
 
-	protected function validateTenantdB($_dotenv): void
+    protected function validateTenantdB($_dotenv): void
     {
         try {
             $_dotenv->required('LANDLORD_DB_HOST')->notEmpty();
