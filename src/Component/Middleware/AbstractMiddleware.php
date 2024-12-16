@@ -78,7 +78,7 @@ abstract class AbstractMiddleware implements MiddlewareInterface
      *
      * @return bool Returns `true` if the application is in multi-tenant mode, otherwise `false`.
      */
-    private static function isMultitenantApp($composerConfig): bool
+    protected static function isMultitenantApp($composerConfig): bool
     {
         return $composerConfig->get('extra.multitenant.is_active', false);
     }
