@@ -66,6 +66,8 @@ class TenantIdMiddleware extends AbstractMiddleware
         $this->configManager->define('PUBLIC_WEB_DIR', $this->configs->getAppPath() . '/' . TENANCY_WEB_ROOT);
         $this->configManager->define('APP_CONTENT_DIR', 'wp-content');
 
+		$request = $request->withAttribute('isMultitenant', $this->isMultitenant);
+
         return $handler->handle($request);
     }
 

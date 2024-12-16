@@ -25,6 +25,7 @@ class IgnitionMiddleware extends AbstractMiddleware
     private $appPath;
     private $tenant;
     private $configs;
+    private $isMultitenant;
 
     public function __construct()
     {
@@ -42,6 +43,7 @@ class IgnitionMiddleware extends AbstractMiddleware
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $this->tenant = $request->getAttribute('tenant', false);
+        $this->isMultitenant = $request->getAttribute('isMultitenant', false);
 
         if ( ! $this->tenant) {
             return $handler->handle($request);
@@ -63,8 +65,25 @@ class IgnitionMiddleware extends AbstractMiddleware
 
         // set env values.
         $_dotenv = Dotenv::createImmutable($tenantConfigPath, $envFiles, true);
-        $_dotenv->load();
+		$_dotenv->load();
+
+		if($this->isMultitenant){
+			self::validateTenantdB($_dotenv);
+		}
 
         return $handler->handle($request);
+    }
+
+	protected function validateTenantdB($_dotenv): void
+    {
+        try {
+            $_dotenv->required('LANDLORD_DB_HOST')->notEmpty();
+            $_dotenv->required('LANDLORD_DB_NAME')->notEmpty();
+            $_dotenv->required('LANDLORD_DB_USER')->notEmpty();
+            $_dotenv->required('LANDLORD_DB_PASSWORD')->notEmpty();
+            $_dotenv->required('LANDLORD_DB_PREFIX')->notEmpty();
+        } catch (Exception $e) {
+            Terminate::exit(new Exception('Landlord info is required for multi-tenant'), 403);
+        }
     }
 }
