@@ -26,7 +26,7 @@ Before you begin the installation process, ensure you have the following prerequ
 **Command Line Access**: You'll need terminal or command line access to execute Composer commands.
 
 > [!CAUTION]
-> The core framework is designed to be used with Raydium. While it's possible to use it as-is, it's generally recommended to utilize one of the pre-built versions [here](https://github.com/devuri/raydium/), unless you are experienced and understand the required file structure and specific setup expectations.
+> The core framework is designed to be used with Raydium. While it's possible to use it as-is, it's generally recommended to utilize one of the pre-built versions [here](https://github.com/devuri/raydium/).
 
 ## Installation
 
