@@ -49,12 +49,18 @@ class AuthManager
      *
      * @return bool
      */
-    public function check(): ?bool
+    public function check(string $scheme = 'http'): ?bool
     {
         if (empty($this->cookies)) {
             return null;
         }
 
+        $schemeKey = [
+            'http' => 'auth',
+            'https' => 'secure_auth',
+        ];
+
+        $secureCookie = $this->getSecureAuthCookie();
         $authCookie = $this->getAuthCookie();
         $loginCookie = $this->getLoggedInCookie();
 
@@ -69,7 +75,15 @@ class AuthManager
             $cookie = $loginCookie;
         }
 
-        $result = $this->authValidator->validate($cookie);
+        if ('https' === $scheme) {
+            $cookie = $secureCookie;
+        }
+
+        if (empty($cookie)) {
+            return null;
+        }
+
+        $result = $this->authValidator->validate($cookie, true, $schemeKey[$scheme]);
 
         if (true === $result['auth']) {
             $this->currentUser = $result['user'];
@@ -138,6 +152,16 @@ class AuthManager
     protected function getAuthCookie(): ?string
     {
         return $this->getCookie(AUTH_COOKIE);
+    }
+
+    /**
+     * Get the secure cookie from the request.
+     *
+     * @return null|string
+     */
+    protected function getSecureAuthCookie(): ?string
+    {
+        return $this->getCookie(SECURE_AUTH_COOKIE);
     }
 
     protected function getLoggedInCookie(): ?string

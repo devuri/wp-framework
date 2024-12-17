@@ -178,6 +178,7 @@ final class EnvType
         return <<<END
         WP_HOME='$home_url'
         WP_SITEURL="$site_url"
+        ADMIN_LOGIN_URL="$site_url/wp-login.php"
 
         WP_ENVIRONMENT_TYPE='prod'
         WP_DEVELOPMENT_MODE='theme'
