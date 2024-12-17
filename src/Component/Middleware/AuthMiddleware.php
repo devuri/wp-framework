@@ -37,7 +37,7 @@ class AuthMiddleware extends AbstractMiddleware
         $cookies = $request->getCookieParams();
         $this->auth->setValidator();
         $this->auth->setCookies($cookies);
-        $userAuth = $this->auth->check();
+        $userAuth = $this->auth->check($request->getUri()->getScheme());
 
         if ($this->isAdminRoute($request) && ! $userAuth) {
             if ( ! self::isInstallOrUpgrade()) {
