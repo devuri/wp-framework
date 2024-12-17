@@ -45,10 +45,10 @@ class Terminate
         $terminator->exitHandler->terminate(1);
     }
 
-	public function setErrorCode(int $errorCode)
-	{
-		$this->errorCode = $errorCode;
-	}
+    public function setErrorCode(int $errorCode): void
+    {
+        $this->errorCode = $errorCode;
+    }
 
     /**
      * Sends the HTTP status code header after validating it.
@@ -140,16 +140,16 @@ class Terminate
         return '<a class="btn btn-outline" href="' . $linkedhomeUrl . '">Go Home</a>';
     }
 
-	protected function loginUrl(): ?string
-	{
-	    $adminLoginUrl = env('ADMIN_LOGIN_URL', '#');
+    protected function loginUrl(): ?string
+    {
+        $adminLoginUrl = env('ADMIN_LOGIN_URL', '#');
 
-	    if ($this->statusCode === 401) {
-	        return "<a class=\"btn btn-outline\" href=\"{$adminLoginUrl}\">Login</a>";
-	    }
+        if (401 === $this->statusCode) {
+            return "<a class=\"btn btn-outline\" href=\"{$adminLoginUrl}\">Login</a>";
+        }
 
-	    return null;
-	}
+        return null;
+    }
 
 
     /**

@@ -55,10 +55,10 @@ class AuthManager
             return null;
         }
 
-		$schemeKey = [
-			'http' => 'auth',
-			'https' => 'secure_auth',
-		];
+        $schemeKey = [
+            'http' => 'auth',
+            'https' => 'secure_auth',
+        ];
 
         $secureCookie = $this->getSecureAuthCookie();
         $authCookie = $this->getAuthCookie();
@@ -75,11 +75,11 @@ class AuthManager
             $cookie = $loginCookie;
         }
 
-		if('https' === $scheme){
-			$cookie = $secureCookie;
-		}
+        if ('https' === $scheme) {
+            $cookie = $secureCookie;
+        }
 
-		if (empty($cookie)) {
+        if (empty($cookie)) {
             return null;
         }
 
@@ -154,7 +154,7 @@ class AuthManager
         return $this->getCookie(AUTH_COOKIE);
     }
 
-	/**
+    /**
      * Get the secure cookie from the request.
      *
      * @return null|string
