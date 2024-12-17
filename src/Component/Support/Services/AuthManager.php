@@ -79,6 +79,10 @@ class AuthManager
 			$cookie = $secureCookie;
 		}
 
+		if (empty($cookie)) {
+            return null;
+        }
+
         $result = $this->authValidator->validate($cookie, true, $schemeKey[$scheme]);
 
         if (true === $result['auth']) {
