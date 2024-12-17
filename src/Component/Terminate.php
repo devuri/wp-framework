@@ -13,6 +13,7 @@ class Terminate
     protected $exitHandler;
     protected $exception;
     protected $statusCode;
+    protected $errorCode;
     protected $request;
 
     /**
@@ -24,7 +25,7 @@ class Terminate
     {
         $this->request    = $request;
         $this->statusCode = $statusCode;
-        $this->exception  = new HttpException($exception->getMessage(), $this->statusCode, $exception);
+        $this->exception  = new HttpException($exception->getMessage(), $this->statusCode, null, $exception);
         $this->exitHandler = $exit ?? new ExitHandler();
     }
 
@@ -43,6 +44,11 @@ class Terminate
         $terminator->logException($exception);
         $terminator->exitHandler->terminate(1);
     }
+
+	public function setErrorCode(int $errorCode)
+	{
+		$this->errorCode = $errorCode;
+	}
 
     /**
      * Sends the HTTP status code header after validating it.
@@ -106,6 +112,7 @@ class Terminate
                 <p>
                     <?php echo $this->linkUrl(); ?>
                     <?php echo $this->homeUrl(); ?>
+                    <?php echo $this->loginUrl(); ?>
                 </p>
             </div>
             <div>
@@ -132,6 +139,18 @@ class Terminate
 
         return '<a class="btn btn-outline" href="' . $linkedhomeUrl . '">Go Home</a>';
     }
+
+	protected function loginUrl(): ?string
+	{
+	    $adminLoginUrl = env('ADMIN_LOGIN_URL', '#');
+
+	    if ($this->statusCode === 401) {
+	        return "<a class=\"btn btn-outline\" href=\"{$adminLoginUrl}\">Login</a>";
+	    }
+
+	    return null;
+	}
+
 
     /**
      * Determines whether to display a stack trace.
