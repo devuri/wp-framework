@@ -82,7 +82,7 @@ function env($name, $default = null, $encrypt = false, $strtolower = false)
     try {
         $env_var = $env_instance->get($name, $default, $encrypt, $strtolower);
     } catch (Exception $e) {
-        Terminate::exit($e, 500);
+		throw new \InvalidArgumentException( $e->getMessage() );
     }
 
     return $env_var;
