@@ -74,36 +74,20 @@ function env($name, $default = null, $encrypt = false, $strtolower = false)
         return $default;
     }
 
-    static $env_instance = null;
+    static $env_instance;
+    static $whitelisted;
     if (null === $env_instance) {
-        $env_instance = new Env(envWhitelist(), $encryption_path, false);
+        $cfgs = configs();
+        $env_instance = new Env($cfgs->config['whitelist'], $encryption_path, false);
     }
 
     try {
         $env_var = $env_instance->get($name, $default, $encrypt, $strtolower);
     } catch (Exception $e) {
-        Terminate::exit($e, 500);
+        throw new \InvalidArgumentException($e->getMessage());
     }
 
     return $env_var;
-}
-
-function envWhitelist(): array
-{
-    static $whitelist;
-    static $whitelisted;
-
-    if (\is_null($whitelist)) {
-        $framework = new Urisoft\SimpleConfig(_configsDir(), ['whitelist']);
-        // $app = new Urisoft\SimpleConfig( appOptionsDir(), ['whitelist'] );
-        $whitelist = $framework->get('whitelist');
-    }
-
-    if (\is_null($whitelisted)) {
-        $whitelisted = array_merge($whitelist['framework'], $whitelist['wp']);
-    }
-
-    return $whitelisted;
 }
 
 function appOptionsDir(): ?string
@@ -191,7 +175,7 @@ function cleanSensitiveEnv(array $sensitives): void
     }
 }
 
-function _configsDir(): string
+function localConfigsDir(): string
 {
     return  __DIR__ . '/configs';
 }
