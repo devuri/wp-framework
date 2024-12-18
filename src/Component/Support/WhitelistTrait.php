@@ -29,7 +29,7 @@ trait WhitelistTrait
 
         $whitelisted = array_merge($defaultWhitelist['framework'], $defaultWhitelist['wp']);
 
-        return self::multiMerge($whitelisted, $appWhitelist);
+        return array_merge($whitelisted, $appWhitelist);
     }
 
     protected static function getDefaultWhitelist(): array
