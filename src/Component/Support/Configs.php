@@ -19,24 +19,40 @@ use WPframework\Interfaces\ConfigsInterface;
 
 class Configs implements ConfigsInterface
 {
+    use WhitelistTrait;
+
     public $config;
     protected $appPath;
     protected $configsPath;
     protected $configsDir;
     protected array $configCache = [];
+    protected static $defaultWhitelist;
 
     public function __construct(array $preloadConfigs = ['tenancy', 'tenants', 'kiosk'], ?string $appPath = null)
     {
         $this->appPath     = $appPath ?? APP_DIR_PATH;
         $this->configsPath = $this->getConfigsPath($this->appPath);
+        self::$defaultWhitelist = self::getDefaultWhitelist();
 
         foreach ($preloadConfigs as $config) {
             $this->loadConfigFile($config);
         }
 
         $this->loadConfigFile('composer');
-        $this->configCache['app'] = new DotAccess($this->appOptions());
+        $this->configCache['whitelist'] = $this->setEnvWhitelist(self::$defaultWhitelist);
         $this->config = $this->configCache;
+    }
+
+    /**
+     * Load `app` options separately to avoid side effects.
+     *
+     * @return self
+     */
+    public function app(): self
+    {
+        $this->configCache['app'] = new DotAccess($this->appOptions());
+
+        return $this->refreshConfig();
     }
 
     /**
@@ -178,9 +194,9 @@ class Configs implements ConfigsInterface
         return $this->configCache['app']->get($key, $default);
     }
 
-    public static function isProd(?string $environment): bool
+    public static function isProd(?string $environment, array $production = [ 'secure', 'sec', 'production', 'prod' ]): bool
     {
-        if (\in_array($environment, [ 'secure', 'sec', 'production', 'prod' ], true)) {
+        if (\in_array($environment, $production, true)) {
             return true;
         }
 
@@ -265,13 +281,13 @@ class Configs implements ConfigsInterface
 
     public static function defaultConfigPath()
     {
-        return _configsDir();
+        return localConfigsDir();
     }
 
     /**
      * Get a loaded configuration by key.
      */
-    public function getConfig(string $key): ?array
+    public function getConfig(string $key): ?DotAccess
     {
         return $this->configCache[$key] ?? null;
     }
@@ -286,6 +302,16 @@ class Configs implements ConfigsInterface
         } else {
             $this->configCache = [];
         }
+
+        $this->refreshConfig();
+    }
+
+    /**
+     * Add to the configuration cache.
+     */
+    public function updateConfigCache(string $key, DotAccess $item): void
+    {
+        $this->configCache[$key] = $item;
     }
 
     public function appOptions(): array
@@ -303,6 +329,13 @@ class Configs implements ConfigsInterface
         }
 
         return self::multiMerge(self::getDefault(), $appOptions);
+    }
+
+    protected function refreshConfig(): self
+    {
+        $this->config = $this->configCache;
+
+        return $this;
     }
 
     /**
