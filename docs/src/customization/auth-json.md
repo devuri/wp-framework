@@ -1,6 +1,6 @@
 # Set Up an `auth.json` File
 
-### How to Set Up Your Raydium Project with GitHub Using an `auth.json` File
+### Set Up Your Raydium Project with GitHub Using an `auth.json` File
 
 > [!IMPORTANT]
 > Always keep your tokens secure. Never commit your `auth.json` file to version control or share it publicly to maintain the security of your GitHub account.
@@ -40,4 +40,3 @@ Simply having the `auth.json` file in the right place allows Composer to authent
 
 
 Setting up an `auth.json` file for your Composer project is a straightforward way to enhance your development workflow by ensuring uninterrupted access to GitHub repositories. This setup not only avoids potential disruptions due to rate limiting but also keeps your project connected to private resources seamlessly. Happy coding!
-
