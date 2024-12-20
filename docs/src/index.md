@@ -10,7 +10,13 @@ hero:
       link: /guide/getting-started
     - theme: alt
       text: What is Raydium
-      link: /overview/what-is-raydium
+      link: /guide/overview/what-is-raydium
+    - theme: alt
+      text: Multi-Tenant
+      link: /multi-tenant/overview
+    - theme: alt
+      text: Deploy
+      link: /deployment/auto-updates
 
 features:
   - title: Modular Architecture

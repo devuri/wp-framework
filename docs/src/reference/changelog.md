@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.2](https://github.com/devuri/wpframework/compare/v0.6.1...v0.6.2) (2024-09-17)
+
+
+### Features
+
+* new `Tenant` class to decouple the `tenant()` ([49e41f8](https://github.com/devuri/wpframework/commit/49e41f8d07764e4747e874f07be26b1b1ce2ceb5))
+
 ## [0.6.1](https://github.com/devuri/wpframework/compare/v0.6.0...v0.6.1) (2024-09-16)
 
 

@@ -1,6 +1,6 @@
 # Configurations
 
-This guide explains how to modify the [configuration options](../reference/configuration) of the framework used in your project. The configuration options are defined in the `configs/app.php` file.
+This guide explains how to modify the [configuration options](../reference/framework/configuration) of the framework used in your project. The configuration options are defined in the `configs/app.php` file.
 
 ## Using Environment Variables
 

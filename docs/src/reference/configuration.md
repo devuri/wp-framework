@@ -4,7 +4,7 @@
 
 The `configs/app.php` file in the Raydium Framework is a crucial component for setting and customizing various [configuration options](../customization/config-overview) for your WordPress application. It allows you to define key-value pairs for different settings, influencing how your application behaves in various environments.
 
-> The framework provides a flexible configuration system that allows you to set various options. These settings are typically specified in the `configs/app.php` file. However, if this file is not created, Raydium will use sensible default values. Additionally, even if the `app.php` file is present, you can still [override specific values](../reference/options-env.md) using [environment variables](../reference/environment-vars.md).
+> The framework provides a flexible configuration system that allows you to set various options. These settings are typically specified in the `configs/app.php` file. However, if this file is not created, Raydium will use sensible default values. Additionally, even if the `app.php` file is present, you can still [override specific values](../reference/framework/options-env.md) using [environment variables](../reference/environment-vars.md).
 
 ## Configuration Options
 

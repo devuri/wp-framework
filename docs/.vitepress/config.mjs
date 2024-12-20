@@ -1,7 +1,9 @@
-import { defineConfig } from 'vitepress';
+import { defineConfig } from 'vitepress'
+import functionsList from './functionsArray'
+const pkg = require('../../package.json')
 
-// https://vitepress.dev/reference/site-config
 export default defineConfig({
+    /* prettier-ignore */
     head: [
         ['link', { rel: 'icon', type: 'image/svg+xml', href: '/raydium-logo-mini.svg' }],
         ['link', { rel: 'icon', type: 'image/png', href: '/raydium-logo-mini.png' }],
@@ -21,129 +23,233 @@ export default defineConfig({
     base: '/wpframework/',
     outDir: '../docs/dist',
     cleanUrls: true,
+	ignoreDeadLinks: true,
+    // sitemap: {
+    //     hostname: 'https://devuri.github.io/wpframework'
+    // },
     themeConfig: {
-        nav: [
-            { text: 'Guide', link: '/overview/what-is-raydium' },
-            { text: 'Reference', link: '/reference/environment-vars' }
-        ],
-        sidebar: [
+        nav: navBar(),
+		sidebar: {
+			'/guide/': [
+				{
+					text: 'Guide',
+					base: '/guide/',
+					items: sidebarGuide()
+				}
+			],
+			'/deployment/': [
+				{
+					text: 'Deployment',
+					base: '/deployment/',
+					items: sidebarDeployment()
+				}
+			],
+			'/multi-tenant/': [
+				{
+					text: 'MultiTenant',
+					base: '/multi-tenant/',
+					items: sidebarMultiTenant()
+				}
+			],
+	    },
+        socialLinks: [
             {
-                text: 'Overview',
-                collapsible: true,
-                collapsed: true,
-                items: [
-                    { text: 'Why Raydium', link: '/overview/why-raydium' },
-                    { text: 'What Is Raydium', link: '/overview/what-is-raydium' },
-                    { text: 'Modern Development', link: '/overview/modern-development' },
-                    { text: 'Is it Still WordPress', link: '/overview/is-it-wordpress' }
-                ]
-            },
-            {
-                text: 'Quick Start',
-                collapsible: true,
-                collapsed: false,
-                items: [
-                    { text: 'Getting Started', link: '/guide/getting-started' },
-                    { text: 'Installation', link: '/guide/installation' },
-		            { text: 'Ignore Platform', link: '/guide/ignore-platform' },
-                    { text: 'Migration', link: '/guide/migration' },
-                    { text: 'Updates', link: '/guide/updates' }
-                ]
-            },
-            {
-                text: 'Deployment',
-                collapsible: true,
-                collapsed: true,
-                items: [
-                    { text: 'Deploy', link: '/deployment/deploy' },
-                    { text: 'Repo Strategy', link: '/deployment/repo-strategy' },
-		            { text: 'Automated rsync', link: '/deployment/rsync-strategy' },
-                    { text: 'SSH Keys', link: '/deployment/ssh-keys' },
-		            { text: 'SSH Key Pairs', link: '/deployment/ssh-keygen' },
-		            { text: 'Deploy Keys', link: '/deployment/deploy-keys' },
-		            { text: 'Auto Updates', link: '/deployment/auto-updates' },
-		            { text: 'Disable Updates', link: '/deployment/disable-updates' }
-                ]
-            },
-            {
-                text: 'Customization',
-                collapsible: true,
-                collapsed: true,
-                items: [
-                    { text: 'Configuration', link: '/customization/config-overview' },
-                    { text: 'Environments', link: '/customization/environments' },
-                    { text: 'Environment File', link: '/customization/environment-file' },
-                    { text: 'Constants', link: '/customization/constants' },
-		            { text: 'GitHub Token', link: '/customization/auth-json' },
-					{ text: 'Kiosk', link: '/customization/kiosk' },
-					{ text: 'Install Protection', link: '/customization/install-protection' }
-                ]
-            },
-            {
-                text: 'Multi-Tenant',
-                collapsible: true,
-                collapsed: true,
-                items: [
-                    { text: 'Setup Guide', link: '/multi-tenant/setup' },
-                    { text: 'Overview', link: '/multi-tenant/overview' },
-                    { text: 'Configuration', link: '/multi-tenant/tenancy-config' },
-                    { text: 'Isolation', link: '/multi-tenant/isolation' },
-                    { text: 'Architecture', link: '/multi-tenant/architecture' },
-                    { text: 'Domains', link: '/multi-tenant/domains' }
-                ]
-            },
-            {
-                text: 'Tutorials',
-                collapsible: true,
-                collapsed: true,
-                items: [{ text: 'Overview', link: '/tutorials/overview' }]
-            },
-            {
-                text: 'Reference',
-                collapsible: true,
-                collapsed: true,
-                items: [
-                    { text: 'Lifecycle', link: '/reference/lifecycle' },
-                    { text: 'Configs', link: '/reference/configuration' },
-                    { text: 'Constants', link: '/reference/app-constants' },
-                    { text: 'Environment', link: '/reference/environment-vars' },
-                    { text: 'Plugin', link: '/reference/plugin' },
-                    { text: 'App', link: '/reference/app-component' },
-                    { text: 'Kernel', link: '/reference/kernel' },
-                    { text: 'Setup', link: '/reference/setup' },
-                    { text: 'Tenancy', link: '/reference/tenancy' },
-                    { text: 'Switcher', link: '/reference/switcher' },
-                    { text: 'Terminate', link: '/reference/terminate' },
-                    { text: 'Architecture', link: '/reference/architecture' },
-                    { text: 'Framework', link: '/reference/framework' },
-                    { text: 'Code', link: 'https://devuri.github.io/wpframework/code/' }
-                ]
-            },
-            {
-                text: 'Upgrades',
-                collapsible: true,
-                collapsed: true,
-                items: [
-                    { text: '^0.0.5', link: '/upgrade/env-config-upgrade' },
-                    { text: 'Changelog', link: '/upgrade/changelog' }
-                ]
-            },
-            {
-                text: 'Advanced',
-                items: [
-                    { text: 'Premium Plugins', link: '/premium-plugins' },
-                    { text: 'Managing Updates', link: '/updates' }
-                ]
+                icon: 'github',
+                link: 'https://github.com/devuri/wpframework'
             }
         ],
-        socialLinks: [{ icon: 'github', link: 'https://github.com/devuri/wpframework' }],
         search: {
             provider: 'local',
-            options: { placeholder: 'Search Raydium Docs...' }
+            options: {
+                placeholder: 'Search Raydium Framework Docs...',
+            },
         },
-        footer: {
+		footer: {
             message: 'Released under the <a href="https://github.com/devuri/wpframework/blob/main/LICENSE">MIT License</a>.',
             copyright: 'Copyright © <a href="https://devuri">Uriel Wilson</a>'
         }
     }
-});
+})
+
+function navBar(){
+  return [
+    {
+      text: 'Guide',
+      link: 'guide/overview/what-is-raydium',
+      activeMatch: '/guide/'
+    },
+	{
+	  text: 'Reference',
+	  link: '/reference/configuration',
+	  activeMatch: '/reference/'
+	},
+    {
+      text: pkg.version,
+      items: [
+        {
+          text: 'Changelog',
+          link: 'https://github.com/devuri/wpframework/blob/master/CHANGELOG.md'
+        },
+        {
+          text: 'Contributing',
+          link: '/reference/framework/'
+	  	},
+		{text: "Code", link: "https://devuri.github.io/wpframework/code/"}
+      ]
+    }
+  ]
+}
+
+function sidebarDeployment() {
+	return [
+		{
+			text: 'Deployment',
+			collapsible: true,
+			collapsed: true,
+			items: [
+				{ text: 'Deploy', link: 'deploy' },
+				{ text: 'Repo Strategy', link: 'repo-strategy' },
+				{ text: 'Automated rsync', link: 'rsync-strategy' },
+				{ text: 'SSH Keys', link: 'ssh-keys' },
+				{ text: 'SSH Key Pairs', link: 'ssh-keygen' },
+				{ text: 'Deploy Keys', link: 'deploy-keys' },
+				{ text: 'Auto Updates', link: 'auto-updates' },
+				{ text: 'Disable Updates', link: 'disable-updates' }
+			]
+		}
+	]
+}
+
+function sidebarMultiTenant() {
+	return [
+		{
+			collapsible: false,
+			collapsed: false,
+			items: [
+				{ text: 'Setup Guide', link: 'setup' },
+				{ text: 'Overview', link: 'overview' },
+				{ text: 'Configuration', link: 'tenancy-config' },
+				{ text: 'Isolation', link: 'isolation' },
+				{ text: 'Architecture', link: 'architecture' },
+				{ text: 'Domains', link: 'domains' }
+			]
+		}
+	]
+}
+
+function sidebarGuide() {
+	return [
+		{
+			text: 'Overview',
+			collapsible: false,
+			collapsed: false,
+			items: [
+				{ text: 'Why Raydium', link: 'overview/why-raydium' },
+				{ text: 'What Is Raydium', link: 'overview/what-is-raydium' },
+				{ text: 'Is it Still WordPress', link: 'overview/is-it-wordpress' }
+			]
+		},
+		{
+			text: 'Quick Start',
+			collapsible: false,
+			collapsed: false,
+			items: [
+				{ text: 'Getting Started', link: 'getting-started' },
+				{ text: 'Installation', link: 'installation' },
+				{ text: 'Ignore Platform', link: 'ignore-platform' },
+				{ text: 'Migration', link: 'migration' },
+				{ text: 'Updates', link: 'updates' }
+			]
+		},
+		{
+			text: 'Customization',
+			collapsible: false,
+			collapsed: false,
+			items: [
+				{ text: 'Configuration', link: 'customization/config-overview' },
+				{ text: 'Environments', link: 'customization/environments' },
+				{ text: 'Env File', link: 'customization/environment-file' },
+				{ text: 'Constants', link: 'customization/constants' },
+				{ text: 'Compatibility', link: 'customization/compatibility' },
+				{ text: 'GitHub Token', link: 'customization/auth-json' },
+				{ text: 'Kiosk', link: 'customization/kiosk' },
+				{ text: 'Install Protection', link: 'customization/install-protection' }
+			]
+		}
+	]
+}
+
+
+function sidebarReference() {
+	return [{
+		text: 'Reference',
+		items: [{
+				text: 'Configs',
+				link: 'configuration'
+			},
+			{
+				text: 'Env Vars',
+				link: 'environment-vars'
+			},
+			{
+				text: 'Helpers',
+				link: 'functions'
+			},
+			{
+				text: 'Functions API',
+				"collapsible": true,
+				"collapsed": true,
+				base: '/reference/functions/',
+				items: functionsList,
+			},
+			{
+				text: 'Framework',
+				collapsible: true,
+				collapsed: true,
+				base: '/reference/framework/',
+				items: [
+					{ text: 'Lifecycle', link: 'lifecycle' },
+					{ text: 'Switcher', link: 'switcher' },
+					{ text: 'Terminate', link: 'terminate' },
+					{ text: 'Architecture', link: 'architecture' },
+					{ text: 'Framework', link: 'framework' }
+				]
+			},
+			{
+				text: 'Advanced',
+				items: [
+					{ text: 'Premium Plugins', link: 'premium-plugins' },
+					{ text: 'Managing Updates', link: 'updates' }
+				]
+			},
+			{
+				text: 'Contribute',
+				"collapsible": true,
+				"collapsed": true,
+				base: '/reference/contribute/',
+				items: [{
+						text: "Welcome",
+						link: "welcome"
+					},
+					{
+						text: "Contributing",
+						link: "contributing"
+					},
+					{
+						text: "Writing Comments",
+						link: "documentation"
+					},
+				]
+			},
+			{
+				text: 'Upgrades',
+				collapsible: true,
+				collapsed: true,
+				items: [
+					{ text: '^0.0.5', link: 'upgrade/env-config-upgrade' }
+				]
+			},
+			{ text: 'Changelog', link: 'changelog' }
+		]
+	}, ]
+}

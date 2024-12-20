@@ -234,6 +234,4 @@ This configuration serves requests to `sub.example.com` from `/var/www/subdomain
 
 ---
 
-### Conclusion
-
-Configuring wildcard domains and top-level domains in Apache2 is essential for building scalable multi-tenant applications. By leveraging the flexibility of Apache’s `ServerAlias` directive, proper DNS setup, and SSL configurations, you can create a robust hosting environment. This guide equips you with the tools to manage both dynamic subdomains and unique top-level domains effectively for your application.
+> Configuring wildcard domains and top-level domains in Apache2 is essential for building scalable multi-tenant applications. By leveraging the flexibility of Apache’s `ServerAlias` directive, proper DNS setup, and SSL configurations, you can create a robust hosting environment. This guide equips you with the tools to manage both dynamic subdomains and unique top-level domains effectively for your application.
