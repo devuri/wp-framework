@@ -203,6 +203,21 @@ class Configs implements ConfigsInterface
         return false;
     }
 
+    /**
+     * Determines if the application is running in a production environment.
+     *
+     * This method checks the current environment against a list of production
+     * environment identifiers. The list of identifiers can be configured via the
+     * `prod` configuration key or will default to common production identifiers
+     * such as 'secure', 'sec', 'production', and 'prod'.
+     *
+     * @return bool True if the application is in a production environment, false otherwise.
+     */
+    public static function isInProdEnvironment(array $prodEnvironments = ['secure', 'sec', 'production', 'prod']): bool
+    {
+        return self::isProd(env('WP_ENVIRONMENT_TYPE'), $prodEnvironments);
+    }
+
     public function json(?string $filePath = null)
     {
         $jsonFilePath = $filePath;

@@ -7,6 +7,7 @@ use InvalidArgumentException;
 use Throwable;
 use WPframework\Exceptions\HttpException;
 use WPframework\Interfaces\ExitInterface;
+use WPframework\Support\Configs;
 
 class Terminate
 {
@@ -163,39 +164,13 @@ class Terminate
      *
      * @return bool True if the stack trace should be displayed, false otherwise.
      */
-    protected static function showStackTrace()
+    protected static function showStackTrace(): bool
     {
-        if (self::isInProdEnvironment()) {
+        $isProd = Configs::isInProdEnvironment();
+        if ($isProd) {
             return false;
         }
-        if (configs()->get('terminate.debugger') || ! self::isInProdEnvironment()) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Determines if the application is running in a production environment.
-     *
-     * This method checks the current environment against a list of production
-     * environment identifiers. The list of identifiers can be configured via the
-     * `prod` configuration key or will default to common production identifiers
-     * such as 'secure', 'sec', 'production', and 'prod'.
-     *
-     * @return bool True if the application is in a production environment, false otherwise.
-     */
-    protected static function isInProdEnvironment(): bool
-    {
-        $production = configs()->get('prod');
-
-        if ($production && \is_array($production)) {
-            $prodEnvironments = $production;
-        } else {
-            $prodEnvironments = ['secure', 'sec', 'production', 'prod'];
-        }
-
-        if (\in_array(env('WP_ENVIRONMENT_TYPE'), $prodEnvironments, true)) {
+        if (configs()->get('terminate.debugger') || ! $isProd) {
             return true;
         }
 
