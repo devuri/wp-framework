@@ -63,6 +63,18 @@ For further customization, Raydium offers the `configs/app.php` file for [config
 
 For constants that extend beyond the foundational setups provided by Raydium and the `.env` file, you can use the `configs/config.php` file.
 
+### Using `.env` file references
+
+The `configs/config.php` file is an ideal location for storing sensitive information, as it allows for better security and flexibility. Many plugins may require you to define API keys or other sensitive credentials. By placing these values in the `config.php` file, you gain full access to the Raydium `env` file, enabling you to securely manage sensitive data.
+
+For example, you can use the `env` file to store sensitive data and then reference it in the `config.php` file like this:
+
+```php
+define('MY_SMTP_API_KEY', env('SMTP_API_KEY'));
+```
+
+This approach ensures that sensitive information is not hardcoded into your project, reducing the risk of exposure in version control systems or during code sharing. Instead, your credentials are safely stored in the environment file and dynamically accessed as needed.
+
 ## Creating and Modifying `config.php`
 
 If `config.php` doesn't exist in your project, you can create it within the `configs` directory. This file will be automatically recognized and loaded by Raydium, applying your custom configurations.

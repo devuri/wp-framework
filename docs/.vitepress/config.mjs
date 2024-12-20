@@ -75,8 +75,8 @@ export default defineConfig({
                     { text: 'Environment File', link: '/customization/environment-file' },
                     { text: 'Constants', link: '/customization/constants' },
 		            { text: 'GitHub Token', link: '/customization/auth-json' },
-					{ text: 'Kiosk', link: '/customization/kiosk' }
-					{ text: 'Install Protection', link: '/customization/install-protection' },
+					{ text: 'Kiosk', link: '/customization/kiosk' },
+					{ text: 'Install Protection', link: '/customization/install-protection' }
                 ]
             },
             {
@@ -88,7 +88,7 @@ export default defineConfig({
                     { text: 'Overview', link: '/multi-tenant/overview' },
                     { text: 'Configuration', link: '/multi-tenant/tenancy-config' },
                     { text: 'Isolation', link: '/multi-tenant/isolation' },
-                    { text: 'Architecture', link: '/multi-tenant/architecture' }
+                    { text: 'Architecture', link: '/multi-tenant/architecture' },
                     { text: 'Domains', link: '/multi-tenant/domains' }
                 ]
             },
