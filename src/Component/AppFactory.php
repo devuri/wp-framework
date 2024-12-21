@@ -37,6 +37,8 @@ class AppFactory
      */
     public static function create(string $appDirPath, ?string $environment = null): AppInit
     {
+        \define('CONFIGS_DIR_PATH', \dirname(__DIR__) . '/inc/configs/');
+
         // Retrieve the HTTP host using HttpFactory
         $httpHost = HttpFactory::init()->get_http_host();
 
@@ -44,9 +46,7 @@ class AppFactory
         self::$request = self::createRequest(new RequestFactory());
 
         // Mandatory application-wide constants
-        \define('SITE_CONFIGS_DIR', 'configs');
-        \define('APP_DIR_PATH', $appDirPath);
-        \define('APP_HTTP_HOST', $httpHost);
+        self::defineMandatoryConstants($appDirPath, $httpHost);
 
         // set container bindings.
         $containerBindings = Bindings::init(new PimpleContainer());
@@ -59,15 +59,7 @@ class AppFactory
             APP_DIR_PATH
         );
 
-        $_dotenv = Dotenv::createImmutable(APP_DIR_PATH, $envFiles);
-
-        try {
-            $_dotenv->load();
-        } catch (InvalidPathException $e) {
-            $envType->tryRegenerateFile(APP_DIR_PATH, APP_HTTP_HOST, $envFiles);
-
-            Terminate::exit(new InvalidPathException($e->getMessage()));
-        }
+        self::loadDotEnv($envFiles, $envType);
 
         self::$request = self::$request->withAttribute('envFiles', $envFiles);
 
@@ -89,6 +81,37 @@ class AppFactory
     public static function run(): void
     {
         self::$app->run();
+    }
+
+    protected static function defineMandatoryConstants(string $appDirPath, string $httpHost): void
+    {
+        if (\defined('APP_TEST_PATH')) {
+            return;
+        }
+
+        // Mandatory application-wide constants
+        \define('SITE_CONFIGS_DIR', 'configs');
+        \define('APP_DIR_PATH', $appDirPath);
+        \define('APP_HTTP_HOST', $httpHost);
+    }
+
+    protected static function loadDotEnv(array $envFiles, EnvType $envType): ?Dotenv
+    {
+        if (\defined('APP_TEST_PATH')) {
+            return null;
+        }
+
+        $_dotenv = Dotenv::createImmutable(APP_DIR_PATH, $envFiles);
+
+        try {
+            $_dotenv->load();
+        } catch (InvalidPathException $e) {
+            $envType->tryRegenerateFile(APP_DIR_PATH, APP_HTTP_HOST, $envFiles);
+
+            WPframework\Terminate::exit(new InvalidPathException($e->getMessage()));
+        }
+
+        return $_dotenv;
     }
 
     /**

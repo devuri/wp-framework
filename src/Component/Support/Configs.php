@@ -83,6 +83,11 @@ class Configs implements ConfigsInterface
         return DBFactory::create();
     }
 
+    public static function load(string $file): void
+    {
+        require CONFIGS_DIR_PATH . "$file.php";
+    }
+
     /**
      * @return (null|mixed|(null|bool|mixed|(mixed|string)[]|string)[]|string)[]
      *

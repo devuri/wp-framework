@@ -367,3 +367,8 @@ function customHeaderMiddleware(AppInit $app): void
         return $response->withHeader('X-Custom-Header', 'MyCustomValue');
     }, 'custom-header');
 }
+
+function toMillisecond(float $seconds)
+{
+    return $seconds * 1000;
+}

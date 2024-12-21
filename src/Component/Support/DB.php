@@ -179,6 +179,10 @@ class DB
      */
     private function dbConnect()
     {
+        if (\defined('TRY_WITH_NO_DB') && true === \constant('TRY_WITH_NO_DB')) {
+            return null;
+        }
+
         if (null !== $this->wpdb) {
             return $this->wpdb;
         }
