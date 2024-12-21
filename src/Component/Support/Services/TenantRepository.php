@@ -17,10 +17,10 @@ class TenantRepository
 {
     private $tenants = null;
 
-    public function __construct(array $tenants = [])
+    public function __construct(array $tenants, Configs $configs)
     {
         if (empty($tenants)) {
-            $this->tenants = (new Configs())->config['tenants'];
+            $this->tenants = $configs->config['tenants'];
         } else {
             $this->tenants = $tenants;
         }

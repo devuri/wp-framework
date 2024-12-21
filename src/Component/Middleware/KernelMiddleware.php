@@ -45,7 +45,8 @@ class KernelMiddleware extends AbstractMiddleware
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $this->configs = (new Configs())->app();
+        $configs = $request->getAttribute('configs', null);
+        $this->configs = $configs->app();
 
         $this->kernelConfig->setKernelConstants($this->configs);
 

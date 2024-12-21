@@ -127,6 +127,10 @@ if (!defined('AUTH_COOKIE')) {
     define('AUTH_COOKIE', '');
 }
 
+if (!defined('SECURE_AUTH_COOKIE')) {
+    define('SECURE_AUTH_COOKIE', '');
+}
+
 if (!defined('LOGGED_IN_COOKIE')) {
     define('LOGGED_IN_COOKIE', '');
 }

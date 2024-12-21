@@ -11,6 +11,8 @@
 
 namespace WPframework\Support;
 
+use InvalidArgumentException;
+
 trait WhitelistTrait
 {
     protected function setEnvWhitelist(array $defaultWhitelist): array

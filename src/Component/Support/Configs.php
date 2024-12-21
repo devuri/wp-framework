@@ -43,6 +43,11 @@ class Configs implements ConfigsInterface
         $this->config = $this->configCache;
     }
 
+    public static function init(?string $appPath = null): self
+    {
+        return new self(['tenancy', 'tenants', 'kiosk'], $appPath);
+    }
+
     /**
      * Load `app` options separately to avoid side effects.
      *
@@ -194,9 +199,25 @@ class Configs implements ConfigsInterface
         return $this->configCache['app']->get($key, $default);
     }
 
-    public static function isProd(?string $environment, array $production = [ 'secure', 'sec', 'production', 'prod' ]): bool
+    /**
+     * Determines if the given environment is a production environment.
+     *
+     * This method checks whether the provided environment string matches
+     * one of the predefined production environment names. If the environment
+     * is `null`, it defaults to assuming a production environment for safety,
+     * ensuring sensitive data is not accidentally exposed.
+     *
+     * @param null|string $environment The current environment name. Can be `null`.
+     * @param array       $production  An array of environment names that are
+     *                                 considered production. Defaults to
+     *                                 ['secure', 'sec', 'production', 'prod'].
+     *
+     * @return bool Returns `true` if the environment is `null` or matches one
+     *              of the production names, otherwise returns `false`.
+     */
+    public static function isProd(?string $environment, array $production = ['secure', 'sec', 'production', 'prod']): bool
     {
-        if (\in_array($environment, $production, true)) {
+        if (\is_null($environment) || \in_array($environment, $production, true)) {
             return true;
         }
 
@@ -215,7 +236,7 @@ class Configs implements ConfigsInterface
      */
     public static function isInProdEnvironment(array $prodEnvironments = ['secure', 'sec', 'production', 'prod']): bool
     {
-        return self::isProd(env('WP_ENVIRONMENT_TYPE'), $prodEnvironments);
+        return self::isProd(env('WP_ENVIRONMENT_TYPE', null), $prodEnvironments);
     }
 
     public function json(?string $filePath = null)

@@ -43,7 +43,7 @@ class AuthValidator
      * @param string $cookie The cookie string in the format "username|expiration|hmac".
      * @param string $scheme Either 'auth' or 'secure_auth'.
      *
-     * @return false|string Returns the username if valid, or false otherwise.
+     * @return array
      */
     public function validate(string $cookie, bool $verifyHash = true, string $scheme = 'auth'): array
     {

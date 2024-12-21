@@ -12,12 +12,13 @@
 namespace WPframework\Middleware;
 
 use Dotenv\Dotenv;
+use Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use WPframework\EnvType;
-use WPframework\Support\Configs;
+use WPframework\Terminate;
 
 class IgnitionMiddleware extends AbstractMiddleware
 {
@@ -49,7 +50,7 @@ class IgnitionMiddleware extends AbstractMiddleware
             return $handler->handle($request);
         }
 
-        $this->configs  = new Configs();
+        $this->configs = $request->getAttribute('configs', null);
         $tenantConfigPath = $this->configs->getConfigsDir() . '/' . $this->tenant['uuid'];
         $envFiles = $this->envType->filterFiles(
             EnvType::supportedFiles(),
