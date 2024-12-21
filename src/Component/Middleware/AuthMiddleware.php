@@ -15,16 +15,10 @@ use Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use WPframework\Support\Services\AuthManager;
 
 class AuthMiddleware extends AbstractMiddleware
 {
     private $auth;
-
-    public function __construct(AuthManager $authManager)
-    {
-        $this->auth = $authManager;
-    }
 
     /**
      * @param ServerRequestInterface  $request
@@ -34,8 +28,9 @@ class AuthMiddleware extends AbstractMiddleware
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
+        $this->auth = $this->services->get('auth');
         $cookies = $request->getCookieParams();
-        $configs = $request->getAttribute('configs', null);
+        $configs = $this->services->get('configs');
         $this->auth->setConfigs($configs);
         $this->auth->setValidator();
         $this->auth->setCookies($cookies);

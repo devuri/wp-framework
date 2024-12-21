@@ -11,15 +11,25 @@
 
 namespace WPframework\Middleware;
 
+use Pimple\Psr11\Container as PsrContainer;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
-use WPframework\Logger\FileLogger;
 
 abstract class AbstractMiddleware implements MiddlewareInterface
 {
+    /**
+     * @var PsrContainer
+     */
+    protected $services;
+
+    public function __construct(?PsrContainer $serviceContainer = null)
+    {
+        $this->services = $serviceContainer;
+    }
+
     /**
      * Process an incoming server request.
      *
@@ -35,7 +45,7 @@ abstract class AbstractMiddleware implements MiddlewareInterface
      */
     protected function log(): LoggerInterface
     {
-        return new FileLogger();
+        return $this->services->get('logger');
     }
 
     protected function when(): void

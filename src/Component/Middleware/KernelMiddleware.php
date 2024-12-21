@@ -15,25 +15,13 @@ use Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use WPframework\Http\Message\Response;
 use WPframework\Support\Configs;
-use WPframework\Support\KernelConfig;
 
 class KernelMiddleware extends AbstractMiddleware
 {
     private $kernelConfig;
     private $pathError;
     private $configs;
-
-    /**
-     * Constructor to inject the response factory.
-     *
-     * @param KernelConfig $kernelConfig
-     */
-    public function __construct(KernelConfig $kernelConfig)
-    {
-        $this->kernelConfig = $kernelConfig;
-    }
 
     /**
      * Process an incoming server request.
@@ -45,7 +33,8 @@ class KernelMiddleware extends AbstractMiddleware
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $configs = $request->getAttribute('configs', null);
+        $configs = $this->services->get('configs');
+        $this->kernelConfig = $this->services->get('kernel');
         $this->configs = $configs->app();
 
         $this->kernelConfig->setKernelConstants($this->configs);

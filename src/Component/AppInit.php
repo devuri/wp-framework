@@ -11,6 +11,7 @@
 
 namespace WPframework;
 
+use Pimple\Psr11\Container as PsrContainer;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -25,6 +26,11 @@ use WPframework\Support\Configs;
 
 class AppInit implements RequestHandlerInterface
 {
+    /**
+     * @var PsrContainer
+     */
+    protected $container;
+
     /**
      * @var Configs
      */
@@ -68,10 +74,11 @@ class AppInit implements RequestHandlerInterface
     /**
      * AppInit constructor.
      */
-    public function __construct(RequestInterface $request, Configs $configs)
+    public function __construct(RequestInterface $request, PsrContainer $container)
     {
-        $this->configs = $configs;
-        $this->request = $request;
+        $this->container = $container;
+        $this->configs   = $this->container->get('configs');
+        $this->request   = $request;
 
         $this->defaultHandler = new FinalHandler();
 
@@ -96,11 +103,9 @@ class AppInit implements RequestHandlerInterface
      *
      * @return static
      */
-    public function withMiddleware($middleware, string $key = ''): self
+    public function add($middleware, string $key = ''): self
     {
-        $this->middlewareRegistry->register($middleware, $key);
-
-        return $this;
+        return $this->withMiddleware($middleware, $key);
     }
 
     /**
@@ -140,13 +145,14 @@ class AppInit implements RequestHandlerInterface
      */
     public function handle(RequestInterface $request): ResponseInterface
     {
-        $this->request = $request->withAttribute('configs', $this->configs)
-            ->withAttribute('isProd', Configs::isInProdEnvironment());
+        $this->request = $request->withAttribute('isProd', Configs::isInProdEnvironment());
+        $middlewares = new MiddlewareRegistry();
 
         try {
             $middlewareHandler = new MiddlewareDispatcher(
                 $this->defaultHandler,
-                new MiddlewareRegistry()
+                $this->container,
+                $middlewares
             );
 
             return $middlewareHandler->handle($this->request);
@@ -160,14 +166,26 @@ class AppInit implements RequestHandlerInterface
     /**
      * Start the application by handling the given request.
      *
-     * @param RequestInterface $request
-     *
      * @return void
      */
-    public function run(RequestInterface $request): void
+    public function run(): void
     {
-        $response = $this->handle($request);
+        $response = $this->handle($this->request);
         $this->emitResponse($response);
+    }
+
+    /**
+     * Add middleware to the application via MiddlewareRegistry.
+     *
+     * @param callable|MiddlewareInterface $middleware
+     *
+     * @return static
+     */
+    protected function withMiddleware($middleware, string $key = ''): self
+    {
+        $this->middlewareRegistry->register($middleware, $key);
+
+        return $this;
     }
 
     /**
