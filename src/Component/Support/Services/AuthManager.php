@@ -25,8 +25,11 @@ class AuthManager
         if ($authValidator) {
             $this->authValidator = $authValidator;
         }
+    }
 
-        $this->configs = new Configs();
+    public function setConfigs(Configs $configs): void
+    {
+        $this->configs = $configs;
     }
 
     public function setValidator(): void

@@ -35,6 +35,8 @@ class AuthMiddleware extends AbstractMiddleware
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $cookies = $request->getCookieParams();
+        $configs = $request->getAttribute('configs', null);
+        $this->auth->setConfigs($configs);
         $this->auth->setValidator();
         $this->auth->setCookies($cookies);
         $userAuth = $this->auth->check($request->getUri()->getScheme());

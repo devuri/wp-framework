@@ -11,13 +11,17 @@
 
 namespace WPframework;
 
+use Dotenv\Dotenv;
+use Dotenv\Exception\InvalidPathException;
 use Psr\Http\Message\RequestInterface;
+use Symfony\Component\Filesystem\Filesystem;
 use Throwable;
 use WPframework\Http\HttpFactory;
 use WPframework\Http\Message\Foundation;
 use WPframework\Http\Message\RequestFactory;
 use WPframework\Logger\FileLogger;
 use WPframework\Logger\Log;
+use WPframework\Support\Configs;
 
 class AppFactory
 {
@@ -28,18 +32,55 @@ class AppFactory
     private static $request;
 
     /**
-     * @return AppInit
+     * Initializes and returns an instance of AppInit.
+     *
+     * @param string      $appDirPath  The directory path for the application.
+     * @param null|string $environment The environment setting, e.g., 'development', 'production'.
+     *
+     * @return AppInit An initialized AppInit instance.
      */
     public static function create(string $appDirPath, ?string $environment = null): AppInit
     {
-        $httpHost =  HttpFactory::init()->get_http_host();
+        // Retrieve the HTTP host using HttpFactory
+        $httpHost = HttpFactory::init()->get_http_host();
+
+        // Create the initial request object
         self::$request = self::createRequest(new RequestFactory());
+
+        // Mandatory application-wide constants
         \define('SITE_CONFIGS_DIR', 'configs');
         \define('APP_DIR_PATH', $appDirPath);
         \define('APP_HTTP_HOST', $httpHost);
+
+        $envType = new EnvType(new Filesystem());
+
+        $envFiles = $envType->filterFiles(
+            EnvType::supportedFiles(),
+            APP_DIR_PATH
+        );
+
+        $_dotenv = Dotenv::createImmutable(APP_DIR_PATH, $envFiles);
+
+        try {
+            $_dotenv->load();
+        } catch (InvalidPathException $e) {
+            $envType->tryRegenerateFile(APP_DIR_PATH, APP_HTTP_HOST, $envFiles);
+
+            Terminate::exit(new InvalidPathException($e->getMessage()));
+        }
+
+        self::$request = self::$request->withAttribute('envFiles', $envFiles);
+
+        // Initialize logging with FileLogger
         Log::init(new FileLogger());
+
+        // Set the environment configuration
         self::setEnvironment($environment);
-        self::$app = new AppInit(self::$request);
+
+        // Instantiate the main application object
+        self::$app = new AppInit(self::$request, Configs::init(APP_DIR_PATH));
+
+        // Set the error handler for the application
         self::setErrorHandler();
 
         return self::$app;

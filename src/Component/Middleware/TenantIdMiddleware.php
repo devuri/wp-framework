@@ -16,7 +16,6 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use WPframework\Exceptions\TenantNotFoundException;
-use WPframework\Support\Configs;
 use WPframework\Support\ConstantBuilder;
 use WPframework\Support\Services\TenantRepository;
 use WPframework\Support\Services\TenantResolver;
@@ -36,14 +35,15 @@ class TenantIdMiddleware extends AbstractMiddleware
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $this->configs       = new Configs();
+        $this->configs = $request->getAttribute('configs', null);
         $this->isMultitenant = self::isMultitenantApp($this->configs->config['composer']);
 
         if ( ! $this->isMultitenant) {
             return $handler->handle($request);
         }
 
-        $this->tenantResolver = self::tenantResolver();
+        $dbTenants = [];
+        $this->tenantResolver = $this->tenantResolver($dbTenants);
 
         $tenantDomain = [];
 
@@ -71,9 +71,9 @@ class TenantIdMiddleware extends AbstractMiddleware
         return $handler->handle($request);
     }
 
-    public static function tenantResolver(): TenantResolver
+    public function tenantResolver(array $tenants): TenantResolver
     {
-        return new TenantResolver(new TenantRepository());
+        return new TenantResolver(new TenantRepository($tenants, $this->configs));
     }
 
     /**
@@ -82,7 +82,7 @@ class TenantIdMiddleware extends AbstractMiddleware
      * This function determines if a given tenant ID is equivalent to the predefined
      * LANDLORD_UUID constant, identifying if the tenant is the landlord.
      *
-     * @param null|string $tenant_id The tenant ID to check against the landlord's UUID. Default is null.
+     * @param null|string $tenantId The tenant ID to check against the landlord's UUID. Default is null.
      *
      * @return bool True if the tenant ID matches the landlord's UUID, false otherwise.
      */

@@ -15,7 +15,6 @@ use Whoops\Run;
 use WPframework\Logger\FileLogger;
 use WPframework\Middleware\AuthMiddleware;
 use WPframework\Middleware\ConfigMiddleware;
-use WPframework\Middleware\DotenvMiddleware;
 use WPframework\Middleware\HttpsOnlyMiddleware;
 use WPframework\Middleware\IgnitionMiddleware;
 use WPframework\Middleware\KernelMiddleware;
@@ -32,9 +31,7 @@ use WPframework\Support\Services\AuthManager;
 class CoreMiddleware
 {
     /**
-     * @return (ConfigMiddleware|DotenvMiddleware|KernelMiddleware|LoggingMiddleware|WhoopsMiddleware)[]
-     *
-     * @psalm-return array{dotenv: DotenvMiddleware, config: ConfigMiddleware, kernel: KernelMiddleware, logger: LoggingMiddleware, whoops: WhoopsMiddleware}
+     * @return array
      */
     public function getAll(): array
     {
@@ -42,7 +39,6 @@ class CoreMiddleware
             'security' => SecurityHeadersMiddleware::class,
             // 'https' => HttpsOnlyMiddleware::class,
             // 'spam' => SpamDetectionMiddleware::class,
-            'dotenv' => new DotenvMiddleware(),
             'tenant' => new TenantIdMiddleware(self::configManager()),
             'ignit' => IgnitionMiddleware::class,
             'status' => StatusMiddleware::class,

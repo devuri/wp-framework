@@ -35,26 +35,26 @@ class SapiEmitter
     }
 
     /**
-     * Sends HTTP headers based on the provided array of headers.
+     * Sends HTTP headers based on the provided response object and configuration.
      *
-     * This method iterates over the given headers and sends them using the `header()` function.
-     * For headers specified in the `$appendHeaders` list, multiple values are appended rather than replaced.
-     * For other headers, replacement behavior is controlled by the `$replaceByDefault` parameter.
+     * This method processes the headers from the provided `ResponseInterface` object and emits them
+     * using PHP's `header()` function. It supports appending multiple values for specific headers
+     * (e.g., `Set-Cookie`) and can either replace or append headers based on the specified behavior.
      *
-     * @param array $headers          An associative array of headers to send. The array key is the header name,
-     *                                and the value is an array of header values. Example:
-     *                                [
-     *                                'Content-Type' => ['text/html; charset=UTF-8'],
-     *                                'Set-Cookie' => ['cookie1=value1', 'cookie2=value2']
-     *                                ].
-     * @param bool  $replaceByDefault Whether to replace existing headers by default.
-     *                                If true, headers not in `$appendHeaders` will replace existing headers.
-     *                                Defaults to false.
-     * @param array $appendHeaders    A list of headers (case-insensitive) for which multiple values
-     *                                should be appended rather than replaced.
-     *                                Defaults to `['set-cookie']`.
+     * The status line is also emitted as the first header.
      *
-     * @return void
+     * @param ResponseInterface $response         The response object containing headers to emit.
+     *                                            The response must implement `ResponseInterface`,
+     *                                            providing methods like `getProtocolVersion()`,
+     *                                            `getStatusCode()`, `getReasonPhrase()`, and `getHeaders()`.
+     * @param bool              $replaceByDefault Optional. Whether to replace existing headers by default.
+     *                                            Headers not listed in `$appendHeaders` will follow
+     *                                            this behavior. Defaults to false.
+     * @param array             $appendHeaders    Optional. An array of header names (case-insensitive)
+     *                                            for which multiple values should be appended
+     *                                            instead of replacing the header. Defaults to `['set-cookie']`.
+     *
+     * @return void This method does not return any value.
      */
     public function emitHeaders(ResponseInterface $response, bool $replaceByDefault = false, array $appendHeaders = ['set-cookie']): void
     {

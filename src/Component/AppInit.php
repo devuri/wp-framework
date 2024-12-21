@@ -21,9 +21,15 @@ use WPframework\Http\Message\Response;
 use WPframework\Middleware\Handlers\FinalHandler;
 use WPframework\Middleware\Handlers\MiddlewareDispatcher;
 use WPframework\Middleware\Handlers\MiddlewareRegistry;
+use WPframework\Support\Configs;
 
 class AppInit implements RequestHandlerInterface
 {
+    /**
+     * @var Configs
+     */
+    protected $configs;
+
     /**
      * @var MiddlewareRegistry
      */
@@ -62,10 +68,12 @@ class AppInit implements RequestHandlerInterface
     /**
      * AppInit constructor.
      */
-    public function __construct(RequestInterface $request)
+    public function __construct(RequestInterface $request, Configs $configs)
     {
-        $this->defaultHandler = new FinalHandler();
+        $this->configs = $configs;
         $this->request = $request;
+
+        $this->defaultHandler = new FinalHandler();
 
         $this->errorHandler = function (Throwable $e, RequestInterface $request, ResponseInterface $response) {
             $this->exception =  $e;
@@ -132,7 +140,8 @@ class AppInit implements RequestHandlerInterface
      */
     public function handle(RequestInterface $request): ResponseInterface
     {
-        $this->request = $request;
+        $this->request = $request->withAttribute('configs', $this->configs)
+            ->withAttribute('isProd', Configs::isInProdEnvironment());
 
         try {
             $middlewareHandler = new MiddlewareDispatcher(
@@ -140,11 +149,11 @@ class AppInit implements RequestHandlerInterface
                 new MiddlewareRegistry()
             );
 
-            return $middlewareHandler->handle($request);
+            return $middlewareHandler->handle($this->request);
         } catch (Throwable $e) {
             $e = $this->httpException($e);
 
-            return $this->handleException($e, $request);
+            return $this->handleException($e, $this->request);
         }
     }
 
