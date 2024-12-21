@@ -12,6 +12,7 @@
 namespace WPframework\Middleware\Handlers;
 
 use InvalidArgumentException;
+use Pimple\Psr11\Container as PsrContainer;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -22,6 +23,10 @@ use Throwable;
 
 class MiddlewareDispatcher implements RequestHandlerInterface
 {
+    /**
+     * @var PsrContainer
+     */
+    protected $container;
     /**
      * @var array
      */
@@ -48,9 +53,10 @@ class MiddlewareDispatcher implements RequestHandlerInterface
      * @param RequestHandlerInterface $finalHandler The final handler to invoke if no middleware processes the request.
      * @param null|LoggerInterface    $logger       Optional logger to log any errors in middleware.
      */
-    public function __construct(RequestHandlerInterface $finalHandler, MiddlewareRegistry $middlewareRegistry, ?LoggerInterface $logger = null)
+    public function __construct(RequestHandlerInterface $finalHandler, PsrContainer $container, MiddlewareRegistry $middlewareRegistry, ?LoggerInterface $logger = null)
     {
         $this->finalHandler = $finalHandler;
+        $this->container = $container;
         $this->middlewareRegistry = $middlewareRegistry;
         $this->logger = $logger;
         $this->middlewareQueue = $this->middlewareRegistry->getRegisteredMiddleware();
@@ -89,7 +95,7 @@ class MiddlewareDispatcher implements RequestHandlerInterface
         $middleware = array_shift($this->middlewareQueue);
 
         if (\is_string($middleware)) {
-            $middleware = new $middleware();
+            $middleware = new $middleware($this->container);
         }
 
         try {

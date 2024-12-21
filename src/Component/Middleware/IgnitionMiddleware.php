@@ -50,7 +50,7 @@ class IgnitionMiddleware extends AbstractMiddleware
             return $handler->handle($request);
         }
 
-        $this->configs = $request->getAttribute('configs', null);
+        $this->configs = $this->services->get('configs');
         $tenantConfigPath = $this->configs->getConfigsDir() . '/' . $this->tenant['uuid'];
         $envFiles = $this->envType->filterFiles(
             EnvType::supportedFiles(),

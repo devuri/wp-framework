@@ -16,7 +16,6 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use WPframework\Exceptions\TenantNotFoundException;
-use WPframework\Support\ConstantBuilder;
 use WPframework\Support\Services\TenantRepository;
 use WPframework\Support\Services\TenantResolver;
 
@@ -26,16 +25,12 @@ class TenantIdMiddleware extends AbstractMiddleware
     private $tenantResolver;
     private $tenantSetup;
     private $isMultitenant;
-    private $configManager;
-
-    public function __construct(ConstantBuilder $configManager)
-    {
-        $this->configManager = $configManager;
-    }
+    private $constManager;
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $this->configs = $request->getAttribute('configs', null);
+        $this->constManager = $this->services->get('const_builder');
+        $this->configs = $this->services->get('configs');
         $this->isMultitenant = self::isMultitenantApp($this->configs->config['composer']);
 
         if ( ! $this->isMultitenant) {
@@ -61,10 +56,10 @@ class TenantIdMiddleware extends AbstractMiddleware
         \define('LANDLORD_UUID', $this->configs->config['composer']->get('extra.multitenant.uuid', null));
 
         // allow overrides.
-        $this->configManager->define('REQUIRE_TENANT_CONFIG', $this->configs->config['tenancy']->get('require-config', false));
-        $this->configManager->define('TENANCY_WEB_ROOT', $this->configs->config['tenancy']->get('web-root', 'public'));
-        $this->configManager->define('PUBLIC_WEB_DIR', $this->configs->getAppPath() . '/' . TENANCY_WEB_ROOT);
-        $this->configManager->define('APP_CONTENT_DIR', 'wp-content');
+        $this->constManager->define('REQUIRE_TENANT_CONFIG', $this->configs->config['tenancy']->get('require-config', false));
+        $this->constManager->define('TENANCY_WEB_ROOT', $this->configs->config['tenancy']->get('web-root', 'public'));
+        $this->constManager->define('PUBLIC_WEB_DIR', $this->configs->getAppPath() . '/' . TENANCY_WEB_ROOT);
+        $this->constManager->define('APP_CONTENT_DIR', 'wp-content');
 
         $request = $request->withAttribute('isMultitenant', $this->isMultitenant);
 
@@ -73,7 +68,10 @@ class TenantIdMiddleware extends AbstractMiddleware
 
     public function tenantResolver(array $tenants): TenantResolver
     {
-        return new TenantResolver(new TenantRepository($tenants, $this->configs));
+        $repository = new TenantRepository($this->configs);
+        $repository->addTenants($tenants);
+
+        return new TenantResolver($repository);
     }
 
     /**

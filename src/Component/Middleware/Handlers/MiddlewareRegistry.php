@@ -15,6 +15,9 @@ use Psr\Http\Server\MiddlewareInterface;
 
 class MiddlewareRegistry
 {
+    /**
+     * @var null|array
+     */
     protected ?array $middlewares;
 
     public function __construct()

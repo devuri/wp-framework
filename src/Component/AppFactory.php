@@ -13,21 +13,17 @@ namespace WPframework;
 
 use Dotenv\Dotenv;
 use Dotenv\Exception\InvalidPathException;
+use Pimple\Container as PimpleContainer;
 use Psr\Http\Message\RequestInterface;
-use Symfony\Component\Filesystem\Filesystem;
 use Throwable;
 use WPframework\Http\HttpFactory;
 use WPframework\Http\Message\Foundation;
 use WPframework\Http\Message\RequestFactory;
 use WPframework\Logger\FileLogger;
 use WPframework\Logger\Log;
-use WPframework\Support\Configs;
 
 class AppFactory
 {
-    /**
-     * @var AppInit
-     */
     private static $app;
     private static $request;
 
@@ -52,7 +48,11 @@ class AppFactory
         \define('APP_DIR_PATH', $appDirPath);
         \define('APP_HTTP_HOST', $httpHost);
 
-        $envType = new EnvType(new Filesystem());
+        // set container bindings.
+        $containerBindings = Bindings::init(new PimpleContainer());
+        $container = $containerBindings->getPsrContainer();
+
+        $envType = new EnvType($container->get('filesystem'));
 
         $envFiles = $envType->filterFiles(
             EnvType::supportedFiles(),
@@ -72,13 +72,13 @@ class AppFactory
         self::$request = self::$request->withAttribute('envFiles', $envFiles);
 
         // Initialize logging with FileLogger
-        Log::init(new FileLogger());
+        Log::init($container->get('logger'));
 
         // Set the environment configuration
         self::setEnvironment($environment);
 
         // Instantiate the main application object
-        self::$app = new AppInit(self::$request, Configs::init(APP_DIR_PATH));
+        self::$app = new AppInit(self::$request, $container);
 
         // Set the error handler for the application
         self::setErrorHandler();
@@ -88,7 +88,7 @@ class AppFactory
 
     public static function run(): void
     {
-        self::$app->run(self::$request);
+        self::$app->run();
     }
 
     /**

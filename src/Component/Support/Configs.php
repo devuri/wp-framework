@@ -43,7 +43,7 @@ class Configs implements ConfigsInterface
         $this->config = $this->configCache;
     }
 
-    public static function init(?string $appPath = null): self
+    public static function init(string $appPath): self
     {
         return new self(['tenancy', 'tenants', 'kiosk'], $appPath);
     }

@@ -24,16 +24,6 @@ class LoggingMiddleware extends AbstractMiddleware
     private $logger;
 
     /**
-     * Constructor to inject the logger.
-     *
-     * @param LoggerInterface $logger
-     */
-    public function __construct(LoggerInterface $logger)
-    {
-        $this->logger = $logger;
-    }
-
-    /**
      * Process an incoming server request.
      *
      * @param ServerRequestInterface  $request
@@ -43,6 +33,8 @@ class LoggingMiddleware extends AbstractMiddleware
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
+        $this->logger = $this->services->get('logger');
+
         // $this->logger->info('Incoming request', [
         //     'method' => $request->getMethod(),
         //     'uri' => (string) $request->getUri(),

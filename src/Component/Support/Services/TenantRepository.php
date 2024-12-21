@@ -15,12 +15,18 @@ use WPframework\Support\Configs;
 
 class TenantRepository
 {
-    private $tenants = null;
+    private $configs;
+    private $tenants;
 
-    public function __construct(array $tenants, Configs $configs)
+    public function __construct(Configs $configs)
+    {
+        $this->configs = $configs;
+    }
+
+    public function addTenants(array $tenants): void
     {
         if (empty($tenants)) {
-            $this->tenants = $configs->config['tenants'];
+            $this->tenants = $this->configs->config['tenants'];
         } else {
             $this->tenants = $tenants;
         }

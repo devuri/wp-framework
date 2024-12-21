@@ -11,10 +11,8 @@
 
 namespace WPframework\Middleware\Handlers;
 
-use Whoops\Run;
-use WPframework\Logger\FileLogger;
 use WPframework\Middleware\AuthMiddleware;
-use WPframework\Middleware\ConfigMiddleware;
+use WPframework\Middleware\ConstMiddleware;
 use WPframework\Middleware\HttpsOnlyMiddleware;
 use WPframework\Middleware\IgnitionMiddleware;
 use WPframework\Middleware\KernelMiddleware;
@@ -24,9 +22,6 @@ use WPframework\Middleware\SpamDetectionMiddleware;
 use WPframework\Middleware\StatusMiddleware;
 use WPframework\Middleware\TenantIdMiddleware;
 use WPframework\Middleware\WhoopsMiddleware;
-use WPframework\Support\ConstantBuilder;
-use WPframework\Support\KernelConfig;
-use WPframework\Support\Services\AuthManager;
 
 class CoreMiddleware
 {
@@ -39,24 +34,14 @@ class CoreMiddleware
             'security' => SecurityHeadersMiddleware::class,
             // 'https' => HttpsOnlyMiddleware::class,
             // 'spam' => SpamDetectionMiddleware::class,
-            'tenant' => new TenantIdMiddleware(self::configManager()),
+            'tenant' => TenantIdMiddleware::class,
             'ignit' => IgnitionMiddleware::class,
             'status' => StatusMiddleware::class,
-            'config' => new ConfigMiddleware(self::configManager()),
-            'kernel' => new KernelMiddleware($this->kernelConfig()),
-            'auth' => new AuthMiddleware(new AuthManager()),
-            'logger' => new LoggingMiddleware(new FileLogger()),
-            'whoops' => new WhoopsMiddleware(new Run()),
+            'config' => ConstMiddleware::class,
+            'kernel' => KernelMiddleware::class,
+            'auth' => AuthMiddleware::class,
+            'logger' => LoggingMiddleware::class,
+            'whoops' => WhoopsMiddleware::class,
         ];
-    }
-
-    protected function kernelConfig(): KernelConfig
-    {
-        return new KernelConfig(self::configManager());
-    }
-
-    protected static function configManager(): ConstantBuilder
-    {
-        return new ConstantBuilder();
     }
 }

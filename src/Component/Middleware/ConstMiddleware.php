@@ -15,23 +15,11 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use WPframework\Support\Configs;
-use WPframework\Support\ConstantBuilder;
-use WPframework\Support\SiteManager;
-use WPframework\Support\Switcher;
 
-class ConfigMiddleware extends AbstractMiddleware
+class ConstMiddleware extends AbstractMiddleware
 {
-    private $configManager;
+    private $constManager;
     private $siteManager;
-
-    /**
-     * @param ConstantBuilder $configManager
-     */
-    public function __construct(ConstantBuilder $configManager)
-    {
-        $this->configManager = $configManager;
-        $this->siteManager = new SiteManager($this->configManager);
-    }
 
     /**
      * @param ServerRequestInterface  $request
@@ -41,13 +29,14 @@ class ConfigMiddleware extends AbstractMiddleware
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $this->siteManager->setSwitcher(
-            new Switcher($this->configManager)
-        );
+        $this->constManager = $this->services->get('const_builder');
+        $this->siteManager = $this->services->get('site_manager');
+
+        $this->siteManager->setSwitcher($this->services->get('switcher'));
 
         $this->siteManager->appSetup($request)->constants();
 
-        $this->configManager->setMap();
+        $this->constManager->setMap();
 
         $request = $request->withAttribute('isProd', $this->isProd());
 

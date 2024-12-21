@@ -25,20 +25,6 @@ class WhoopsMiddleware extends AbstractMiddleware
     private $whoops;
 
     /**
-     * @param Run $whoops
-     */
-    public function __construct(Run $whoops)
-    {
-        $this->whoops = $whoops;
-
-        $outputHandler = new ErrHandler($this->log());
-        $this->whoops->pushHandler($outputHandler);
-
-        $this->whoops->allowQuit(false);
-        $this->whoops->register();
-    }
-
-    /**
      * Process the request and handle any exceptions.
      *
      * @param ServerRequestInterface  $request
@@ -48,6 +34,14 @@ class WhoopsMiddleware extends AbstractMiddleware
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
+        $this->whoops = $this->services->get('whoops');
+
+        $outputHandler = new ErrHandler($this->services->get('logger'));
+        $this->whoops->pushHandler($outputHandler);
+
+        $this->whoops->allowQuit(false);
+        $this->whoops->register();
+
         return $handler->handle($request);
     }
 }
