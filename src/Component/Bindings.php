@@ -16,13 +16,13 @@ use Pimple\Psr11\Container as PsrContainer;
 use Symfony\Component\Filesystem\Filesystem;
 use Whoops\Run as WhoopRunner;
 use WPframework\Logger\FileLogger;
+use WPframework\Middleware\Handlers\CoreMiddleware;
 use WPframework\Support\Configs;
 use WPframework\Support\ConstantBuilder;
 use WPframework\Support\KernelConfig;
 use WPframework\Support\Services\AuthManager;
 use WPframework\Support\SiteManager;
 use WPframework\Support\Switcher;
-use WPframework\Middleware\Handlers\CoreMiddleware;
 
 class Bindings
 {

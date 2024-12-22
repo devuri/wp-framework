@@ -99,11 +99,12 @@ class Terminate
      */
     protected function renderPage(string $pageTitle): void
     {
-		if(php_sapi_name() === 'cli'){
-			dump($this->exception->getMessage());
-			dd($this->exception);
-			return;
-		}
+        if (PHP_SAPI === 'cli') {
+            dump($this->exception->getMessage());
+            dd($this->exception);
+
+            return;
+        }
         $this->pageHeader($pageTitle);
         ?>
             <div id="error-page" class="" style="margin-top: 4em; padding: 1.4em; background: #fff; box-shadow: rgba(17, 17, 26, 0.05) 0px 4px 16px, rgba(17, 17, 26, 0.05) 0px 8px 32px;">

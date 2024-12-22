@@ -41,7 +41,7 @@ class AppInit implements RequestHandlerInterface
      */
     protected $middlewareRegistry;
 
-	/**
+    /**
      * @var array
      */
     protected $middlewareFilter;
@@ -152,7 +152,7 @@ class AppInit implements RequestHandlerInterface
     {
         $this->request = $request->withAttribute('isProd', Configs::isInProdEnvironment());
 
-		$this->middlewareRegistry = new MiddlewareRegistry($this->container, $this->middlewareFilter);
+        $this->middlewareRegistry = new MiddlewareRegistry($this->container, $this->middlewareFilter);
 
         try {
             $middlewareHandler = new MiddlewareDispatcher(
@@ -179,7 +179,7 @@ class AppInit implements RequestHandlerInterface
         $this->middlewareFilter = $middlewareFilter;
     }
 
-	public function run(): void
+    public function run(): void
     {
         $response = $this->handle($this->request);
         $this->emitResponse($response);

@@ -45,7 +45,7 @@ class MiddlewareRegistry
 
     protected function setDefault(CoreMiddleware $core, ?array $filter = null): void
     {
-		$coreMiddlewares = $core->getAll($filter);
+        $coreMiddlewares = $core->getAll($filter);
 
         foreach ($coreMiddlewares as $key => $middleware) {
             if ( ! \is_string($key) || empty($key)) {
