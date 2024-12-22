@@ -49,6 +49,7 @@ class DB
      */
     public function all(): ?array
     {
+        $records = null;
         $query = 'SELECT * FROM ' . $this->table;
         $stmt = $this->wpdb->prepare($query);
 
@@ -72,6 +73,7 @@ class DB
      */
     public function find($id): ?array
     {
+        $record = null;
         $query = 'SELECT * FROM ' . $this->table . ' WHERE id = :id LIMIT 1';
         $stmt = $this->wpdb->prepare($query);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);

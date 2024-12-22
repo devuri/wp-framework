@@ -20,6 +20,8 @@ $start = microtime(true);
 $siteAppFactory = AppFactory::create(__DIR__);
 // $siteAppFactory->filter(['config','kernel']);
 // $siteAppFactory->filter([]);
+// $fwdb = WPframework\Support\Configs::wpdb();
+// dump($fwdb);
 AppFactory::run();
 
 // End timing

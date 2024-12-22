@@ -38,13 +38,14 @@
         "devuri/config": "^0.1",
         "devuri/dot-access": "^0.3",
         "devuri/env": "^0.3",
-		"pimple/pimple": "3.5.*",
         "devuri/secure-password": "^0.1",
         "devuri/uuid-generator": "^0.0.1",
         "filp/whoops": "^2.15",
         "matomo/device-detector": "^6.4",
         "nyholm/psr7": "^1.8",
         "nyholm/psr7-server": "^1.1",
+        "pimple/pimple": "3.5.*",
+        "psr/container": "^2.0",
         "psr/http-server-middleware": "^1.0",
         "psr/log": "^1.1 || ^2.0 || ^3.0",
         "symfony/error-handler": "5.0.11",
@@ -92,11 +93,11 @@
         ],
         "lint": [
             "composer install -q",
-            "composer audit",
             "composer psalm-secure",
             "composer psalm",
             "composer phpstan",
-            "composer no-dev -q"
+            "composer no-dev -q",
+			"composer audit"
         ],
         "build": [
             "composer install -q",
@@ -108,7 +109,8 @@
             "composer test",
             "composer test-covers",
             "composer lint",
-            "composer no-dev -q"
+            "composer no-dev -q",
+            "composer audit"
         ],
         "phpstan": "@php ./vendor/bin/phpstan analyse",
         "psalm": "vendor/bin/psalm",

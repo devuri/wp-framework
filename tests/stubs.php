@@ -6,6 +6,10 @@ if ( ! \defined('RAYDIUM_ENVIRONMENT_TYPE')) {
 	\define('RAYDIUM_ENVIRONMENT_TYPE', null);
 }
 
+if (!defined('CONFIGS_DIR_PATH')) {
+    define('CONFIGS_DIR_PATH', '');
+}
+
 if (!defined('APP_HTTP_HOST')) {
     define('APP_HTTP_HOST', 'default_domain.com');
 }
