@@ -17,15 +17,15 @@ use WPframework\Interfaces\EnvSwitcherInterface as Switcher;
 
 class SiteManager
 {
-    private $configManager;
+    private $constManager;
     private $switcher;
     private $environment;
     private $errorHandler;
     private $errorLogsDir;
 
-    public function __construct(ConstantBuilder $configManager)
+    public function __construct(ConstantBuilder $constManager)
     {
-        $this->configManager = $configManager;
+        $this->constManager = $constManager;
         $this->errorLogsDir  = self::setErrorLogsDir(APP_DIR_PATH);
         $this->errorHandler  = false;
         // Config::wpdb();
@@ -58,8 +58,8 @@ class SiteManager
      */
     public function setEnvironment(): self
     {
-        $this->configManager->addConstant('WP_DEVELOPMENT_MODE', self::wpDevelopmentMode());
-        $this->configManager->addConstant('WP_ENVIRONMENT_TYPE', $this->environment);
+        $this->constManager->addConstant('WP_DEVELOPMENT_MODE', self::wpDevelopmentMode());
+        $this->constManager->addConstant('WP_ENVIRONMENT_TYPE', $this->environment);
 
         return $this;
     }
@@ -102,75 +102,75 @@ class SiteManager
 
     public function setSiteUrl(): void
     {
-        $this->configManager->addConstant('WP_HOME', env('WP_HOME'));
-        $this->configManager->addConstant('WP_SITEURL', env('WP_SITEURL'));
+        $this->constManager->addConstant('WP_HOME', env('WP_HOME'));
+        $this->constManager->addConstant('WP_SITEURL', env('WP_SITEURL'));
     }
 
     public function setAssetUrl(): void
     {
-        $this->configManager->addConstant('ASSET_URL', env('ASSET_URL'));
+        $this->constManager->addConstant('ASSET_URL', env('ASSET_URL'));
     }
 
     public function setOptimize(): void
     {
-        $this->configManager->addConstant('CONCATENATE_SCRIPTS', env('CONCATENATE_SCRIPTS') ?? self::default('optimize'));
+        $this->constManager->addConstant('CONCATENATE_SCRIPTS', env('CONCATENATE_SCRIPTS') ?? self::default('optimize'));
     }
 
     public function setMemory(): void
     {
-        $this->configManager->addConstant('WP_MEMORY_LIMIT', env('MEMORY_LIMIT') ?? self::default('memory'));
-        $this->configManager->addConstant('WP_MAX_MEMORY_LIMIT', env('MAX_MEMORY_LIMIT') ?? self::default('memory'));
+        $this->constManager->addConstant('WP_MEMORY_LIMIT', env('MEMORY_LIMIT') ?? self::default('memory'));
+        $this->constManager->addConstant('WP_MAX_MEMORY_LIMIT', env('MAX_MEMORY_LIMIT') ?? self::default('memory'));
     }
 
     public function setForceSsl(): void
     {
-        $this->configManager->addConstant('FORCE_SSL_ADMIN', env('FORCE_SSL_ADMIN') ?? self::default('ssl_admin'));
-        $this->configManager->addConstant('FORCE_SSL_LOGIN', env('FORCE_SSL_LOGIN') ?? self::default('ssl_login'));
+        $this->constManager->addConstant('FORCE_SSL_ADMIN', env('FORCE_SSL_ADMIN') ?? self::default('ssl_admin'));
+        $this->constManager->addConstant('FORCE_SSL_LOGIN', env('FORCE_SSL_LOGIN') ?? self::default('ssl_login'));
     }
 
     public function setAutosave(): void
     {
-        $this->configManager->addConstant('AUTOSAVE_INTERVAL', env('AUTOSAVE_INTERVAL') ?? self::default('autosave'));
-        $this->configManager->addConstant('WP_POST_REVISIONS', env('WP_POST_REVISIONS') ?? self::default('revisions'));
+        $this->constManager->addConstant('AUTOSAVE_INTERVAL', env('AUTOSAVE_INTERVAL') ?? self::default('autosave'));
+        $this->constManager->addConstant('WP_POST_REVISIONS', env('WP_POST_REVISIONS') ?? self::default('revisions'));
     }
 
     public function setDatabase(): void
     {
-        $this->configManager->addConstant('DB_NAME', env('DB_NAME'));
-        $this->configManager->addConstant('DB_USER', env('DB_USER'));
-        $this->configManager->addConstant('DB_PASSWORD', env('DB_PASSWORD'));
-        $this->configManager->addConstant('DB_HOST', env('DB_HOST') ?? self::default('db_host'));
-        $this->configManager->addConstant('DB_CHARSET', env('DB_CHARSET') ?? 'utf8mb4');
-        $this->configManager->addConstant('DB_COLLATE', env('DB_COLLATE') ?? '');
+        $this->constManager->addConstant('DB_NAME', env('DB_NAME'));
+        $this->constManager->addConstant('DB_USER', env('DB_USER'));
+        $this->constManager->addConstant('DB_PASSWORD', env('DB_PASSWORD'));
+        $this->constManager->addConstant('DB_HOST', env('DB_HOST') ?? self::default('db_host'));
+        $this->constManager->addConstant('DB_CHARSET', env('DB_CHARSET') ?? 'utf8mb4');
+        $this->constManager->addConstant('DB_COLLATE', env('DB_COLLATE') ?? '');
     }
 
     public function setCookies(): void
     {
-        $this->configManager->addConstant('COOKIEHASH', md5(env('WP_HOME')));
+        $this->constManager->addConstant('COOKIEHASH', md5(env('WP_HOME')));
 
         // Defines cookie-related override for WordPress constants.
-        $this->configManager->addConstant('USER_COOKIE', 'wpx_user_' . COOKIEHASH);
-        $this->configManager->addConstant('PASS_COOKIE', 'wpx_pass_' . COOKIEHASH);
-        $this->configManager->addConstant('AUTH_COOKIE', 'wpx_auth_' . COOKIEHASH);
-        $this->configManager->addConstant('SECURE_AUTH_COOKIE', 'wpx_sec_' . COOKIEHASH);
-        $this->configManager->addConstant('RECOVERY_MODE_COOKIE', 'wpx_rec_' . COOKIEHASH);
-        $this->configManager->addConstant('LOGGED_IN_COOKIE', 'wpx_logged_in_' . COOKIEHASH);
-        $this->configManager->addConstant('TEST_COOKIE', md5('wpx_test_cookie' . env('WP_HOME')));
+        $this->constManager->addConstant('USER_COOKIE', 'wpx_user_' . COOKIEHASH);
+        $this->constManager->addConstant('PASS_COOKIE', 'wpx_pass_' . COOKIEHASH);
+        $this->constManager->addConstant('AUTH_COOKIE', 'wpx_auth_' . COOKIEHASH);
+        $this->constManager->addConstant('SECURE_AUTH_COOKIE', 'wpx_sec_' . COOKIEHASH);
+        $this->constManager->addConstant('RECOVERY_MODE_COOKIE', 'wpx_rec_' . COOKIEHASH);
+        $this->constManager->addConstant('LOGGED_IN_COOKIE', 'wpx_logged_in_' . COOKIEHASH);
+        $this->constManager->addConstant('TEST_COOKIE', md5('wpx_test_cookie' . env('WP_HOME')));
 
         // @see https://github.com/WordPress/WordPress/blob/6.5.1/wp-includes/default-constants.php#L241
     }
 
     public function setSalts(): void
     {
-        $this->configManager->addConstant('AUTH_KEY', env('AUTH_KEY'));
-        $this->configManager->addConstant('SECURE_AUTH_KEY', env('SECURE_AUTH_KEY'));
-        $this->configManager->addConstant('LOGGED_IN_KEY', env('LOGGED_IN_KEY'));
-        $this->configManager->addConstant('NONCE_KEY', env('NONCE_KEY'));
-        $this->configManager->addConstant('AUTH_SALT', env('AUTH_SALT'));
-        $this->configManager->addConstant('SECURE_AUTH_SALT', env('SECURE_AUTH_SALT'));
-        $this->configManager->addConstant('LOGGED_IN_SALT', env('LOGGED_IN_SALT'));
-        $this->configManager->addConstant('NONCE_SALT', env('NONCE_SALT'));
-        $this->configManager->addConstant('DEVELOPER_ADMIN', env('DEVELOPER_ADMIN') ?? '0');
+        $this->constManager->addConstant('AUTH_KEY', env('AUTH_KEY'));
+        $this->constManager->addConstant('SECURE_AUTH_KEY', env('SECURE_AUTH_KEY'));
+        $this->constManager->addConstant('LOGGED_IN_KEY', env('LOGGED_IN_KEY'));
+        $this->constManager->addConstant('NONCE_KEY', env('NONCE_KEY'));
+        $this->constManager->addConstant('AUTH_SALT', env('AUTH_SALT'));
+        $this->constManager->addConstant('SECURE_AUTH_SALT', env('SECURE_AUTH_SALT'));
+        $this->constManager->addConstant('LOGGED_IN_SALT', env('LOGGED_IN_SALT'));
+        $this->constManager->addConstant('NONCE_SALT', env('NONCE_SALT'));
+        $this->constManager->addConstant('DEVELOPER_ADMIN', env('DEVELOPER_ADMIN') ?? '0');
     }
 
     /**

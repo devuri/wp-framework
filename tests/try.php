@@ -18,7 +18,8 @@ require_once \dirname(__FILE__, 2) . '/vendor/autoload.php';
 $start = microtime(true);
 
 $siteAppFactory = AppFactory::create(__DIR__);
-
+//$siteAppFactory->filter(['config','kernel']);
+//$siteAppFactory->filter([]);
 AppFactory::run();
 
 // End timing

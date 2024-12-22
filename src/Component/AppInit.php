@@ -41,6 +41,11 @@ class AppInit implements RequestHandlerInterface
      */
     protected $middlewareRegistry;
 
+	/**
+     * @var array
+     */
+    protected $middlewareFilter;
+
     /**
      * @var null|callable
      */
@@ -74,7 +79,7 @@ class AppInit implements RequestHandlerInterface
     /**
      * AppInit constructor.
      */
-    public function __construct(RequestInterface $request, PsrContainer $container)
+    public function __construct(RequestInterface $request, ?PsrContainer $container)
     {
         $this->container = $container;
         $this->configs   = $this->container->get('configs');
@@ -146,13 +151,14 @@ class AppInit implements RequestHandlerInterface
     public function handle(RequestInterface $request): ResponseInterface
     {
         $this->request = $request->withAttribute('isProd', Configs::isInProdEnvironment());
-        $middlewares = new MiddlewareRegistry();
+
+		$this->middlewareRegistry = new MiddlewareRegistry($this->container, $this->middlewareFilter);
 
         try {
             $middlewareHandler = new MiddlewareDispatcher(
                 $this->defaultHandler,
                 $this->container,
-                $middlewares
+                $this->middlewareRegistry
             );
 
             return $middlewareHandler->handle($this->request);
@@ -164,11 +170,16 @@ class AppInit implements RequestHandlerInterface
     }
 
     /**
-     * Start the application by handling the given request.
+     * Filter middlewares.
      *
      * @return void
      */
-    public function run(): void
+    public function filter(array $middlewareFilter): void
+    {
+        $this->middlewareFilter = $middlewareFilter;
+    }
+
+	public function run(): void
     {
         $response = $this->handle($this->request);
         $this->emitResponse($response);

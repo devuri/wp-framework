@@ -27,12 +27,14 @@ class Configs implements ConfigsInterface
     protected $configsDir;
     protected array $configCache = [];
     protected static $defaultWhitelist;
+    protected static $defaultMiddlewares;
 
     public function __construct(array $preloadConfigs = ['tenancy', 'tenants', 'kiosk'], ?string $appPath = null)
     {
         $this->appPath     = $appPath ?? APP_DIR_PATH;
         $this->configsPath = $this->getConfigsPath($this->appPath);
         self::$defaultWhitelist = self::getDefaultWhitelist();
+        self::$defaultMiddlewares = self::getDefaultMiddlewares();
 
         foreach ($preloadConfigs as $config) {
             $this->loadConfigFile($config);
@@ -40,6 +42,7 @@ class Configs implements ConfigsInterface
 
         $this->loadConfigFile('composer');
         $this->configCache['whitelist'] = $this->setEnvWhitelist(self::$defaultWhitelist);
+        $this->configCache['middlewares'] = $this->setMiddlewares(self::$defaultMiddlewares);
         $this->config = $this->configCache;
     }
 
@@ -372,6 +375,23 @@ class Configs implements ConfigsInterface
         return self::multiMerge(self::getDefault(), $appOptions);
     }
 
+    protected function setMiddlewares(array $defaultMiddlewares): array
+    {
+        $middlewareFile = $this->configsPath . '/middlewares.php';
+
+        if (file_exists($middlewareFile) && \is_array(@require $middlewareFile)) {
+            $appMiddleware = require $middlewareFile;
+        } else {
+            $appMiddleware = [];
+        }
+
+        if ( ! \is_array($appMiddleware)) {
+            throw new InvalidArgumentException('Error: Config::$appMiddleware must be of type array', 1);
+        }
+
+        return array_merge($defaultMiddlewares, $appMiddleware);
+    }
+
     protected function refreshConfig(): self
     {
         $this->config = $this->configCache;
@@ -458,5 +478,23 @@ class Configs implements ConfigsInterface
         }
 
         return $merged;
+    }
+
+    private static function getDefaultMiddlewares()
+    {
+        return [
+            'favicon' => \WPframework\Middleware\FaviconCache::class,
+            'security' => \WPframework\Middleware\SecurityHeadersMiddleware::class,
+            'https' => \WPframework\Middleware\HttpsOnlyMiddleware::class,
+            'spam' => \WPframework\Middleware\SpamDetectionMiddleware::class,
+            'tenant' => \WPframework\Middleware\TenantIdMiddleware::class,
+            'ignit' => \WPframework\Middleware\IgnitionMiddleware::class,
+            'status' => \WPframework\Middleware\StatusMiddleware::class,
+            'config' => \WPframework\Middleware\ConstMiddleware::class,
+            'kernel' => \WPframework\Middleware\KernelMiddleware::class,
+            'auth' => \WPframework\Middleware\AuthMiddleware::class,
+            'logger' => \WPframework\Middleware\LoggingMiddleware::class,
+            'whoops' => \WPframework\Middleware\WhoopsMiddleware::class,
+        ];
     }
 }

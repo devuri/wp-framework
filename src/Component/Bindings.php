@@ -22,6 +22,7 @@ use WPframework\Support\KernelConfig;
 use WPframework\Support\Services\AuthManager;
 use WPframework\Support\SiteManager;
 use WPframework\Support\Switcher;
+use WPframework\Middleware\Handlers\CoreMiddleware;
 
 class Bindings
 {
@@ -93,6 +94,10 @@ class Bindings
 
         $this->add('logger', function ($c) {
             return new FileLogger();
+        });
+
+        $this->add('middlewares', function ($c) {
+            return new CoreMiddleware($c);
         });
 
         $this->add('whoops', function ($c) {
