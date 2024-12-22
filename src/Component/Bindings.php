@@ -31,77 +31,117 @@ class Bindings
      */
     protected $container;
 
+    /**
+     * Bindings constructor.
+     *
+     * @param PimpleContainer $container
+     */
     public function __construct(PimpleContainer $container)
     {
         $this->container = $container;
     }
 
+    /**
+     * Get the Pimple container instance.
+     *
+     * @return PimpleContainer
+     */
     public function getContainer(): PimpleContainer
     {
         return $this->container;
     }
 
+    /**
+     * Convert to a PSR-compatible container.
+     *
+     * @return PsrContainer
+     */
     public function getPsrContainer(): PsrContainer
     {
         return new PsrContainer($this->container);
     }
 
-    public function add(string $key, callable $binding)
+    /**
+     * Add a binding to the container.
+     *
+     * @param string   $key
+     * @param callable $binding
+     *
+     * @return PimpleContainer
+     */
+    public function add(string $key, callable $binding): PimpleContainer
     {
         $this->container[$key] = $binding;
 
         return $this->container;
     }
 
+    /**
+     * Initialize the bindings instance with a container.
+     *
+     * @param PimpleContainer $container
+     *
+     * @return self
+     */
     public static function init(PimpleContainer $container): self
     {
         $bindings = new self($container);
 
-        $bindings->coreBindings();
+        $bindings->registerBindings($bindings->getCoreBindings());
 
         return $bindings;
     }
 
-    public function coreBindings(): void
+    /**
+     * Register multiple bindings at once.
+     *
+     * @param array $bindings
+     */
+    public function registerBindings(array $bindings): void
     {
-        $this->add('filesystem', function () {
-            return new Filesystem();
-        });
+        foreach ($bindings as $key => $binding) {
+            $this->add($key, $binding);
+        }
+    }
 
-        $this->add('configs', function ($c) {
-            return Configs::init(APP_DIR_PATH);
-        });
-
-        $this->add('const_builder', function ($c) {
-            return new ConstantBuilder();
-        });
-
-        $this->add('kernel', function ($c) {
-            return new KernelConfig($c['const_builder']);
-        });
-
-        $this->add('site_manager', function ($c) {
-            return new SiteManager($c['const_builder']);
-        });
-
-        $this->add('switcher', function ($c) {
-            return new Switcher($c['const_builder']);
-        });
-
-        $this->add('auth', function ($c) {
-            return new AuthManager();
-        });
-
-        $this->add('logger', function ($c) {
-            return new FileLogger();
-        });
-
-        $this->add('middlewares', function ($c) {
-            return new CoreMiddleware($c);
-        });
-
-        $this->add('whoops', function ($c) {
-            return new WhoopRunner();
-        });
+    /**
+     * Get an array of core bindings.
+     *
+     * @return array
+     */
+    public function getCoreBindings(): array
+    {
+        return [
+            'filesystem' => function () {
+                return new Filesystem();
+            },
+            'configs' => function ($c) {
+                return Configs::init(APP_DIR_PATH);
+            },
+            'const_builder' => function ($c) {
+                return new ConstantBuilder();
+            },
+            'kernel' => function ($c) {
+                return new KernelConfig($c['const_builder']);
+            },
+            'site_manager' => function ($c) {
+                return new SiteManager($c['const_builder']);
+            },
+            'switcher' => function ($c) {
+                return new Switcher($c['const_builder']);
+            },
+            'auth' => function ($c) {
+                return new AuthManager();
+            },
+            'logger' => function ($c) {
+                return new FileLogger();
+            },
+            'middlewares' => function ($c) {
+                return new CoreMiddleware($c);
+            },
+            'whoops' => function ($c) {
+                return new WhoopRunner();
+            },
+        ];
     }
 }

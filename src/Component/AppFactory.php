@@ -50,9 +50,9 @@ class AppFactory
 
         // set container bindings.
         $containerBindings = Bindings::init(new PimpleContainer());
-        $container = $containerBindings->getPsrContainer();
+        $psrContainer = $containerBindings->getPsrContainer();
 
-        $envType = new EnvType($container->get('filesystem'));
+        $envType = new EnvType($psrContainer->get('filesystem'));
 
         $envFiles = $envType->filterFiles(
             EnvType::supportedFiles(),
@@ -64,13 +64,13 @@ class AppFactory
         self::$request = self::$request->withAttribute('envFiles', $envFiles);
 
         // Initialize logging with FileLogger
-        Log::init($container->get('logger'));
+        Log::init($psrContainer->get('logger'));
 
         // Set the environment configuration
         self::setEnvironment($environment);
 
         // Instantiate the main application object
-        self::$app = new AppInit(self::$request, $container);
+        self::$app = new AppInit(self::$request, $containerBindings);
 
         // Set the error handler for the application
         self::setErrorHandler();
@@ -108,7 +108,7 @@ class AppFactory
         } catch (InvalidPathException $e) {
             $envType->tryRegenerateFile(APP_DIR_PATH, APP_HTTP_HOST, $envFiles);
 
-            WPframework\Terminate::exit(new InvalidPathException($e->getMessage()));
+            Terminate::exit(new InvalidPathException($e->getMessage()));
         }
 
         return $_dotenv;

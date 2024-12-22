@@ -11,6 +11,7 @@
 
 namespace WPframework;
 
+use Pimple\Container as PimpleContainer;
 use Pimple\Psr11\Container as PsrContainer;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -27,9 +28,14 @@ use WPframework\Support\Configs;
 class AppInit implements RequestHandlerInterface
 {
     /**
-     * @var PsrContainer
+     * @var PimpleContainer
      */
     protected $container;
+
+    /**
+     * @var PsrContainer
+     */
+    protected $psrContainer;
 
     /**
      * @var Configs
@@ -79,10 +85,11 @@ class AppInit implements RequestHandlerInterface
     /**
      * AppInit constructor.
      */
-    public function __construct(RequestInterface $request, ?PsrContainer $container)
+    public function __construct(RequestInterface $request, ?Bindings $containerBindings)
     {
-        $this->container = $container;
-        $this->configs   = $this->container->get('configs');
+        $this->container = $containerBindings->getContainer();
+        $this->psrContainer = $containerBindings->getPsrContainer();
+        $this->configs   = $this->psrContainer->get('configs');
         $this->request   = $request;
 
         $this->defaultHandler = new FinalHandler();
@@ -99,6 +106,26 @@ class AppInit implements RequestHandlerInterface
         };
 
         $this->emitter = new SapiEmitter();
+    }
+
+    public function getContainer(): PimpleContainer
+    {
+        return $this->container;
+    }
+
+    /**
+     * Add a binding to the container.
+     *
+     * @param string   $key
+     * @param callable $binding
+     *
+     * @return PimpleContainer
+     */
+    public function registerService(string $key, callable $binding): PimpleContainer
+    {
+        $this->container[$key] = $binding;
+
+        return $this->container;
     }
 
     /**
@@ -152,12 +179,12 @@ class AppInit implements RequestHandlerInterface
     {
         $this->request = $request->withAttribute('isProd', Configs::isInProdEnvironment());
 
-        $this->middlewareRegistry = new MiddlewareRegistry($this->container, $this->middlewareFilter);
+        $this->middlewareRegistry = new MiddlewareRegistry($this->psrContainer, $this->middlewareFilter);
 
         try {
             $middlewareHandler = new MiddlewareDispatcher(
                 $this->defaultHandler,
-                $this->container,
+                $this->psrContainer,
                 $this->middlewareRegistry
             );
 
