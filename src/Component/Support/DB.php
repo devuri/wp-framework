@@ -45,20 +45,23 @@ class DB
     /**
      * Fetch all records from the table.
      *
-     * @return array|false
+     * @return null|object
      */
-    public function all()
+    public function all(): ?array
     {
+        $records = null;
         $query = 'SELECT * FROM ' . $this->table;
         $stmt = $this->wpdb->prepare($query);
 
         try {
             $stmt->execute();
 
-            return $stmt->fetchAll(PDO::FETCH_OBJ);
+            $records = $stmt->fetchAll() ?: null;
         } catch (PDOException $e) {
             Terminate::exit($e);
         }
+
+        return $records;
     }
 
     /**
@@ -66,10 +69,11 @@ class DB
      *
      * @param int $id
      *
-     * @return array|false
+     * @return null|array
      */
-    public function find($id)
+    public function find($id): ?array
     {
+        $record = null;
         $query = 'SELECT * FROM ' . $this->table . ' WHERE id = :id LIMIT 1';
         $stmt = $this->wpdb->prepare($query);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
@@ -77,13 +81,15 @@ class DB
         try {
             $stmt->execute();
 
-            return $stmt->fetch(PDO::FETCH_ASSOC) ?: false;
+            $record = $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
         } catch (PDOException $e) {
             Terminate::exit($e);
         }
+
+        return $record;
     }
 
-    public function getUser(string $user_login)
+    public function getUser(string $user_login): ?object
     {
         if ( ! $this->tableExist()) {
             return null;
@@ -96,10 +102,12 @@ class DB
         try {
             $stmt->execute();
 
-            return $stmt->fetch(PDO::FETCH_OBJ) ?: false;
+            $user = $stmt->fetch(PDO::FETCH_OBJ) ?: null;
         } catch (PDOException $e) {
             throw new PDOException($e);
         }
+
+        return $user;
     }
 
     public function tableExist()
@@ -115,9 +123,9 @@ class DB
      * @param string $column
      * @param string $value
      *
-     * @return array|false
+     * @return null|object
      */
-    public function where($column, $value)
+    public function where($column, $value): ?object
     {
         $query = 'SELECT * FROM ' . $this->table . ' WHERE ' . $column . ' = :value';
         $stmt = $this->wpdb->prepare($query);
@@ -126,10 +134,12 @@ class DB
         try {
             $stmt->execute();
 
-            return $stmt->fetchAll(PDO::FETCH_OBJ);
+            $column = $stmt->fetch(PDO::FETCH_OBJ) ?: null;
         } catch (PDOException $e) {
             Terminate::exit($e);
         }
+
+        return $column;
     }
 
     /**
@@ -179,6 +189,10 @@ class DB
      */
     private function dbConnect()
     {
+        if (\defined('TRY_WITH_NO_DB') && true === \constant('TRY_WITH_NO_DB')) {
+            return null;
+        }
+
         if (null !== $this->wpdb) {
             return $this->wpdb;
         }

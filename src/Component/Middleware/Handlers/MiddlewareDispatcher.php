@@ -59,7 +59,7 @@ class MiddlewareDispatcher implements RequestHandlerInterface
         $this->container = $container;
         $this->middlewareRegistry = $middlewareRegistry;
         $this->logger = $logger;
-        $this->middlewareQueue = $this->middlewareRegistry->getRegisteredMiddleware();
+        $this->middlewareQueue = $this->middlewareRegistry->getRegisteredMiddlewares();
     }
 
     /**

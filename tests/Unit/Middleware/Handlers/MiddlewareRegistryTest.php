@@ -51,7 +51,7 @@ class MiddlewareRegistryTest extends TestCase
      */
     public function test_get_registered_middleware(): void
     {
-        self::assertTrue(method_exists('WPframework\Middleware\Handlers\MiddlewareRegistry', 'getRegisteredMiddleware'));
+        self::assertTrue(method_exists('WPframework\Middleware\Handlers\MiddlewareRegistry', 'getRegisteredMiddlewares'));
     }
     /**
      * @covers \WPframework\Middleware\Handlers\MiddlewareRegistry::setDefault

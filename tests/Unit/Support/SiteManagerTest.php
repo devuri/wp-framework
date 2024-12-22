@@ -40,96 +40,96 @@ class SiteManagerTest extends TestCase
 
     public function test_set_site_url(): void
     {
-        $configManager = new ConstantBuilder();
-        $siteManager = new SiteManager($configManager);
-        $siteManager->setSwitcher(new Switcher($configManager));
+        $constManager = new ConstantBuilder();
+        $siteManager = new SiteManager($constManager);
+        $siteManager->setSwitcher(new Switcher($constManager));
 
         $siteManager->setSiteUrl();
 
-        $home = ($configManager->getConstant('WP_HOME') || \constant('WP_HOME'));
+        $home = ($constManager->getConstant('WP_HOME') || \constant('WP_HOME'));
 
         $this->assertEquals('https://example.com', $home);
-        $this->assertEquals('https://example.com/wp', $configManager->getConstant('WP_SITEURL'));
+        $this->assertEquals('https://example.com/wp', $constManager->getConstant('WP_SITEURL'));
     }
 
     public function test_set_asset_url(): void
     {
-        $configManager = new ConstantBuilder();
-        $siteManager = new SiteManager($configManager);
-        $siteManager->setSwitcher(new Switcher($configManager));
+        $constManager = new ConstantBuilder();
+        $siteManager = new SiteManager($constManager);
+        $siteManager->setSwitcher(new Switcher($constManager));
 
         $siteManager->setAssetUrl();
 
-        $this->assertEquals('https://cdn.example.com', $configManager->getConstant('ASSET_URL'));
+        $this->assertEquals('https://cdn.example.com', $constManager->getConstant('ASSET_URL'));
     }
 
     public function test_set_optimize(): void
     {
-        $configManager = new ConstantBuilder();
-        $siteManager = new SiteManager($configManager);
-        $siteManager->setSwitcher(new Switcher($configManager));
+        $constManager = new ConstantBuilder();
+        $siteManager = new SiteManager($constManager);
+        $siteManager->setSwitcher(new Switcher($constManager));
 
         $siteManager->setOptimize();
-        $this->assertEquals(1, $configManager->getConstant('CONCATENATE_SCRIPTS'));
+        $this->assertEquals(1, $constManager->getConstant('CONCATENATE_SCRIPTS'));
     }
 
     public function test_set_memory(): void
     {
-        $configManager = new ConstantBuilder();
-        $siteManager = new SiteManager($configManager);
-        $siteManager->setSwitcher(new Switcher($configManager));
+        $constManager = new ConstantBuilder();
+        $siteManager = new SiteManager($constManager);
+        $siteManager->setSwitcher(new Switcher($constManager));
 
         $siteManager->setMemory();
 
-        $this->assertEquals('256M', $configManager->getConstant('WP_MEMORY_LIMIT'));
-        $this->assertEquals('512M', $configManager->getConstant('WP_MAX_MEMORY_LIMIT'));
+        $this->assertEquals('256M', $constManager->getConstant('WP_MEMORY_LIMIT'));
+        $this->assertEquals('512M', $constManager->getConstant('WP_MAX_MEMORY_LIMIT'));
     }
 
     public function test_set_force_ssl(): void
     {
-        $configManager = new ConstantBuilder();
-        $siteManager = new SiteManager($configManager);
-        $siteManager->setSwitcher(new Switcher($configManager));
+        $constManager = new ConstantBuilder();
+        $siteManager = new SiteManager($constManager);
+        $siteManager->setSwitcher(new Switcher($constManager));
 
         $siteManager->setForceSsl();
 
-        $this->assertEquals(1, $configManager->getConstant('FORCE_SSL_ADMIN'));
-        $this->assertEquals(0, $configManager->getConstant('FORCE_SSL_LOGIN'));
+        $this->assertEquals(1, $constManager->getConstant('FORCE_SSL_ADMIN'));
+        $this->assertEquals(0, $constManager->getConstant('FORCE_SSL_LOGIN'));
     }
 
     public function test_set_autosave(): void
     {
-        $configManager = new ConstantBuilder();
-        $siteManager = new SiteManager($configManager);
-        $siteManager->setSwitcher(new Switcher($configManager));
+        $constManager = new ConstantBuilder();
+        $siteManager = new SiteManager($constManager);
+        $siteManager->setSwitcher(new Switcher($constManager));
 
         $siteManager->setAutosave();
 
-        $this->assertEquals(300, $configManager->getConstant('AUTOSAVE_INTERVAL'));
-        $this->assertEquals(5, $configManager->getConstant('WP_POST_REVISIONS'));
+        $this->assertEquals(300, $constManager->getConstant('AUTOSAVE_INTERVAL'));
+        $this->assertEquals(5, $constManager->getConstant('WP_POST_REVISIONS'));
     }
 
     public function test_set_database(): void
     {
-        $configManager = new ConstantBuilder();
-        $siteManager = new SiteManager($configManager);
-        $siteManager->setSwitcher(new Switcher($configManager));
+        $constManager = new ConstantBuilder();
+        $siteManager = new SiteManager($constManager);
+        $siteManager->setSwitcher(new Switcher($constManager));
 
         $siteManager->setDatabase();
 
-        $this->assertEquals('wordpress_db', $configManager->getConstant('DB_NAME'));
-        $this->assertEquals('root', $configManager->getConstant('DB_USER'));
-        $this->assertEquals('password', $configManager->getConstant('DB_PASSWORD'));
-        $this->assertEquals('127.0.0.1', $configManager->getConstant('DB_HOST'));
-        $this->assertEquals('utf8mb4', $configManager->getConstant('DB_CHARSET'));
-        $this->assertEquals('', $configManager->getConstant('DB_COLLATE'));
+        $this->assertEquals('wordpress_db', $constManager->getConstant('DB_NAME'));
+        $this->assertEquals('root', $constManager->getConstant('DB_USER'));
+        $this->assertEquals('password', $constManager->getConstant('DB_PASSWORD'));
+        $this->assertEquals('127.0.0.1', $constManager->getConstant('DB_HOST'));
+        $this->assertEquals('utf8mb4', $constManager->getConstant('DB_CHARSET'));
+        $this->assertEquals('', $constManager->getConstant('DB_COLLATE'));
     }
 
     public function test_set_salts(): void
     {
-        $configManager = new ConstantBuilder();
-        $siteManager = new SiteManager($configManager);
-        $siteManager->setSwitcher(new Switcher($configManager));
+        $constManager = new ConstantBuilder();
+        $siteManager = new SiteManager($constManager);
+        $siteManager->setSwitcher(new Switcher($constManager));
 
         $siteManager->setSalts();
 
@@ -144,25 +144,24 @@ class SiteManagerTest extends TestCase
             'noncesalt' => '2[]7?kLGY`e-,6B:EU,ul;w(:HJlo1v;>.5{pc)8vxknaVi|Q&luz|>pW3w*8lL0',
         ];
 
-
-        $this->assertEquals($secretkey['authkey'], $configManager->getConstant('AUTH_KEY'));
-        $this->assertEquals($secretkey['secureauthkey'], $configManager->getConstant('SECURE_AUTH_KEY'));
-        $this->assertEquals($secretkey['loggedinkey'], $configManager->getConstant('LOGGED_IN_KEY'));
-        $this->assertEquals($secretkey['noncekey'], $configManager->getConstant('NONCE_KEY'));
-        $this->assertEquals($secretkey['authsalt'], $configManager->getConstant('AUTH_SALT'));
-        $this->assertEquals($secretkey['secureauthsalt'], $configManager->getConstant('SECURE_AUTH_SALT'));
-        $this->assertEquals($secretkey['loggedinsalt'], $configManager->getConstant('LOGGED_IN_SALT'));
-        $this->assertEquals($secretkey['noncesalt'], $configManager->getConstant('NONCE_SALT'));
+        $this->assertEquals($secretkey['authkey'], $constManager->getConstant('AUTH_KEY'));
+        $this->assertEquals($secretkey['secureauthkey'], $constManager->getConstant('SECURE_AUTH_KEY'));
+        $this->assertEquals($secretkey['loggedinkey'], $constManager->getConstant('LOGGED_IN_KEY'));
+        $this->assertEquals($secretkey['noncekey'], $constManager->getConstant('NONCE_KEY'));
+        $this->assertEquals($secretkey['authsalt'], $constManager->getConstant('AUTH_SALT'));
+        $this->assertEquals($secretkey['secureauthsalt'], $constManager->getConstant('SECURE_AUTH_SALT'));
+        $this->assertEquals($secretkey['loggedinsalt'], $constManager->getConstant('LOGGED_IN_SALT'));
+        $this->assertEquals($secretkey['noncesalt'], $constManager->getConstant('NONCE_SALT'));
     }
 
     public function test_set_environment(): void
     {
-        $configManager = new ConstantBuilder();
-        $siteManager = new SiteManager($configManager);
-        $siteManager->setSwitcher(new Switcher($configManager));
+        $constManager = new ConstantBuilder();
+        $siteManager = new SiteManager($constManager);
+        $siteManager->setSwitcher(new Switcher($constManager));
 
         $siteManager->setEnvironment();
 
-        $this->assertEquals('theme', $configManager->getConstant('WP_DEVELOPMENT_MODE'));
+        $this->assertEquals('theme', $constManager->getConstant('WP_DEVELOPMENT_MODE'));
     }
 }

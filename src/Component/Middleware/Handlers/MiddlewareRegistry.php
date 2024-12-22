@@ -18,11 +18,11 @@ class MiddlewareRegistry
     /**
      * @var null|array
      */
-    protected ?array $middlewares;
+    protected array $middlewares = [];
 
-    public function __construct()
+    public function __construct($container, ?array $filter = null)
     {
-        $this->setDefault(new CoreMiddleware());
+        $this->setDefault($container->get('middlewares'), $filter);
     }
 
     /**
@@ -38,14 +38,16 @@ class MiddlewareRegistry
     /**
      * @return null|array
      */
-    public function getRegisteredMiddleware(): ?array
+    public function getRegisteredMiddlewares(): ?array
     {
         return $this->middlewares;
     }
 
-    protected function setDefault(CoreMiddleware $core): void
+    protected function setDefault(CoreMiddleware $core, ?array $filter = null): void
     {
-        foreach ($core->getAll() as $key => $middleware) {
+        $coreMiddlewares = $core->getAll($filter);
+
+        foreach ($coreMiddlewares as $key => $middleware) {
             if ( ! \is_string($key) || empty($key)) {
                 continue;
             }

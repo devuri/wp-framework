@@ -3,7 +3,7 @@
     "type": "project",
     "extra": {
 		"multitenant": {
-		  "is_active": true,
+		  "is_active": false,
 		  "uuid": "81243057"
 		},
         "wordpress-install-dir": "public/wp",

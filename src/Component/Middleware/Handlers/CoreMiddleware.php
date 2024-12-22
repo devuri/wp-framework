@@ -11,37 +11,67 @@
 
 namespace WPframework\Middleware\Handlers;
 
-use WPframework\Middleware\AuthMiddleware;
-use WPframework\Middleware\ConstMiddleware;
-use WPframework\Middleware\HttpsOnlyMiddleware;
-use WPframework\Middleware\IgnitionMiddleware;
-use WPframework\Middleware\KernelMiddleware;
-use WPframework\Middleware\LoggingMiddleware;
-use WPframework\Middleware\SecurityHeadersMiddleware;
-use WPframework\Middleware\SpamDetectionMiddleware;
-use WPframework\Middleware\StatusMiddleware;
-use WPframework\Middleware\TenantIdMiddleware;
-use WPframework\Middleware\WhoopsMiddleware;
+use Pimple\Container as Container;
 
 class CoreMiddleware
 {
     /**
+     * @var null|array
+     */
+    protected $middlewares;
+
+    /**
+     * @var null|array
+     */
+    protected $configs;
+
+    public function __construct(Container $container)
+    {
+        $this->configs = $container['configs'];
+        $this->middlewares = $this->configs->config['middlewares'];
+    }
+
+    /**
      * @return array
      */
-    public function getAll(): array
+    public function getAll(?array $enabledKeys = null): array
+    {
+        if (\is_null($enabledKeys)) {
+            $enabledKeys = $this->defaultMiddlewareKeys();
+        }
+
+        return $this->filter($enabledKeys);
+    }
+
+    /**
+     * Filter middlewares to include only the enabled.
+     *
+     * @return array
+     */
+    public function filter(array $enabledKeys): array
+    {
+        return array_filter($this->middlewares, function ($key) use ($enabledKeys) {
+            return \in_array($key, $enabledKeys, true);
+        }, ARRAY_FILTER_USE_KEY);
+    }
+
+    /**
+     * Fetch enabled middleware keys.
+     *
+     * @return array
+     */
+    private function defaultMiddlewareKeys(): array
     {
         return [
-            'security' => SecurityHeadersMiddleware::class,
-            // 'https' => HttpsOnlyMiddleware::class,
-            // 'spam' => SpamDetectionMiddleware::class,
-            'tenant' => TenantIdMiddleware::class,
-            'ignit' => IgnitionMiddleware::class,
-            'status' => StatusMiddleware::class,
-            'config' => ConstMiddleware::class,
-            'kernel' => KernelMiddleware::class,
-            'auth' => AuthMiddleware::class,
-            'logger' => LoggingMiddleware::class,
-            'whoops' => WhoopsMiddleware::class,
+            'security',
+            'tenant',
+            'ignit',
+            'status',
+            'config',
+            'kernel',
+            'auth',
+            'logger',
+            'whoops',
         ];
     }
 }
