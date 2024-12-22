@@ -81,9 +81,9 @@ class Configs implements ConfigsInterface
         return $this->configsPath;
     }
 
-    public static function wpdb()
+    public static function wpdb(?string $tableNameNoPrefix = null)
     {
-        return DBFactory::create();
+        return DBFactory::create($tableNameNoPrefix);
     }
 
     public static function load(string $file): void
