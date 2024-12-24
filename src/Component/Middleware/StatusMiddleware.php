@@ -18,7 +18,7 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use WPframework\Http\Message\JsonResponse;
 
-class StatusMiddleware implements MiddlewareInterface
+class StatusMiddleware extends AbstractMiddleware
 {
     /**
      * Processes the health check request and returns status information.
@@ -30,12 +30,16 @@ class StatusMiddleware implements MiddlewareInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        if ('/health-status' === $request->getUri()->getPath()) {
+        $configs = $this->services->get('configs')->app();
+
+        $enable_health_status = $configs->config['app']->get('enable_health_status', false);
+
+        if ($enable_health_status && '/health-status' === $request->getUri()->getPath()) {
             $status = $this->checkSystemStatus();
 
             $request = $request->withAttribute('healthStatus', $status)->withAttribute('isRoute', true);
 
-            // return new JsonResponse($status, $status['healthy'] ? 200 : 503);
+            return new JsonResponse($status, $status['healthy'] ? 200 : 503);
         }
 
         return $handler->handle($request);
