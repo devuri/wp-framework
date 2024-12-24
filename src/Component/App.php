@@ -245,13 +245,15 @@ class App implements RequestHandlerInterface
         return ($this->errorHandler)($this->exception, $request, $this->response);
     }
 
-    /**
+	/**
      * @param ResponseInterface $response
      *
      * @return void
      */
     protected function emitResponse(ResponseInterface $response): void
     {
+        $contentType = $response->getHeaderLine('Content-Type');
+
         if (false === headers_sent()) {
             $this->emitter->emitHeaders($response);
             http_response_code($response->getStatusCode());
@@ -261,9 +263,13 @@ class App implements RequestHandlerInterface
             $this->terminateWithException($this->exception, $response);
         }
 
-        // if ($this->request->getAttribute('isRoute', false)) {
-        // $this->emitter->emitBody($response); exit;
-        // }
+        if (str_contains($contentType, 'application/json')) {
+            $this->emitter->emitBody($response); exit;
+        }
+
+        if ($this->request->getAttribute('isRoute', false)) {
+            $this->emitter->emitBody($response); exit;
+        }
     }
 
     /**
