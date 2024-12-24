@@ -13,7 +13,7 @@ namespace WPframework\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use WPframework\AppFactory;
-use WPframework\AppInit;
+use WPframework\App;
 
 /**
  * @group WPframework
@@ -27,6 +27,6 @@ class AppFactoryTest extends TestCase
     public function test_app_create(): void
     {
         $siteAppFactory = AppFactory::create(APP_TEST_PATH);
-        $this->assertInstanceOf(AppInit::class, $siteAppFactory);
+        $this->assertInstanceOf(App::class, $siteAppFactory);
     }
 }

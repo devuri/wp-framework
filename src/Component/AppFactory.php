@@ -25,14 +25,14 @@ class AppFactory
     private static $request;
 
     /**
-     * Initializes and returns an instance of AppInit.
+     * Initializes and returns an instance of App.
      *
      * @param string      $appDirPath  The directory path for the application.
      * @param null|string $environment The environment setting, e.g., 'development', 'production'.
      *
-     * @return AppInit An initialized AppInit instance.
+     * @return App An initialized App instance.
      */
-    public static function create(string $appDirPath, ?string $environment = null): AppInit
+    public static function create(string $appDirPath, ?string $environment = null): App
     {
         \define('CONFIGS_DIR_PATH', \dirname(__DIR__) . '/inc/configs/');
 
@@ -67,7 +67,7 @@ class AppFactory
         self::setEnvironment($environment);
 
         // Instantiate the main application object
-        self::$app = new AppInit(self::$request, $containerBindings);
+        self::$app = new App(self::$request, $containerBindings);
 
         // Set the error handler for the application
         self::setErrorHandler();
