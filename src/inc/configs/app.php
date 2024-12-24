@@ -23,6 +23,28 @@ return [
      */
     'error_handler'    => env('ERROR_HANDLER', false),
 
+	/**
+	 * Determines if the application should run internal middleware to check the application's health status.
+	 *
+	 * This setting enables an internal middleware that activates exclusively for `/health-status` routes.
+	 * When enabled:
+	 * - The middleware verifies if the application is operational.
+	 * - It checks the `DatabaseConnection` to ensure database connectivity.
+	 *
+	 * **Conditions for Activation:**
+	 * 1. This configuration must be set to `true`.
+	 * 2. The route must explicitly be `/health-status`.
+	 *
+	 * When these conditions are met, the application performs a partial boot to check its status.
+	 * Only a JSON response is returned, and the rest of the application is not fully loaded. This allows
+	 * monitoring tools to query the health status efficiently, e.g., `example.com/health-status`.
+	 *
+	 * **Future Considerations:**
+	 * - Adding an authentication mechanism, such as a `key`, to restrict access.
+	 * - Implementing rate limiting to prevent abuse.
+	 */
+	'enable_health_status' => false,
+
     /*
      * List of production environment identifiers.
      *
