@@ -11,7 +11,7 @@
 
 namespace WPframework\Middleware\Handlers;
 
-use Pimple\Container as Container;
+use Pimple\Container as PimpleContainer;
 
 class CoreMiddleware
 {
@@ -25,7 +25,7 @@ class CoreMiddleware
      */
     protected $configs;
 
-    public function __construct(Container $container)
+    public function __construct(PimpleContainer $container)
     {
         $this->configs = $container['configs'];
         $this->middlewares = $this->configs->config['middlewares'];

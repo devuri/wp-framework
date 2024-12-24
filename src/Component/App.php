@@ -25,7 +25,7 @@ use WPframework\Middleware\Handlers\MiddlewareDispatcher;
 use WPframework\Middleware\Handlers\MiddlewareRegistry;
 use WPframework\Support\Configs;
 
-class AppInit implements RequestHandlerInterface
+class App implements RequestHandlerInterface
 {
     /**
      * @var PimpleContainer
@@ -83,7 +83,7 @@ class AppInit implements RequestHandlerInterface
     protected $emitter;
 
     /**
-     * AppInit constructor.
+     * App constructor.
      */
     public function __construct(RequestInterface $request, ?Bindings $containerBindings)
     {

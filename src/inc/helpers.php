@@ -16,7 +16,7 @@ use Psr\Log\LogLevel;
 use Urisoft\DotAccess;
 use Urisoft\Encryption;
 use Urisoft\Env;
-use WPframework\AppInit;
+use WPframework\App;
 use WPframework\Http\Asset;
 use WPframework\Logger\FileLogger;
 use WPframework\Logger\Log;
@@ -359,7 +359,7 @@ function logWithStackTrace(): void
     }
 }
 
-function customHeaderMiddleware(AppInit $app): void
+function customHeaderMiddleware(App $app): void
 {
     $app->withMiddleware(function (RequestInterface $request, $handler) {
         $response = $handler->handle($request);

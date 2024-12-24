@@ -34,7 +34,6 @@ return [
      */
     'prod' => ['secure', 'sec', 'production', 'prod'],
 
-
     /*
      * Determines whether to display error details upon application termination.
      * Enable this setting only during development, it should never be active in a production environment.

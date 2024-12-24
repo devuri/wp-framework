@@ -19,11 +19,6 @@ use Psr\Log\LoggerInterface;
 class LoggingMiddleware extends AbstractMiddleware
 {
     /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
      * Process an incoming server request.
      *
      * @param ServerRequestInterface  $request
@@ -33,8 +28,6 @@ class LoggingMiddleware extends AbstractMiddleware
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $this->logger = $this->services->get('logger');
-
         // $this->logger->info('Incoming request', [
         //     'method' => $request->getMethod(),
         //     'uri' => (string) $request->getUri(),
