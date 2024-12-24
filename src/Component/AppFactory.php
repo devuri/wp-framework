@@ -11,14 +11,11 @@
 
 namespace WPframework;
 
-use Dotenv\Dotenv;
-use Dotenv\Exception\InvalidPathException;
 use Pimple\Container as PimpleContainer;
 use Psr\Http\Message\RequestInterface;
 use Throwable;
 use WPframework\Http\HttpFactory;
-use WPframework\Http\Message\Foundation;
-use WPframework\Http\Message\RequestFactory;
+use WPframework\Http\Request;
 use WPframework\Logger\FileLogger;
 use WPframework\Logger\Log;
 
@@ -43,7 +40,7 @@ class AppFactory
         $httpHost = HttpFactory::init()->get_http_host();
 
         // Create the initial request object
-        self::$request = self::createRequest(new RequestFactory());
+        self::$request = Request::create();
 
         // Mandatory application-wide constants
         self::defineMandatoryConstants($appDirPath, $httpHost);
@@ -95,23 +92,13 @@ class AppFactory
         \define('APP_HTTP_HOST', $httpHost);
     }
 
-    protected static function loadDotEnv(array $envFiles, EnvType $envType): ?Dotenv
+    protected static function loadDotEnv(array $envFiles, EnvType $envType): void
     {
         if (\defined('APP_TEST_PATH')) {
-            return null;
+            return;
         }
 
-        $_dotenv = Dotenv::createImmutable(APP_DIR_PATH, $envFiles);
-
-        try {
-            $_dotenv->load();
-        } catch (InvalidPathException $e) {
-            $envType->tryRegenerateFile(APP_DIR_PATH, APP_HTTP_HOST, $envFiles);
-
-            Terminate::exit(new InvalidPathException($e->getMessage()));
-        }
-
-        return $_dotenv;
+        EnvLoader::init(APP_DIR_PATH, APP_HTTP_HOST)->load($envFiles, $envType);
     }
 
     /**
@@ -160,17 +147,5 @@ class AppFactory
 
             return $response;
         });
-    }
-
-    private static function createRequest(RequestFactory $psr17Factory): \Psr\Http\Message\ServerRequestInterface
-    {
-        $requestCreator = Foundation::create(
-            $psr17Factory,
-            $psr17Factory,
-            $psr17Factory,
-            $psr17Factory
-        );
-
-        return $requestCreator->fromGlobals();
     }
 }
