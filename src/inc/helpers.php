@@ -372,3 +372,55 @@ function toMillisecond(float $seconds)
 {
     return $seconds * 1000;
 }
+
+/**
+ * Retrieves the Twig configuration file path.
+ *
+ * This function allows users to define their own Twig configuration file.
+ * If a custom configuration file exists at the specified path, it will be used.
+ * Otherwise, the default framework Twig configuration file is returned.
+ *
+ * @param string $template The template name or identifier (currently unused in this function).
+ *
+ * @return string The file path to the Twig configuration file.
+ */
+function twigit($template)
+{
+    $userTwigFile = APP_DIR_PATH . '/configs/twig.php';
+
+    if (file_exists($userTwigFile)) {
+        return $userTwigFile;
+    }
+
+    return CONFIGS_DIR_PATH . 'twig.php';
+}
+
+/**
+ * Initializes and returns a Twig environment instance.
+ *
+ * This function sets up the Twig environment using the templates directory
+ * defined in the application's configuration. If the templates directory
+ * does not exist, the application is terminated with an exception.
+ * Any errors encountered while creating the Twig loader also terminate the application.
+ *
+ * @throws Exception If the templates directory does not exist or if there is an error
+ *                   initializing the Twig loader.
+ *
+ * @return Twig\Environment The initialized Twig environment instance.
+ */
+function twig()
+{
+    $templatesDir = configs()->getAppPath() . '/templates';
+
+    if ( ! is_dir($templatesDir)) {
+        Terminate::exit(new Exception("Templates directory does not exist: {$templatesDir}"));
+    }
+
+    try {
+        $loader = new Twig\Loader\FilesystemLoader($templatesDir);
+    } catch (Exception $e) {
+        Terminate::exit($e);
+    }
+
+    return new Twig\Environment($loader);
+}

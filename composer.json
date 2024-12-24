@@ -51,6 +51,8 @@
         "symfony/error-handler": "5.0.11",
         "symfony/filesystem": "^5.4",
         "symfony/var-dumper": "^5.4",
+		"twig/twig": "3.11.3",
+		"symfony/deprecation-contracts": "^2.5",
         "vlucas/phpdotenv": "^5.2"
     },
     "require-dev": {

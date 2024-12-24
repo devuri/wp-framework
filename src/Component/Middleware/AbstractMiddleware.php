@@ -25,7 +25,7 @@ abstract class AbstractMiddleware implements MiddlewareInterface
      */
     protected $services;
 
-	/**
+    /**
      * @var LoggerInterface
      */
     private $logger;
@@ -33,7 +33,7 @@ abstract class AbstractMiddleware implements MiddlewareInterface
     public function __construct(?PsrContainer $serviceContainer = null)
     {
         $this->services = $serviceContainer;
-		$this->logger = $this->services->get('logger');
+        $this->logger = $this->services->get('logger');
     }
 
     /**
