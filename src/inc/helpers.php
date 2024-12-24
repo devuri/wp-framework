@@ -408,19 +408,32 @@ function twigit($template)
  *
  * @return Twig\Environment The initialized Twig environment instance.
  */
-function twig()
+function twig(?array $options = null)
 {
-    $templatesDir = configs()->getAppPath() . '/templates';
+    $cfgs = configs()->app();
+    $templatesDir = $cfgs->getAppPath() . '/templates';
+    $coreTemplatesDir = __DIR__ . '/templates';
+
+	/**
+	 * https://twig.symfony.com/doc/3.x/api.html#environment-options
+	 * @see https://github.com/twigphp/Twig/blob/3.x/src/Environment.php#L112
+	 */
+	if( null === $options){
+		$env_options = $cfgs->config['app']->get('twig.env_options', []);
+	} else {
+		$env_options = $options;
+	}
 
     if ( ! is_dir($templatesDir)) {
         Terminate::exit(new Exception("Templates directory does not exist: {$templatesDir}"));
     }
 
     try {
-        $loader = new Twig\Loader\FilesystemLoader($templatesDir);
+        $loader = new Twig\Loader\FilesystemLoader([$templatesDir, $coreTemplatesDir]);
+		//$loader->addPath($coreTemplatesDir, 'kiosk');
     } catch (Exception $e) {
         Terminate::exit($e);
     }
 
-    return new Twig\Environment($loader);
+    return new Twig\Environment($loader, $env_options);
 }

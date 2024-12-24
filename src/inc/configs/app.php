@@ -65,6 +65,64 @@ return [
         'debugger' => false,
     ],
 
+	'twig' => [
+		/**
+		 * https://twig.symfony.com/doc/3.x/api.html#environment-options
+		 */
+		'env_options' => [
+		    /**
+		     * Enables debugging.
+		     * When set to true, generated templates have a __toString() method that displays the
+		     * generated nodes for easier debugging.
+		     * Default: false.
+		     */
+		    'debug' => false,
+
+		    /**
+		     * Specifies the character encoding used by the templates.
+		     * Default: 'utf-8'.
+		     */
+		    'charset' => 'utf-8',
+
+		    /**
+		     * Defines the path to store compiled templates.
+		     * Use an absolute path or set to false to disable caching.
+		     * Default: false (caching disabled).
+		     */
+		    'cache' => false,
+
+		    /**
+		     * Automatically recompiles templates whenever the source code changes.
+		     * If not set, this value defaults to true when 'debug' is enabled, and false otherwise.
+		     */
+		    'auto_reload' => null, // Defaults to the value of 'debug'.
+
+		    /**
+		     * Controls how invalid variables are handled.
+		     * If set to false, Twig replaces invalid variables with null without throwing an error.
+		     * If true, Twig throws an exception for undefined variables or attributes.
+		     * Default: false.
+		     */
+		    'strict_variables' => false,
+
+		    /**
+		     * Sets the default strategy for auto-escaping content in templates.
+		     * Options include 'html', 'js', 'css', 'url', 'html_attr', or a custom PHP callback.
+		     * Use false to disable auto-escaping.
+		     * Default: determined automatically based on template filename extensions.
+		     */
+		    'autoescape' => 'html', // Default: 'html'.
+
+		    /**
+		     * Controls template compilation optimizations.
+		     * A value of -1 applies all optimizations, while 0 disables them.
+		     * Default: -1 (all optimizations enabled).
+		     */
+		    'optimizations' => -1,
+		]
+
+	];
+
     'directory'        => [
         'wp_dir_path'   => 'wp',
         /*
