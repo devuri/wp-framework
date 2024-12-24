@@ -414,15 +414,15 @@ function twig(?array $options = null)
     $templatesDir = $cfgs->getAppPath() . '/templates';
     $coreTemplatesDir = __DIR__ . '/templates';
 
-	/**
-	 * https://twig.symfony.com/doc/3.x/api.html#environment-options
-	 * @see https://github.com/twigphp/Twig/blob/3.x/src/Environment.php#L112
-	 */
-	if( null === $options){
-		$env_options = $cfgs->config['app']->get('twig.env_options', []);
-	} else {
-		$env_options = $options;
-	}
+    /*
+     * https://twig.symfony.com/doc/3.x/api.html#environment-options
+     * @see https://github.com/twigphp/Twig/blob/3.x/src/Environment.php#L112
+     */
+    if (null === $options) {
+        $env_options = $cfgs->config['app']->get('twig.env_options', []);
+    } else {
+        $env_options = $options;
+    }
 
     if ( ! is_dir($templatesDir)) {
         Terminate::exit(new Exception("Templates directory does not exist: {$templatesDir}"));
@@ -430,7 +430,7 @@ function twig(?array $options = null)
 
     try {
         $loader = new Twig\Loader\FilesystemLoader([$templatesDir, $coreTemplatesDir]);
-		//$loader->addPath($coreTemplatesDir, 'kiosk');
+        // $loader->addPath($coreTemplatesDir, 'kiosk');
     } catch (Exception $e) {
         Terminate::exit($e);
     }
