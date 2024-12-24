@@ -86,6 +86,11 @@ class AppFactory
             return;
         }
 
+        // twig usage.
+        if ( ! \defined('USE_TWIGIT')) {
+            \define('USE_TWIGIT', false);
+        }
+
         // Mandatory application-wide constants
         \define('SITE_CONFIGS_DIR', 'configs');
         \define('APP_DIR_PATH', $appDirPath);

@@ -12,8 +12,8 @@
 namespace WPframework\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
-use WPframework\AppFactory;
 use WPframework\App;
+use WPframework\AppFactory;
 
 /**
  * @group WPframework

@@ -245,7 +245,7 @@ class App implements RequestHandlerInterface
         return ($this->errorHandler)($this->exception, $request, $this->response);
     }
 
-	/**
+    /**
      * @param ResponseInterface $response
      *
      * @return void
@@ -264,11 +264,13 @@ class App implements RequestHandlerInterface
         }
 
         if (str_contains($contentType, 'application/json')) {
-            $this->emitter->emitBody($response); exit;
+            $this->emitter->emitBody($response);
+            exit;
         }
 
         if ($this->request->getAttribute('isRoute', false)) {
-            $this->emitter->emitBody($response); exit;
+            $this->emitter->emitBody($response);
+            exit;
         }
     }
 
