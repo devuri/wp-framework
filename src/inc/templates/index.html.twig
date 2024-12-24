@@ -5,6 +5,9 @@
 </head>
 <body>
     <h1>Welcome to {{ site_title }}</h1>
+	{% if user.isLoggedIn %}
+        Hello {{ user.name }}!
+    {% endif %}
     <p>{{ site_description }}</p>
     <ul>
         {% for post in posts %}

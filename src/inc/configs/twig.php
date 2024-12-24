@@ -28,9 +28,9 @@ $context = [
 
 // Route to the correct Twig template
 if (is_single()) {
-    echo $twig->render('single.twig', $context);
+    echo $twig->render('single.html.twig', $context);
 } elseif (is_archive()) {
-    echo $twig->render('archive.twig', $context);
+    echo $twig->render('archive.html.twig', $context);
 } else {
-    echo $twig->render('index.twig', $context);
+    echo $twig->render('index.html.twig', $context);
 }
