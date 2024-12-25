@@ -4,6 +4,7 @@
 <h1>{{ post.title }}</h1>
 <p>By <a href="{{ post.author.url }}">{{ post.author.name }}</a> on {{ post.date }}</p>
 <div>{{ post.content }}</div>
+
 {% if post.categories %}
     <p>Categories: 
         {% for category in post.categories %}

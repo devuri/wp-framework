@@ -408,17 +408,22 @@ function twigit($template)
  *
  * @return Twig\Environment The initialized Twig environment instance.
  */
-function twig(?array $options = null)
+function twig(array $options = [])
 {
     $cfgs = configs()->app();
     $templatesDir = $cfgs->getAppPath() . '/templates';
     $coreTemplatesDir = __DIR__ . '/templates';
 
+    $options = array_merge([
+        'autoescape' => false,
+        'cache' => APP_DIR_PATH . '/templates/cache',
+    ], $options);
+
     /*
      * https://twig.symfony.com/doc/3.x/api.html#environment-options
      * @see https://github.com/twigphp/Twig/blob/3.x/src/Environment.php#L112
      */
-    if (null === $options) {
+    if (empty($options)) {
         $env_options = $cfgs->config['app']->get('twig.env_options', []);
     } else {
         $env_options = $options;
@@ -463,7 +468,6 @@ function renderTwigTemplate(Twig\Environment $twig, array $context, array $templ
         'is_attachment'        => 'attachment.html.twig',
         'is_single'            => 'single.html.twig',
         'is_page'              => 'page.html.twig',
-        'is_singular'          => 'singular.html.twig',
         'is_category'          => 'category.html.twig',
         'is_tag'               => 'tag.html.twig',
         'is_author'            => 'author.html.twig',
@@ -481,11 +485,9 @@ function renderTwigTemplate(Twig\Environment $twig, array $context, array $templ
         return $selected;
     }, 'index.html.twig');
 
-    try {
-        echo $twig->render($selectedTemplate, $context);
-    } catch (Exception $e) {
-        Terminate::exit(new Exception("Template file {$selectedTemplate} not found"));
-    }
+    $rendered = $twig->render($selectedTemplate, $context);
+
+    twigLayout($rendered);
 }
 
 function twigContext(): array
@@ -605,4 +607,28 @@ function twigContext(): array
             ])),
         ] : null,
     ];
+}
+
+
+function twigLayout($rendered): void
+{
+    ?><!DOCTYPE html>
+<html <?php language_attributes(); ?>>
+<head>
+<meta http-equiv="Content-Type" content="<?php bloginfo('html_type'); ?>; charset=<?php bloginfo('charset'); ?>" />
+<title><?php echo wp_get_document_title(); ?></title>
+<link rel="stylesheet" href="<?php bloginfo('stylesheet_url'); ?>" type="text/css" media="screen" />
+<head>
+    <meta charset="<?php bloginfo('charset'); ?>" />
+    <?php wp_head(); ?>
+</head>
+
+<body <?php body_class(); ?>>
+<?php wp_body_open(); ?>
+
+<?php echo $rendered; ?>
+
+<?php wp_footer(); ?>
+</body>
+</html><?php
 }
