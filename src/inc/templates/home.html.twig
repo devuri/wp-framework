@@ -1,8 +1,7 @@
 {% extends "base.html.twig" %}
 
 {% block content %}
-<h1>{{ archive.title }}</h1>
-<p>{{ archive.description }}</p>
+<h1>Latest Posts</h1>
 <ul>
     {% for post in archive.posts %}
         <li>

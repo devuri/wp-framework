@@ -1,10 +1,10 @@
 {% extends "base.html.twig" %}
 
 {% block content %}
-<h1>{{ archive.title }}</h1>
-<p>{{ archive.description }}</p>
+<h1>Posts by {{ author.name }}</h1>
+<p>{{ author.bio }}</p>
 <ul>
-    {% for post in archive.posts %}
+    {% for post in author.posts %}
         <li>
             <a href="{{ post.url }}">{{ post.title }}</a>
             <p>{{ post.excerpt }}</p>

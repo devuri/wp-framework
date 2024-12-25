@@ -437,3 +437,172 @@ function twig(?array $options = null)
 
     return new Twig\Environment($loader, $env_options);
 }
+
+/**
+ * Renders the appropriate Twig template based on WordPress conditional tags.
+ *
+ * @param Twig\Environment $twig      The Twig environment instance.
+ * @param array            $context   The context data to pass to the template.
+ * @param array            $templates Optional. An associative array mapping WordPress conditional functions
+ *                                    to their corresponding Twig template filenames.
+ *                                    Defaults to predefined mappings.
+ *
+ * @throws Exception If the selected template file does not exist.
+ */
+function renderTwigTemplate(Twig\Environment $twig, array $context, array $templates = []): void
+{
+    $defaultTemplates = [
+        'is_embed'             => 'embed.html.twig',
+        'is_404'               => '404.html.twig',
+        'is_search'            => 'search.html.twig',
+        'is_front_page'        => 'front_page.html.twig',
+        'is_home'              => 'home.html.twig',
+        'is_privacy_policy'    => 'privacy_policy.html.twig',
+        'is_post_type_archive' => 'post_type_archive.html.twig',
+        'is_tax'               => 'taxonomy.html.twig',
+        'is_attachment'        => 'attachment.html.twig',
+        'is_single'            => 'single.html.twig',
+        'is_page'              => 'page.html.twig',
+        'is_singular'          => 'singular.html.twig',
+        'is_category'          => 'category.html.twig',
+        'is_tag'               => 'tag.html.twig',
+        'is_author'            => 'author.html.twig',
+        'is_date'              => 'date.html.twig',
+        'is_archive'           => 'archive.html.twig',
+    ];
+
+    $templates = array_merge($defaultTemplates, $templates);
+
+    $selectedTemplate = array_reduce(array_keys($templates), function ($selected, $condition) use ($templates) {
+        if (\function_exists($condition) && $condition()) {
+            return $templates[$condition];
+        }
+
+        return $selected;
+    }, 'index.html.twig');
+
+    try {
+        echo $twig->render($selectedTemplate, $context);
+    } catch (Exception $e) {
+        Terminate::exit(new Exception("Template file {$selectedTemplate} not found"));
+    }
+}
+
+function twigContext(): array
+{
+    return [
+        // Site Information
+        'site' => [
+            'name' => get_bloginfo('name'),
+            'description' => get_bloginfo('description'),
+            'url' => home_url(),
+        ],
+
+        // User Information (if logged in)
+        'user' => is_user_logged_in() ? [
+            'name' => wp_get_current_user()->display_name,
+            'email' => wp_get_current_user()->user_email,
+            'logged_in' => true,
+        ] : [
+            'logged_in' => false,
+        ],
+
+        // Navigation Menu (Example for a menu registered as 'primary')
+        'menu' => wp_get_nav_menu_items('primary') ?: [],
+
+        // Page Information
+        'page' => is_page() ? [
+            'title' => get_the_title(),
+            'content' => apply_filters('the_content', get_post_field('post_content')),
+            'id' => get_the_ID(),
+        ] : null,
+
+        // Single Post Information
+        'post' => is_single() ? [
+            'title' => get_the_title(),
+            'content' => apply_filters('the_content', get_post_field('post_content')),
+            'author' => [
+                'name' => get_the_author(),
+                'url' => get_author_posts_url(get_the_author_meta('ID')),
+            ],
+            'date' => get_the_date(),
+            'categories' => get_the_category(),
+            'tags' => get_the_tags(),
+        ] : null,
+
+        // Archive Information
+        'archive' => is_archive() ? [
+            'title' => get_the_archive_title(),
+            'description' => get_the_archive_description(),
+            'posts' => array_map(function ($post) {
+                return [
+                    'title' => get_the_title($post),
+                    'url' => get_permalink($post),
+                    'excerpt' => get_the_excerpt($post),
+                ];
+            }, get_posts([
+                'posts_per_page' => 10,
+            ])),
+        ] : null,
+
+        // Search Information
+        'search_query' => is_search() ? get_search_query() : null,
+        'search_results' => is_search() ? array_map(function ($post) {
+            return [
+                'title' => get_the_title($post),
+                'url' => get_permalink($post),
+                'excerpt' => get_the_excerpt($post),
+            ];
+        }, get_posts([
+            's' => get_search_query(),
+            'posts_per_page' => 10,
+        ])) : null,
+
+        // Category or Tag Information
+        'taxonomy' => is_category() || is_tag() || is_tax() ? [
+            'name' => single_term_title('', false),
+            'description' => term_description(),
+            'posts' => array_map(function ($post) {
+                return [
+                    'title' => get_the_title($post),
+                    'url' => get_permalink($post),
+                    'excerpt' => get_the_excerpt($post),
+                ];
+            }, get_posts([
+                'posts_per_page' => 10,
+            ])),
+        ] : null,
+
+        // Date Archive Information
+        'date' => is_date() ? [
+            'year' => get_query_var('year'),
+            'month' => get_query_var('monthnum'),
+            'day' => get_query_var('day'),
+            'posts' => array_map(function ($post) {
+                return [
+                    'title' => get_the_title($post),
+                    'url' => get_permalink($post),
+                    'excerpt' => get_the_excerpt($post),
+                ];
+            }, get_posts([
+                'posts_per_page' => 10,
+            ])),
+        ] : null,
+
+        // Author Information
+        'author' => is_author() ? [
+            'name' => get_the_author(),
+            'bio' => get_the_author_meta('description'),
+            'posts' => array_map(function ($post) {
+                return [
+                    'title' => get_the_title($post),
+                    'url' => get_permalink($post),
+                    'excerpt' => get_the_excerpt($post),
+                ];
+            }, get_posts([
+                'author' => get_the_author_meta('ID'),
+                'posts_per_page' => 10,
+            ])),
+        ] : null,
+    ];
+}
