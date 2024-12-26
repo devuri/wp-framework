@@ -23,6 +23,7 @@ $finder = Symfony\Component\Finder\Finder::create()
         'wp',
     ])
     ->notPath('tests/stubs.php')
+    ->notPath('src/inc/mu-plugin/twigit.php')
     ->notPath('src/inc/mu-plugin/wpframework.php')
     ->notPath('src/inc/stubs/bootstrap.php')
     ->notPath('src/inc/stubs/wp-config.php')

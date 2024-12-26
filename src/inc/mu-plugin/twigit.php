@@ -1,12 +1,15 @@
 <?php
-
-/*
- * This file is part of the WPframework package.
- *
- * (c) Uriel Wilson <uriel@wpframework.io>
- *
- * The full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+/**
+ * Plugin Name:       Twigit
+ * Plugin URI:        https://github.com/devuri/wpframework
+ * Description:       Framework Twig templates.
+ * Version:           0.1
+ * Requires at least: 5.3.0
+ * Requires PHP:      7.3.5
+ * Author:            uriel
+ * License:           GPLv2
+ * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
+ * Network: true
  */
 
 if ( ! \defined('ABSPATH')) {
@@ -15,7 +18,8 @@ if ( ! \defined('ABSPATH')) {
 
 // Load Twig template renderer
 if (\defined('USE_TWIGIT') && true === \constant('USE_TWIGIT')) {
-    add_filter('template_include', function ($template) {
-        return twigit($template);
-    });
+	// get \WP_Theme
+	$theme = wp_get_theme();
+    $twig = twigit();
+	$twig->templateFilter();
 }

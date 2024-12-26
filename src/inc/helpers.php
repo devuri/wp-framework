@@ -380,47 +380,62 @@ function toMillisecond(float $seconds)
  * If a custom configuration file exists at the specified path, it will be used.
  * Otherwise, the default framework Twig configuration file is returned.
  *
- * @param string $template The template name or identifier (currently unused in this function).
- *
- * @return string The file path to the Twig configuration file.
+ * @return \Twig\Environment The file path to the Twig configuration file.
  */
-function twigit($template)
+function twigit(): ?Twigit\Twigit
 {
     $userTwigFile = APP_DIR_PATH . '/configs/twig.php';
+    $coreTwigFile = CONFIGS_DIR_PATH . 'twig.php';
 
     if (file_exists($userTwigFile)) {
-        return $userTwigFile;
+        $twig = $userTwigFile;
+    } elseif (file_exists($coreTwigFile)) {
+        $twig = $coreTwigFile;
     }
 
-    return CONFIGS_DIR_PATH . 'twig.php';
+    $twigInstance = require $twig;
+
+    if ($twigInstance instanceof Twigit\Twigit) {
+        return $twigInstance;
+    }
+
+    return null;
 }
 
 /**
  * Initializes and returns a Twig environment instance.
  *
- * This function sets up the Twig environment using the templates directory
- * defined in the application's configuration. If the templates directory
- * does not exist, the application is terminated with an exception.
- * Any errors encountered while creating the Twig loader also terminate the application.
+ * This function configures the Twig environment using the specified templates directory path
+ * and optional environment settings.
  *
- * @throws Exception If the templates directory does not exist or if there is an error
+ * Twig environment options can be passed as an associative array to customize the
+ * behavior of the environment. Refer to the Twig documentation for a full list
+ * of available options.
+ *
+ * @link https://twig.symfony.com/doc/3.x/api.html#environment-options Official Twig Environment Documentation.
+ * @see  https://github.com/twigphp/Twig/blob/3.x/src/Environment.php#L112 Twig Environment Source Code.
+ *
+ * @param string $dirPath     Base path to the application directory the instance will look for `$dirPath/templates` to use for the Twig templates.
+ * @param array  $env_options Optional. An associative array of environment options for Twig. Default empty array.
+ *                            Examples include 'cache' => '/path/to/cache' or 'debug' => true.
+ *
+ * @throws Exception If the templates directory does not exist or if an error occurs while
  *                   initializing the Twig loader.
  *
- * @return Twig\Environment The initialized Twig environment instance.
+ * @return Twigit\Twigit The initialized Twig environment instance.
  */
-function twig()
+function twig(array $options = []): Twigit\Twigit
 {
-    $templatesDir = configs()->getAppPath() . '/templates';
-
-    if ( ! is_dir($templatesDir)) {
-        Terminate::exit(new Exception("Templates directory does not exist: {$templatesDir}"));
+    $cfgs = configs()->app();
+    /*
+     * https://twig.symfony.com/doc/3.x/api.html#environment-options
+     * @see https://github.com/twigphp/Twig/blob/3.x/src/Environment.php#L112
+     */
+    if (empty($options)) {
+        $env_options = $cfgs->config['app']->get('twig.env_options', []);
+    } else {
+        $env_options = $options;
     }
 
-    try {
-        $loader = new Twig\Loader\FilesystemLoader($templatesDir);
-    } catch (Exception $e) {
-        Terminate::exit($e);
-    }
-
-    return new Twig\Environment($loader);
+    return Twigit\Twigit::init(APP_DIR_PATH, $env_options);
 }
