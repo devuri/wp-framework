@@ -380,7 +380,7 @@ function toMillisecond(float $seconds)
  * If a custom configuration file exists at the specified path, it will be used.
  * Otherwise, the default framework Twig configuration file is returned.
  *
- * @return \Twig\Environment The file path to the Twig configuration file.
+ * @return Twig\Environment The file path to the Twig configuration file.
  */
 function twigit(): ?Twigit\Twigit
 {
@@ -412,7 +412,7 @@ function twigit(): ?Twigit\Twigit
  * behavior of the environment. Refer to the Twig documentation for a full list
  * of available options.
  *
- * @link https://twig.symfony.com/doc/3.x/api.html#environment-options Official Twig Environment Documentation.
+ * @see https://twig.symfony.com/doc/3.x/api.html#environment-options Official Twig Environment Documentation.
  * @see  https://github.com/twigphp/Twig/blob/3.x/src/Environment.php#L112 Twig Environment Source Code.
  *
  * @param string $dirPath     Base path to the application directory the instance will look for `$dirPath/templates` to use for the Twig templates.

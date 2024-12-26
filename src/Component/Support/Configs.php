@@ -101,25 +101,23 @@ class Configs implements ConfigsInterface
         return [
             'error_handler'    => env('ERROR_HANDLER', false),
             'prod'             => [ 'secure', 'sec', 'production', 'prod' ],
-            'config_file'      => 'config', 
+            'config_file'      => 'config',
             'terminate'        => [
                 'debugger' => false,
             ],
-			'twig' => [
-				/**
-				 * https://twig.symfony.com/doc/3.x/api.html#environment-options
-				 */
-				'env_options' => [
-					'debug' => false,
-					'charset' => 'utf-8',
-					'cache' => false,
-					'auto_reload' => null,
-					'strict_variables' => false,
-					'autoescape' => 'html',
-					'optimizations' => -1,
-				]
+            'twig' => [
+                // https://twig.symfony.com/doc/3.x/api.html#environment-options
+                'env_options' => [
+                    'debug' => false,
+                    'charset' => 'utf-8',
+                    'cache' => false,
+                    'auto_reload' => null,
+                    'strict_variables' => false,
+                    'autoescape' => 'html',
+                    'optimizations' => -1,
+                ],
 
-			],
+            ],
             'directory'        => [
                 'wp_dir_path'   => 'wp',
                 'web_root_dir'  => env('WEB_ROOT_DIR', 'public'),

@@ -9,10 +9,6 @@
  * file that was distributed with this source code.
  */
 
-if ( ! \defined('ABSPATH')) {
-    exit;
-}
-
 /**
  * Handles template rendering using Twig.
  *
@@ -21,7 +17,7 @@ if ( ! \defined('ABSPATH')) {
  * functionality by adding extra templates to the array.
  *
  * ### Important Notes:
- * - When adding templates, ensure that they are not 
+ * - When adding templates, ensure that they are not
  *   unintentionally overriding existing templates. For example:
  *   ```php
  *   ['is_single' => 'my-single-page.twig']
@@ -32,20 +28,19 @@ if ( ! \defined('ABSPATH')) {
  *   ```php
  *   ['is_promo' => 'promo.twig']
  *   ```
- *   can be implemented and managed independently, allowing for additional data and 
+ *   can be implemented and managed independently, allowing for additional data and
  *   custom `context` to be passed to Twig.
  *
- * @var array $extraTemplates Optional. An associative array of conditional checks 
- *                            mapped to their corresponding Twig templates.
- *                            Default empty array.
+ * @var array $extraTemplates Optional. An associative array of conditional checks
+ *            mapped to their corresponding Twig templates.
+ *            Default empty array.
  */
 $extraTemplates = [];
 
-/**
+/*
  * Retrieves the Twigit environment with specified options and templates.
  *
  * @return \Twigit\Twigit The Twigit instance with autoescape disabled and additional templates configured.
  *
  */
 return twig(['autoescape' => false], $extraTemplates);
-
