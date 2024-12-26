@@ -380,45 +380,53 @@ function toMillisecond(float $seconds)
  * If a custom configuration file exists at the specified path, it will be used.
  * Otherwise, the default framework Twig configuration file is returned.
  *
- * @param string $template The template name or identifier (currently unused in this function).
- *
- * @return string The file path to the Twig configuration file.
+ * @return \Twig\Environment The file path to the Twig configuration file.
  */
-function twigit($template)
+function twigit(): ?Twigit\Twigit
 {
     $userTwigFile = APP_DIR_PATH . '/configs/twig.php';
+    $coreTwigFile = CONFIGS_DIR_PATH . 'twig.php';
 
     if (file_exists($userTwigFile)) {
-        return $userTwigFile;
+        $twig = $userTwigFile;
+    } elseif (file_exists($coreTwigFile)) {
+        $twig = $coreTwigFile;
     }
 
-    return CONFIGS_DIR_PATH . 'twig.php';
+    $twigInstance = require $twig;
+
+    if ($twigInstance instanceof Twigit\Twigit) {
+        return $twigInstance;
+    }
+
+    return null;
 }
 
 /**
  * Initializes and returns a Twig environment instance.
  *
- * This function sets up the Twig environment using the templates directory
- * defined in the application's configuration. If the templates directory
- * does not exist, the application is terminated with an exception.
- * Any errors encountered while creating the Twig loader also terminate the application.
+ * This function configures the Twig environment using the specified templates directory path
+ * and optional environment settings.
  *
- * @throws Exception If the templates directory does not exist or if there is an error
+ * Twig environment options can be passed as an associative array to customize the
+ * behavior of the environment. Refer to the Twig documentation for a full list
+ * of available options.
+ *
+ * @link https://twig.symfony.com/doc/3.x/api.html#environment-options Official Twig Environment Documentation.
+ * @see  https://github.com/twigphp/Twig/blob/3.x/src/Environment.php#L112 Twig Environment Source Code.
+ *
+ * @param string $dirPath     Base path to the application directory the instance will look for `$dirPath/templates` to use for the Twig templates.
+ * @param array  $env_options Optional. An associative array of environment options for Twig. Default empty array.
+ *                            Examples include 'cache' => '/path/to/cache' or 'debug' => true.
+ *
+ * @throws Exception If the templates directory does not exist or if an error occurs while
  *                   initializing the Twig loader.
  *
- * @return Twig\Environment The initialized Twig environment instance.
+ * @return Twigit\Twigit The initialized Twig environment instance.
  */
-function twig(array $options = [])
+function twig(array $options = []): Twigit\Twigit
 {
     $cfgs = configs()->app();
-    $templatesDir = $cfgs->getAppPath() . '/templates';
-    $coreTemplatesDir = __DIR__ . '/templates';
-
-    $options = array_merge([
-        'autoescape' => false,
-        'cache' => APP_DIR_PATH . '/templates/cache',
-    ], $options);
-
     /*
      * https://twig.symfony.com/doc/3.x/api.html#environment-options
      * @see https://github.com/twigphp/Twig/blob/3.x/src/Environment.php#L112
@@ -429,206 +437,5 @@ function twig(array $options = [])
         $env_options = $options;
     }
 
-    if ( ! is_dir($templatesDir)) {
-        Terminate::exit(new Exception("Templates directory does not exist: {$templatesDir}"));
-    }
-
-    try {
-        $loader = new Twig\Loader\FilesystemLoader([$templatesDir, $coreTemplatesDir]);
-        // $loader->addPath($coreTemplatesDir, 'kiosk');
-    } catch (Exception $e) {
-        Terminate::exit($e);
-    }
-
-    return new Twig\Environment($loader, $env_options);
-}
-
-/**
- * Renders the appropriate Twig template based on WordPress conditional tags.
- *
- * @param Twig\Environment $twig      The Twig environment instance.
- * @param array            $context   The context data to pass to the template.
- * @param array            $templates Optional. An associative array mapping WordPress conditional functions
- *                                    to their corresponding Twig template filenames.
- *                                    Defaults to predefined mappings.
- *
- * @throws Exception If the selected template file does not exist.
- */
-function renderTwigTemplate(Twig\Environment $twig, array $context, array $templates = []): void
-{
-    $defaultTemplates = [
-        'is_embed'             => 'embed.html.twig',
-        'is_404'               => '404.html.twig',
-        'is_search'            => 'search.html.twig',
-        'is_front_page'        => 'front_page.html.twig',
-        'is_home'              => 'home.html.twig',
-        'is_privacy_policy'    => 'privacy_policy.html.twig',
-        'is_post_type_archive' => 'post_type_archive.html.twig',
-        'is_tax'               => 'taxonomy.html.twig',
-        'is_attachment'        => 'attachment.html.twig',
-        'is_single'            => 'single.html.twig',
-        'is_page'              => 'page.html.twig',
-        'is_category'          => 'category.html.twig',
-        'is_tag'               => 'tag.html.twig',
-        'is_author'            => 'author.html.twig',
-        'is_date'              => 'date.html.twig',
-        'is_archive'           => 'archive.html.twig',
-    ];
-
-    $templates = array_merge($defaultTemplates, $templates);
-
-    $selectedTemplate = array_reduce(array_keys($templates), function ($selected, $condition) use ($templates) {
-        if (\function_exists($condition) && $condition()) {
-            return $templates[$condition];
-        }
-
-        return $selected;
-    }, 'index.html.twig');
-
-    $rendered = $twig->render($selectedTemplate, $context);
-
-    twigLayout($rendered);
-}
-
-function twigContext(): array
-{
-    return [
-        // Site Information
-        'site' => [
-            'name' => get_bloginfo('name'),
-            'description' => get_bloginfo('description'),
-            'url' => home_url(),
-        ],
-
-        // User Information (if logged in)
-        'user' => is_user_logged_in() ? [
-            'name' => wp_get_current_user()->display_name,
-            'email' => wp_get_current_user()->user_email,
-            'logged_in' => true,
-        ] : [
-            'logged_in' => false,
-        ],
-
-        // Navigation Menu (Example for a menu registered as 'primary')
-        'menu' => wp_get_nav_menu_items('primary') ?: [],
-
-        // Page Information
-        'page' => is_page() ? [
-            'title' => get_the_title(),
-            'content' => apply_filters('the_content', get_post_field('post_content')),
-            'id' => get_the_ID(),
-        ] : null,
-
-        // Single Post Information
-        'post' => is_single() ? [
-            'title' => get_the_title(),
-            'content' => apply_filters('the_content', get_post_field('post_content')),
-            'author' => [
-                'name' => get_the_author(),
-                'url' => get_author_posts_url(get_the_author_meta('ID')),
-            ],
-            'date' => get_the_date(),
-            'categories' => get_the_category(),
-            'tags' => get_the_tags(),
-        ] : null,
-
-        // Archive Information
-        'archive' => is_archive() ? [
-            'title' => get_the_archive_title(),
-            'description' => get_the_archive_description(),
-            'posts' => array_map(function ($post) {
-                return [
-                    'title' => get_the_title($post),
-                    'url' => get_permalink($post),
-                    'excerpt' => get_the_excerpt($post),
-                ];
-            }, get_posts([
-                'posts_per_page' => 10,
-            ])),
-        ] : null,
-
-        // Search Information
-        'search_query' => is_search() ? get_search_query() : null,
-        'search_results' => is_search() ? array_map(function ($post) {
-            return [
-                'title' => get_the_title($post),
-                'url' => get_permalink($post),
-                'excerpt' => get_the_excerpt($post),
-            ];
-        }, get_posts([
-            's' => get_search_query(),
-            'posts_per_page' => 10,
-        ])) : null,
-
-        // Category or Tag Information
-        'taxonomy' => is_category() || is_tag() || is_tax() ? [
-            'name' => single_term_title('', false),
-            'description' => term_description(),
-            'posts' => array_map(function ($post) {
-                return [
-                    'title' => get_the_title($post),
-                    'url' => get_permalink($post),
-                    'excerpt' => get_the_excerpt($post),
-                ];
-            }, get_posts([
-                'posts_per_page' => 10,
-            ])),
-        ] : null,
-
-        // Date Archive Information
-        'date' => is_date() ? [
-            'year' => get_query_var('year'),
-            'month' => get_query_var('monthnum'),
-            'day' => get_query_var('day'),
-            'posts' => array_map(function ($post) {
-                return [
-                    'title' => get_the_title($post),
-                    'url' => get_permalink($post),
-                    'excerpt' => get_the_excerpt($post),
-                ];
-            }, get_posts([
-                'posts_per_page' => 10,
-            ])),
-        ] : null,
-
-        // Author Information
-        'author' => is_author() ? [
-            'name' => get_the_author(),
-            'bio' => get_the_author_meta('description'),
-            'posts' => array_map(function ($post) {
-                return [
-                    'title' => get_the_title($post),
-                    'url' => get_permalink($post),
-                    'excerpt' => get_the_excerpt($post),
-                ];
-            }, get_posts([
-                'author' => get_the_author_meta('ID'),
-                'posts_per_page' => 10,
-            ])),
-        ] : null,
-    ];
-}
-
-
-function twigLayout($rendered): void
-{
-    ?><!DOCTYPE html>
-<html <?php language_attributes(); ?>>
-<head>
-<meta http-equiv="Content-Type" content="<?php bloginfo('html_type'); ?>; charset=<?php bloginfo('charset'); ?>" />
-<title><?php echo wp_get_document_title(); ?></title>
-<link rel="stylesheet" href="<?php bloginfo('stylesheet_url'); ?>" type="text/css" media="screen" />
-<head>
-    <meta charset="<?php bloginfo('charset'); ?>" />
-    <?php wp_head(); ?>
-</head>
-
-<body <?php body_class(); ?>>
-<?php wp_body_open(); ?>
-
-<?php echo $rendered; ?>
-
-<?php wp_footer(); ?>
-</body>
-</html><?php
+    return Twigit\Twigit::init(APP_DIR_PATH, $env_options);
 }

@@ -13,13 +13,9 @@ if ( ! \defined('ABSPATH')) {
     exit;
 }
 
-$twig = twig(
-    [
-        'autoescape' => false,
-        'cache' => APP_DIR_PATH . '/templates/cache',
-    ]
-);
-
-$context = twigContext();
-
-renderTwigTemplate($twig, $context);
+/**
+ * get the \Twig\Environment
+ *
+ * @var \Twig\Environment
+ */
+return twig(['autoescape' => false]);

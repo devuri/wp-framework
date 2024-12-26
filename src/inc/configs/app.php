@@ -121,7 +121,7 @@ return [
 		    'optimizations' => -1,
 		]
 
-	];
+	],
 
     'directory'        => [
         'wp_dir_path'   => 'wp',

@@ -57,6 +57,7 @@
     },
     "require-dev": {
         "brain/monkey": "^2.6",
+        "devuri/twigit": "^0.1",
         "fakerphp/faker": "^1.23",
         "fruitcake/php-cors": "^1.3",
         "php-stubs/wordpress-stubs": "^6.0",
