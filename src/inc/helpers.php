@@ -424,7 +424,7 @@ function twigit(): ?Twigit\Twigit
  *
  * @return Twigit\Twigit The initialized Twig environment instance.
  */
-function twig(array $options = []): Twigit\Twigit
+function twig(array $options = [], array $templates = []): Twigit\Twigit
 {
     $cfgs = configs()->app();
     /*
@@ -437,5 +437,5 @@ function twig(array $options = []): Twigit\Twigit
         $env_options = $options;
     }
 
-    return Twigit\Twigit::init(APP_DIR_PATH, $env_options);
+    return Twigit\Twigit::init(APP_DIR_PATH, $env_options, $templates);
 }
