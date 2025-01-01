@@ -88,7 +88,11 @@ class ConfigDefaultTest extends TestCase
         $this->assertTrue((bool) $configs['can_deactivate']);
 
         // Error handler check
-        $this->assertNull($configs['error_handler']);
+        $this->assertSame($configs['error_handler'], [
+            'class'   => \WPframework\Error\ErrorHandler::class,
+            'quit'    => true,
+            'logs'    => true,
+        ]);
 
         // S3 Uploads checks
         $this->assertArrayHasKey('s3uploads', $configs);

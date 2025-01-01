@@ -17,7 +17,10 @@ class TextHandler extends PlainTextHandler
 {
     use ErrorTrait;
 
-    public function handle(): void
+    /**
+     * @return null|int
+     */
+    public function handle()
     {
         $exception = $this->getException();
 
