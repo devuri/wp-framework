@@ -15,6 +15,7 @@ use Exception;
 use InvalidArgumentException;
 use RuntimeException;
 use Urisoft\DotAccess;
+use WPframework\Error\ErrorHandler;
 use WPframework\Interfaces\ConfigsInterface;
 
 class Configs implements ConfigsInterface
@@ -99,7 +100,11 @@ class Configs implements ConfigsInterface
     public static function getDefault(): array
     {
         return [
-            'error_handler'    => env('ERROR_HANDLER', false),
+            'error_handler' => [
+                'class'   => ErrorHandler::class,
+                'quit'    => true,
+                'logs'    => true,
+            ],
             'prod'             => [ 'secure', 'sec', 'production', 'prod' ],
             'config_file'      => 'config',
             'terminate'        => [
