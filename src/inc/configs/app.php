@@ -12,16 +12,35 @@
 return [
 
     /*
-     * Sets the error handler for the project.
+     * Configures the error handler for the project.
      *
-     * The framework provides options for using either Oops or Symfony as the error handler.
-     * By default, the Symfony error handler is used.
-     * To change the error handler, set the 'error_handler' option to 'oops'.
-     * To disable the error handlers completely, set the 'error_handler' option to false.
+     * This section defines how Errors are handled. You can specify:
+     *   - The error handler class, which must extend AbstractError or implement
+     *     Whoops\Handler\HandlerInterface.
+     *   - Whether Whoops should quit after handling an error.
+     *   - Whether error details should be logged.
+     *   - Whether the error handler should be enabled at all (often tied to WP_DEBUG).
      *
-     * Please note that the error handler will only run in 'debug', 'development', or 'local' environments.
+     * Note: The error handler generally only runs in 'debug', 'development',
+     * or 'local' environments, depending on your project's environment checks.
      */
-    'error_handler'    => env('ERROR_HANDLER', false),
+    'error_handler' => [
+        // Must be an instance of AbstractError or Whoops\Handler\HandlerInterface.
+        // Possible Whoops handlers:
+        //   WPframework\Error\ErrorHandler::class (default)
+        //   WPframework\Error\TextHandler::class
+        // Or custom Whoops handlers, such as:
+        //   Whoops\Handler\JsonResponseHandler::class
+        //   Whoops\Handler\PlainTextHandler::class
+        //   Whoops\Handler\PrettyPageHandler::class
+        'class'   => WPframework\Error\ErrorHandler::class,
+
+        // Determines if whoops->allowQuit(true) is called.
+        'quit'    => true,
+
+        // Enables logging of errors.
+        'logs'    => true,
+    ],
 
     /*
      * Determines if the application should run internal middleware to check the application's health status.

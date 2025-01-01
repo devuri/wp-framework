@@ -99,7 +99,11 @@ class Configs implements ConfigsInterface
     public static function getDefault(): array
     {
         return [
-            'error_handler'    => env('ERROR_HANDLER', false),
+            'error_handler' => [
+                'class'   => WPframework\Error\ErrorHandler::class,
+                'quit'    => true,
+                'logs'    => true,
+            ],
             'prod'             => [ 'secure', 'sec', 'production', 'prod' ],
             'config_file'      => 'config',
             'terminate'        => [

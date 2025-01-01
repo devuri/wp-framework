@@ -30,6 +30,11 @@ class Terminate
         $this->exitHandler = $exit ?? new ExitHandler();
     }
 
+    public function exitHandler(): ExitInterface
+    {
+        return $this->exitHandler;
+    }
+
     /**
      * Handles termination of the script execution by sending an HTTP status code, displaying an error page,
      * and logging the exception.
@@ -40,15 +45,59 @@ class Terminate
     public static function exit(?Throwable $exception, ?int $statusCode = 500, string $pageTitle = 'Service Unavailable', array $request = []): void
     {
         $terminator = new self($exception, $statusCode, $request);
-        $terminator->sendHttpStatusCode();
         $terminator->renderPage($pageTitle);
         $terminator->logException($exception);
-        $terminator->exitHandler->terminate(1);
+        $terminator->exitHandler()->terminate(1);
     }
 
     public function setErrorCode(int $errorCode): void
     {
         $this->errorCode = $errorCode;
+    }
+
+    /**
+     * Renders the error page with a given message and status code.
+     */
+    public function renderPage(string $pageTitle): void
+    {
+        if (PHP_SAPI === 'cli') {
+            dump($this->exception->getMessage());
+            dd($this->exception);
+
+            return;
+        }
+
+        if (self::isValidHttpStatusCode($this->statusCode)) {
+            http_response_code($this->statusCode);
+        } else {
+            throw new InvalidArgumentException("Invalid HTTP status code: {$this->statusCode}");
+        }
+
+        $this->pageHeader($pageTitle);
+        ?>
+            <div id="error-page" class="" style="margin-top: 4em; padding: 1.4em; background: #fff; box-shadow: rgba(17, 17, 26, 0.05) 0px 4px 16px, rgba(17, 17, 26, 0.05) 0px 8px 32px;">
+                <h1 style="font-style: oblique;font-weight: 400;margin-bottom: 1em;">
+                    Exception
+                </h1>
+                <div style="margin-bottom: 2em; font-size: large;">
+                    <p>
+                        <?php echo htmlspecialchars($this->exception->getMessage(), ENT_QUOTES, 'UTF-8'); ?>
+                    </p>
+                </div>
+                <p>
+                    <?php echo $this->linkUrl(); ?>
+                    <?php echo $this->homeUrl(); ?>
+                    <?php echo $this->loginUrl(); ?>
+                </p>
+            </div>
+            <div>
+                <?php if (self::showStackTrace()) {
+                    $this->outputDebugInfo();
+                } ?>
+            </div>
+        <?php
+
+        $this->pageFooter();
     }
 
     /**
@@ -58,11 +107,6 @@ class Terminate
      */
     protected function sendHttpStatusCode(): void
     {
-        if (self::isValidHttpStatusCode($this->statusCode)) {
-            http_response_code($this->statusCode);
-        } else {
-            throw new InvalidArgumentException("Invalid HTTP status code: {$this->statusCode}");
-        }
     }
 
     /**
@@ -92,44 +136,6 @@ class Terminate
 
         // TODO Optionally, log the exception or perform additional actions
         // error_log($exception->getMessage());
-    }
-
-    /**
-     * Renders the error page with a given message and status code.
-     */
-    protected function renderPage(string $pageTitle): void
-    {
-        if (PHP_SAPI === 'cli') {
-            dump($this->exception->getMessage());
-            dd($this->exception);
-
-            return;
-        }
-        $this->pageHeader($pageTitle);
-        ?>
-            <div id="error-page" class="" style="margin-top: 4em; padding: 1.4em; background: #fff; box-shadow: rgba(17, 17, 26, 0.05) 0px 4px 16px, rgba(17, 17, 26, 0.05) 0px 8px 32px;">
-                <h1 style="font-style: oblique;font-weight: 400;margin-bottom: 1em;">
-                    Exception
-                </h1>
-                <div style="margin-bottom: 2em; font-size: large;">
-                    <p>
-                        <?php echo htmlspecialchars($this->exception->getMessage(), ENT_QUOTES, 'UTF-8'); ?>
-                    </p>
-                </div>
-                <p>
-                    <?php echo $this->linkUrl(); ?>
-                    <?php echo $this->homeUrl(); ?>
-                    <?php echo $this->loginUrl(); ?>
-                </p>
-            </div>
-            <div>
-                <?php if (self::showStackTrace()) {
-                    $this->outputDebugInfo();
-                } ?>
-            </div>
-        <?php
-
-        $this->pageFooter();
     }
 
     protected function linkUrl(): string
@@ -188,23 +194,10 @@ class Terminate
      */
     protected function outputDebugInfo(): void
     {
-        if ($this->exception) {
-            dump([
-                'Exception Message' => $this->exception->getMessage(),
-                'File' => $this->exception->getFile(),
-                'Line' => $this->exception->getLine(),
-                'Trace' => $this->exception->getTraceAsString(),
-            ]);
-
-            if ($this->exception->getPrevious()) {
-                $previous = $this->exception->getPrevious();
-                dump([
-                    'Previous Exception Message' => $previous->getMessage(),
-                    'File' => $previous->getFile(),
-                    'Line' => $previous->getLine(),
-                    'Trace' => $previous->getTraceAsString(),
-                ]);
-            }
+        $previous = $this->exception->getPrevious();
+        while ($previous) {
+            $message .= "\n\nCaused by\n" . dump($previous);
+            $previous = $previous->getPrevious();
         }
     }
 
@@ -269,6 +262,16 @@ class Terminate
             border: solid thin;
             border-radius: 4px;
             padding: 6px 12px;
+        }
+
+        .sf-dump code {
+            background: #efefef;
+            background: var(--background);
+            color: #000;
+            color: #9b9b9b;
+            padding: 2.5px 5px;
+            border-radius: 6px;
+            font-size: 1em;
         }
 
 	</style>
