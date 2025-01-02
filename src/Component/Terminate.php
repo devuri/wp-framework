@@ -194,6 +194,7 @@ class Terminate
      */
     protected function outputDebugInfo(): void
     {
+		$message = null;
         $previous = $this->exception->getPrevious();
         while ($previous) {
             $message .= "\n\nCaused by\n" . dump($previous);
