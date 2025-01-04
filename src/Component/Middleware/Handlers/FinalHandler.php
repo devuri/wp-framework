@@ -18,6 +18,8 @@ use WPframework\Http\Message\Response;
 
 class FinalHandler implements RequestHandlerInterface
 {
+    protected $finalRequest;
+
     /**
      * Process the incoming request and return a response.
      *
@@ -27,6 +29,13 @@ class FinalHandler implements RequestHandlerInterface
      */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
+        $this->finalRequest = $request;
+
         return new Response();
+    }
+
+    public function getFinalRequest()
+    {
+        return $this->finalRequest;
     }
 }
