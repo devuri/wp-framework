@@ -83,6 +83,11 @@ class App implements RequestHandlerInterface
     protected $emitter;
 
     /**
+     * @var finalRequest
+     */
+    protected $finalRequest;
+
+    /**
      * App constructor.
      */
     public function __construct(RequestInterface $request, ?Bindings $containerBindings)
@@ -209,6 +214,7 @@ class App implements RequestHandlerInterface
     public function run(): void
     {
         $response = $this->handle($this->request);
+        $this->finalRequest = $this->defaultHandler->getFinalRequest();
         $this->emitResponse($response);
     }
 
@@ -268,7 +274,7 @@ class App implements RequestHandlerInterface
             exit;
         }
 
-        if ($this->request->getAttribute('isRoute', false)) {
+        if ($this->finalRequest->getAttribute('isRoute', false)) {
             $this->emitter->emitBody($response);
             exit;
         }
