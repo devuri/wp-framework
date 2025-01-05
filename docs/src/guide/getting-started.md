@@ -70,7 +70,6 @@ Raydium provides an optimized file structure tailored for a modular and secure a
 
 ```
 ├── .env
-├── bootstrap.php
 ├── composer.json
 ├── vendor/                   # Composer dependencies
 └── public/
