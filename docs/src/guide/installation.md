@@ -1,6 +1,6 @@
 # Installation Guide for Raydium
 
-Welcome to the comprehensive installation guide for Raydium, the innovative framework designed to enhance WordPress development. This guide will walk you through the prerequisites, installation steps, and initial configuration to get your Raydium-powered WordPress site up and running.
+Welcome to the installation guide, the framework is designed to enhance WordPress development. This guide will walk you through the prerequisites, installation steps, and initial configuration to get your Raydium-powered WordPress site up and running.
 
 ## Prerequisites
 
@@ -58,7 +58,7 @@ DB_HOST='localhost'
 
 ### Step 3: Serve Your Project
 
-Configure your web server (Apache, Nginx, etc.) to serve the `public` directory of your Raydium project as the web root. This setup ensures that the web server correctly serves the WordPress site managed by Raydium.
+Configure your web server (Apache, Nginx, etc.) to serve the `public` directory of your project as the web root. This setup ensures that the web server correctly serves the WordPress site managed by Raydium.
 
 > [!IMPORTANT]
 > For Apache, ensure you have an `.htaccess` file within the `public` directory with the necessary rewrite rules. For Nginx, configure your site's server block to point the root to the `public` directory.

@@ -128,6 +128,19 @@ define('FORCE_SSL_LOGIN', true);
 
 Sensitive information such as API keys and database credentials should reside in the `.env` file, not in `config.php`. The `.env` approach helps keep sensitive data secure and separate from the codebase.
 
+## Constants File Selection Process
+
+The framework intelligently selects the most appropriate config file based on the operational context, ensuring optimal settings for every scenario.
+
+### Multi-Tenant and Single-Tenant Modes
+
+- **Multi-Tenant Mode**: In environments hosting multiple tenants, the framework looks for tenant-specific config files within a dedicated directory structure, typically following the pattern: `/path/to/app/configs/<tenant_id>/config.php`.
+
+- **Single-Tenant Mode**: For single-tenant or simpler setups, the framework defaults to a standard config file located at: `/path/to/app/config.php`.
+
+### Fallback Mechanism
+
+If the specified config file is not found, the framework will attempt to use an alternate default file from a secondary configs directory: `/path/to/app/configs/config.php`. This step ensures the application has a configuration to fall back on, maintaining smooth operation.
 
 ## Best Practices for Defining Constants
 
