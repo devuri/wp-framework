@@ -1,4 +1,4 @@
-name: X-Build Docs
+name: X-Build phpdoc Docs
 on:
   workflow_dispatch:
 
