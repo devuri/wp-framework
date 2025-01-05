@@ -9,9 +9,6 @@ hero:
       text: Quick Start
       link: /guide/getting-started
     - theme: alt
-      text: What is Raydium
-      link: /guide/overview/what-is-raydium
-    - theme: alt
       text: Multi-Tenant
       link: /multi-tenant/overview
     - theme: alt
