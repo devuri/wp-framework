@@ -82,7 +82,7 @@ class ServiceContainer implements ContainerInterface
             $this->instances[$id] = $resolved;
 
             return $resolved;
-        } catch (Throwable $e) {
+        } catch (\Throwable $e) {
             throw new ServiceContainerException(
                 "An error occurred while resolving the service '{$id}'.",
                 0,

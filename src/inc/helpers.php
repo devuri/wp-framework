@@ -393,6 +393,7 @@ function twigit(): ?Twigit\Twigit
         $twig = $coreTwigFile;
     }
 
+    // @phpstan-ignore-next-line
     $twigInstance = require $twig;
 
     if ($twigInstance instanceof Twigit\Twigit) {

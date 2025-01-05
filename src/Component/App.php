@@ -83,7 +83,7 @@ class App implements RequestHandlerInterface
     protected $emitter;
 
     /**
-     * @var finalRequest
+     * @var RequestInterface
      */
     protected $finalRequest;
 

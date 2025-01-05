@@ -133,6 +133,7 @@ final class HeadlessMode
     private function polyfillStrStartsWith()
     {
         if (! \function_exists('str_starts_with')) {
+            // @phpstan-ignore-next-line
             function str_starts_with($haystack, $needle)
             {
                 return substr($haystack, 0, \strlen($needle)) === $needle;
