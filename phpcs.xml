@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<ruleset name="Coding standard">
+    <description>Coding standard</description>
+
+	<exclude-pattern>*/bin/*</exclude-pattern>
+	<exclude-pattern>*/build/*</exclude-pattern>
+	<exclude-pattern>*/tests/*</exclude-pattern>
+	<exclude-pattern>*/node_modules/*</exclude-pattern>
+	<exclude-pattern>*/vendor/*</exclude-pattern>
+
+	<!-- For CI, don't fail on warnings -->
+	<config name="ignore_warnings_on_exit" value="1"/>
+	<config name="testVersion" value="7.4-"/>
+
+    <!-- display progress -->
+    <arg value="p"/>
+    <!-- use colors in output -->
+    <arg name="colors"/>
+
+    <!-- inherit rules from: -->
+    <rule ref="PSR12"/>
+    <rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
+	<rule ref="PSR1">
+		<exclude name="PSR1.Files.SideEffects.FoundWithSymbols"/>
+	</rule>
+	<rule ref="PSR12">
+		<exclude name="Generic.Files.LineLength"/>
+	</rule>
+
+    <!-- Paths to check -->
+    <file>src</file>
+    <file>tests</file>
+</ruleset>

@@ -39,7 +39,7 @@ class TenantRepository
 
     public function getTenant(string $domain)
     {
-        if ( ! $this->tenants) {
+        if (! $this->tenants) {
             return null;
         }
 

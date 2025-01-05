@@ -36,7 +36,7 @@ class HttpClientTest extends TestCase
     public function test_referrer_request(): void
     {
         $refer = new HttpClient('https://jsonplaceholder.typicode.com/');
-        $refer->set_referrer("https://refer.example.com");
+        $refer->setReferrer("https://refer.example.com");
         $response = $refer->get('posts/1');
 
         $this->assertEquals(200, $response['status']);

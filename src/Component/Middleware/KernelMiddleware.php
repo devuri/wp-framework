@@ -41,7 +41,7 @@ class KernelMiddleware extends AbstractMiddleware
 
         $isProd = $request->getAttribute('isProd', false);
 
-        if ( ! $this->isValidInstallerPath($isProd)) {
+        if (! $this->isValidInstallerPath($isProd)) {
             throw new Exception(
                 'config file and composer `installer-paths` did not match ' . $this->pathError
             );
@@ -68,7 +68,7 @@ class KernelMiddleware extends AbstractMiddleware
             "public/$contentDir/themes/{\$name}/",
         ];
 
-        if ( ! $isProd) {
+        if (! $isProd) {
             $this->pathError = 'config: ' . implode(' ', $installerPaths);
         }
 
@@ -103,8 +103,6 @@ class KernelMiddleware extends AbstractMiddleware
         foreach ($maintenanceChecks as $path => $scope) {
             if (file_exists($path)) {
                 return true;
-
-                break;
             }
         }
 

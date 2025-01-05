@@ -194,7 +194,7 @@ class Terminate
      */
     protected function outputDebugInfo(): void
     {
-		$message = null;
+        $message = null;
         $previous = $this->exception->getPrevious();
         while ($previous) {
             $message .= "\n\nCaused by\n" . dump($previous);
@@ -209,15 +209,15 @@ class Terminate
         <head>
             <link href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.min.css" rel="stylesheet">
             <meta charset="utf-8">
-			<meta name="robots" content="noindex, nofollow">
+            <meta name="robots" content="noindex, nofollow">
             <meta name="viewport" content="width=device-width, initial-scale=1">
 
-			<!-- Fonts -->
-	        <link rel="preconnect" href="https://fonts.bunny.net">
-	        <link href="https://fonts.bunny.net/css?family=figtree:300,400,500,600" rel="stylesheet" />
+            <!-- Fonts -->
+            <link rel="preconnect" href="https://fonts.bunny.net">
+            <link href="https://fonts.bunny.net/css?family=figtree:300,400,500,600" rel="stylesheet" />
 
             <title><?php echo $pageTitle; ?></title>
-			<?php self::pageStyles(); ?>
+            <?php self::pageStyles(); ?>
         </head>
         <body id="page" style="background: #efefef; font-family: figtree;">
         <?php
@@ -237,28 +237,28 @@ class Terminate
     private static function pageStyles(): void
     {
         ?>
-	<style type="text/css">
-		html {
-			background: #f1f1f1;
-		}
-		body {
-			color: #444;
-			margin: 2em auto;
-			font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
-			padding: 0;
-		}
-		samp {
-			color: unset;
-			background: none;
-			font-size: 1em;
-		}
-		ul li {
-			margin-bottom: 10px;
-			font-size: 14px ;
-		}
-		a {
-			color: #0073aa;
-		}
+    <style type="text/css">
+        html {
+            background: #f1f1f1;
+        }
+        body {
+            color: #444;
+            margin: 2em auto;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+            padding: 0;
+        }
+        samp {
+            color: unset;
+            background: none;
+            font-size: 1em;
+        }
+        ul li {
+            margin-bottom: 10px;
+            font-size: 14px ;
+        }
+        a {
+            color: #0073aa;
+        }
         .btn-outline {
             border: solid thin;
             border-radius: 4px;
@@ -275,7 +275,7 @@ class Terminate
             font-size: 1em;
         }
 
-	</style>
-	<?php
+    </style>
+        <?php
     }
 }

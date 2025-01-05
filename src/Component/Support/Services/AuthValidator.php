@@ -43,12 +43,14 @@ class AuthValidator
      * @param string $cookie The cookie string in the format "username|expiration|hmac".
      * @param string $scheme Either 'auth' or 'secure_auth'.
      *
-     * @return array
+     * @return (null|bool|mixed|string)[]
+     *
+     * @psalm-return array{user: mixed|null, auth: bool, message: string}
      */
     public function validate(string $cookie, bool $verifyHash = true, string $scheme = 'auth'): array
     {
         $schemeKey = $this->getKeyForScheme($scheme);
-        if ( ! $schemeKey) {
+        if (! $schemeKey) {
             return [
                 'user' => null,
                 'auth' => false,
@@ -76,7 +78,7 @@ class AuthValidator
         }
 
         $user = $this->getUser($username);
-        if ( ! $user) {
+        if (! $user) {
             return [
                 'user' => null,
                 'auth' => false,
@@ -84,7 +86,7 @@ class AuthValidator
             ];
         }
 
-        if ( ! $verifyHash) {
+        if (! $verifyHash) {
             return [
                 'user' => $user,
                 'auth' => true,
@@ -97,7 +99,7 @@ class AuthValidator
         $hashKey = self::getHashKey($username, $passFrag, $expiration, $token, $schemeKey);
         $calculatedHmac = hash_hmac('sha256', $username . '|' . $expiration . '|' . $token, $hashKey);
 
-        if ( ! hash_equals($calculatedHmac, $hmac)) {
+        if (! hash_equals($calculatedHmac, $hmac)) {
             return [
                 'user' => null,
                 'auth' => false,

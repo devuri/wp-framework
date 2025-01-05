@@ -59,7 +59,7 @@ class FileLogger implements LoggerInterface
             LogLevel::DEBUG,
         ];
 
-        if ( ! \in_array($level, $levels, true)) {
+        if (! \in_array($level, $levels, true)) {
             throw new InvalidArgumentException('Invalid log level: ' . $level);
         }
 

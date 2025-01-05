@@ -12,6 +12,7 @@
 namespace WPframework\Container;
 
 use Psr\Container\ContainerInterface;
+use Throwable;
 use WPframework\Exceptions\ServiceContainerException;
 use WPframework\Exceptions\ServiceNotFoundException;
 
@@ -40,7 +41,7 @@ class ServiceContainer implements ContainerInterface
     public function set(string $id, $resolver): void
     {
         // Ensure the service can be bound as a callable or a raw value
-        if ( ! \is_callable($resolver) && ! \is_object($resolver)) {
+        if (! \is_callable($resolver) && ! \is_object($resolver)) {
             throw new ServiceContainerException("Service '{$id}' must be callable or an object.");
         }
 
@@ -68,7 +69,7 @@ class ServiceContainer implements ContainerInterface
         }
 
         // Ensure the service exists in bindings
-        if ( ! \array_key_exists($id, $this->bindings)) {
+        if (! \array_key_exists($id, $this->bindings)) {
             throw new ServiceNotFoundException("Service '{$id}' not found in the container.");
         }
 

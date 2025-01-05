@@ -242,7 +242,7 @@ class ConstantBuilder
      */
     private function setConstantMap(): void
     {
-        if ( ! \defined('WP_DEBUG')) {
+        if (! \defined('WP_DEBUG')) {
             $this->constantMap = ['disabled'];
 
             return;

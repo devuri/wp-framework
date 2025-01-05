@@ -17,6 +17,9 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class SecurityHeadersMiddleware extends AbstractMiddleware
 {
+    /**
+     * @return ResponseInterface
+     */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $response = $handler->handle($request);

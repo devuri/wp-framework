@@ -18,7 +18,7 @@ class MiddlewareRegistry
     /**
      * @var null|array
      */
-    protected array $middlewares = [];
+    protected ?array $middlewares = [];
 
     public function __construct($container, ?array $filter = null)
     {
@@ -48,7 +48,7 @@ class MiddlewareRegistry
         $coreMiddlewares = $core->getAll($filter);
 
         foreach ($coreMiddlewares as $key => $middleware) {
-            if ( ! \is_string($key) || empty($key)) {
+            if (! \is_string($key) || empty($key)) {
                 continue;
             }
             $this->register($middleware, $key);

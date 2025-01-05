@@ -175,7 +175,7 @@ class KernelConfig
             $configOverrideFile = $this->getDefaultConfigFile();
         }
 
-        if ( ! empty($configOverrideFile)) {
+        if (! empty($configOverrideFile)) {
             require_once $configOverrideFile;
         }
 

@@ -127,14 +127,19 @@ class IDGenerator
      */
     public function getTenantId(?string $id = null)
     {
-        if ( ! $id) {
+        if (! $id) {
             return $this->existingIDs[$this->Id]['tenent_id'] ?? null;
         }
 
         return $this->existingIDs[$id] ?? null;
     }
 
-    protected function getConfig(string $key, $default = null)
+    /**
+     * @param null|int $default
+     *
+     * @psalm-param 1|5|null $default
+     */
+    protected function getConfig(string $key, ?int $default = null)
     {
         return $this->config->get($key, $default);
     }
@@ -142,7 +147,7 @@ class IDGenerator
     private function generateNumberID()
     {
         static $currentNumber;
-        if ( ! isset($currentNumber)) {
+        if (! isset($currentNumber)) {
             $currentNumber = $this->sequenceStart;
         } else {
             $currentNumber++;
@@ -164,13 +169,13 @@ class IDGenerator
      */
     private function generateHashID()
     {
-        if ( ! $this->hashAlgorithm) {
+        if (! $this->hashAlgorithm) {
             return null;
         }
 
         $randomString = bin2hex(random_bytes(16));
 
-        if ( ! \in_array($this->hashAlgorithm, hash_algos(), true)) {
+        if (! \in_array($this->hashAlgorithm, hash_algos(), true)) {
             throw new InvalidArgumentException("Invalid algorithm format specified, hash must be a valid hashing algorithm.");
         }
 
@@ -186,7 +191,7 @@ class IDGenerator
             $stringID = $this->randomNumericString($this->randomLength);
             $randomID = $this->enforceLengthConstraints($stringID);
 
-            if ( ! isset($this->existingIDs[$randomID])) {
+            if (! isset($this->existingIDs[$randomID])) {
                 return $randomID;
             }
         }
@@ -211,16 +216,16 @@ class IDGenerator
 
     private function validateConfig(): void
     {
-        if ( ! $this->format) {
+        if (! $this->format) {
             throw new InvalidArgumentException("format is required.");
         }
 
-        if ( ! \in_array($this->format, ['uuid', 'number', 'hash', 'random'], true)) {
+        if (! \in_array($this->format, ['uuid', 'number', 'hash', 'random'], true)) {
             throw new InvalidArgumentException("Invalid format. Allowed values: uuid, number, hash, random.");
         }
 
-        if ( ! empty($this->idLength)) {
-            if ( ! \is_int($this->idLength) || $this->idLength <= 0) {
+        if (! empty($this->idLength)) {
+            if (! \is_int($this->idLength) || $this->idLength <= 0) {
                 throw new InvalidArgumentException("idLength must be a positive integer.");
             }
         }
@@ -245,6 +250,9 @@ class IDGenerator
         );
     }
 
+    /**
+     * @param false|string $id
+     */
     private function enforceLengthConstraints($id)
     {
         if ($this->randomLength) {

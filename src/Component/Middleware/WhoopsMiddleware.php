@@ -37,6 +37,7 @@ class WhoopsMiddleware extends AbstractMiddleware
     {
         $this->whoops = $this->services->get('whoops');
         $cfgs         = $this->services->get('configs');
+        $defaults     = self::defaults();
 
         // Merge default and user-defined error handler settings.
         $errorHandlerConfig = self::setErrorHandler($cfgs);

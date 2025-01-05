@@ -23,7 +23,6 @@ use WPframework\Terminate;
 class IgnitionMiddleware extends AbstractMiddleware
 {
     protected $envType;
-    private $appPath;
     private $tenant;
     private $configs;
     private $isMultitenant;
@@ -46,7 +45,7 @@ class IgnitionMiddleware extends AbstractMiddleware
         $this->tenant = $request->getAttribute('tenant', false);
         $this->isMultitenant = $request->getAttribute('isMultitenant', false);
 
-        if ( ! $this->tenant) {
+        if (! $this->tenant) {
             return $handler->handle($request);
         }
 
@@ -75,7 +74,7 @@ class IgnitionMiddleware extends AbstractMiddleware
         return $handler->handle($request);
     }
 
-    protected function validateTenantdB($_dotenv): void
+    protected function validateTenantdB(Dotenv $_dotenv): void
     {
         try {
             $_dotenv->required('LANDLORD_DB_HOST')->notEmpty();

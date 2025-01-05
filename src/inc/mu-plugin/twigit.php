@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Plugin Name:       Twigit
  * Plugin URI:        https://github.com/devuri/wpframework
@@ -12,14 +13,14 @@
  * Network: true
  */
 
-if ( ! \defined('ABSPATH')) {
+if (! \defined('ABSPATH')) {
     exit;
 }
 
 // Load Twig template renderer
 if (\defined('USE_TWIGIT') && true === \constant('USE_TWIGIT')) {
-	// get \WP_Theme
-	$theme = wp_get_theme();
+    // get \WP_Theme
+    $theme = wp_get_theme();
     $twig = twigit();
-	$twig->templateFilter();
+    $twig->templateFilter();
 }

@@ -18,13 +18,13 @@ class TextHandler extends PlainTextHandler
     use ErrorTrait;
 
     /**
-     * @return null|int
+     * @return never
      */
     public function handle()
     {
         $exception = $this->getException();
 
-        if ( ! self::isProd(env('WP_ENVIRONMENT_TYPE'))) {
+        if (! self::isProd(env('WP_ENVIRONMENT_TYPE'))) {
             exit($this->getExceptionOutput($exception));
         }
         exit($exception->getMessage());

@@ -45,7 +45,7 @@ class DB
     /**
      * Fetch all records from the table.
      *
-     * @return null|object
+     * @return null|array
      */
     public function all(): ?array
     {
@@ -91,7 +91,7 @@ class DB
 
     public function getUser(string $user_login): ?object
     {
-        if ( ! $this->tableExist()) {
+        if (! $this->tableExist()) {
             return null;
         }
 
@@ -174,6 +174,8 @@ class DB
 
     /**
      * @param string $table_name_no_prefix
+     *
+     * @return static
      */
     public function table(string $table_name_no_prefix = 'options'): self
     {
@@ -232,7 +234,7 @@ class DB
      */
     private function isSerialized($data)
     {
-        if ( ! \is_string($data)) {
+        if (! \is_string($data)) {
             return false;
         }
 

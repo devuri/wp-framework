@@ -47,7 +47,9 @@ class StatusMiddleware extends AbstractMiddleware
     /**
      * Checks the system's health status.
      *
-     * @return array
+     * @return (bool|bool[]|string)[]
+     *
+     * @psalm-return array{healthy: bool, services: array{database: bool, cache: bool}, timestamp: false|string}
      */
     private function checkSystemStatus(): array
     {

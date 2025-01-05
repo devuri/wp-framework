@@ -49,7 +49,7 @@ AppFactory::run();
 $table_prefix = env('DB_PREFIX');
 
 // Define ABSPATH.
-if ( ! \defined('ABSPATH')) {
+if (! \defined('ABSPATH')) {
     \define('ABSPATH', __DIR__ . '/');
 }
 

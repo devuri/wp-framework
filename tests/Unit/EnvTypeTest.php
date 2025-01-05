@@ -33,7 +33,7 @@ class EnvTypeTest extends TestCase
         $this->envType = new EnvType($this->filesystem);
         $this->appPath = sys_get_temp_dir() . '/env_test';
 
-        if ( ! $this->filesystem->exists($this->appPath)) {
+        if (! $this->filesystem->exists($this->appPath)) {
             $this->filesystem->mkdir($this->appPath);
         }
     }

@@ -71,7 +71,7 @@ class MiddlewareDispatcher implements RequestHandlerInterface
      */
     public function addMiddleware($middleware): void
     {
-        if ( ! \is_callable($middleware) && ! $middleware instanceof MiddlewareInterface) {
+        if (! \is_callable($middleware) && ! $middleware instanceof MiddlewareInterface) {
             throw new InvalidArgumentException('Middleware must be callable or implement MiddlewareInterface.');
         }
         $this->middlewareQueue[] = $middleware;
