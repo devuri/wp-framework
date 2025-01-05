@@ -18,7 +18,7 @@ class MiddlewareRegistry
     /**
      * @var null|array
      */
-    protected array $middlewares = [];
+    protected ?array $middlewares = [];
 
     public function __construct($container, ?array $filter = null)
     {

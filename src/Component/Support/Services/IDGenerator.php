@@ -134,7 +134,12 @@ class IDGenerator
         return $this->existingIDs[$id] ?? null;
     }
 
-    protected function getConfig(string $key, $default = null)
+    /**
+     * @param null|int $default
+     *
+     * @psalm-param 1|5|null $default
+     */
+    protected function getConfig(string $key, ?int $default = null)
     {
         return $this->config->get($key, $default);
     }
@@ -245,6 +250,9 @@ class IDGenerator
         );
     }
 
+    /**
+     * @param false|string $id
+     */
     private function enforceLengthConstraints($id)
     {
         if ($this->randomLength) {

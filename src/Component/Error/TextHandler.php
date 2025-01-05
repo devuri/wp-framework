@@ -18,7 +18,7 @@ class TextHandler extends PlainTextHandler
     use ErrorTrait;
 
     /**
-     * @return null|int
+     * @return never
      */
     public function handle()
     {

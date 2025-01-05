@@ -43,7 +43,9 @@ class AuthValidator
      * @param string $cookie The cookie string in the format "username|expiration|hmac".
      * @param string $scheme Either 'auth' or 'secure_auth'.
      *
-     * @return array
+     * @return (null|bool|mixed|string)[]
+     *
+     * @psalm-return array{user: mixed|null, auth: bool, message: string}
      */
     public function validate(string $cookie, bool $verifyHash = true, string $scheme = 'auth'): array
     {

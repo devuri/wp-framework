@@ -11,6 +11,7 @@
 
 namespace WPframework;
 
+use Closure;
 use Pimple\Container as PimpleContainer;
 use Pimple\Psr11\Container as PsrContainer;
 use Symfony\Component\Filesystem\Filesystem;
@@ -107,7 +108,9 @@ class Bindings
     /**
      * Get an array of core bindings.
      *
-     * @return array
+     * @return (Closure)[]
+     *
+     * @psalm-return array{filesystem: \Closure():Filesystem, configs: \Closure(mixed):Configs, const_builder: \Closure(mixed):ConstantBuilder, kernel: \Closure(mixed):KernelConfig, site_manager: \Closure(mixed):SiteManager, switcher: \Closure(mixed):Switcher, auth: \Closure(mixed):AuthManager, logger: \Closure(mixed):FileLogger, middlewares: \Closure(mixed):CoreMiddleware, whoops: \Closure(mixed):WhoopRunner}
      */
     public function getCoreBindings(): array
     {

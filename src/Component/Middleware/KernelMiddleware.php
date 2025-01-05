@@ -103,8 +103,6 @@ class KernelMiddleware extends AbstractMiddleware
         foreach ($maintenanceChecks as $path => $scope) {
             if (file_exists($path)) {
                 return true;
-
-                break;
             }
         }
 

@@ -214,7 +214,7 @@ function getWpframeworkHttpEnv(): ?string
  *
  * @return (mixed|string)[]
  *
- * @psalm-return array{basedir: 'public/content/tenant/id/uploads', baseurl: string, path: string, url: string,...}
+ * @psalm-return array{basedir: 'public/content/id/uploads', baseurl: string, path: string, url: string,...}
  */
 function setMultitenantUploadDirectory($dir): array
 {
@@ -380,7 +380,7 @@ function toMillisecond(float $seconds)
  * If a custom configuration file exists at the specified path, it will be used.
  * Otherwise, the default framework Twig configuration file is returned.
  *
- * @return Twig\Environment The file path to the Twig configuration file.
+ * @return null|Twigit\Twigit The file path to the Twig configuration file.
  */
 function twigit(): ?Twigit\Twigit
 {

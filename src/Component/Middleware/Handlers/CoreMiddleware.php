@@ -58,7 +58,9 @@ class CoreMiddleware
     /**
      * Fetch enabled middleware keys.
      *
-     * @return array
+     * @return string[]
+     *
+     * @psalm-return list{'security', 'tenant', 'ignit', 'status', 'config', 'kernel', 'auth', 'logger', 'whoops'}
      */
     private function defaultMiddlewareKeys(): array
     {

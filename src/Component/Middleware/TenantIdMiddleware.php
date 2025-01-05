@@ -23,7 +23,6 @@ class TenantIdMiddleware extends AbstractMiddleware
 {
     private $configs;
     private $tenantResolver;
-    private $tenantSetup;
     private $isMultitenant;
     private $constManager;
 
@@ -89,6 +88,11 @@ class TenantIdMiddleware extends AbstractMiddleware
         return \defined('LANDLORD_UUID') && \constant('LANDLORD_UUID') === $tenantId;
     }
 
+    /**
+     * @return null|string[]
+     *
+     * @psalm-return list{string, string}|null
+     */
     private function resolveTenantIdFromRequest(ServerRequestInterface $request): ?array
     {
         $host = $request->getUri()->getHost();
@@ -101,7 +105,12 @@ class TenantIdMiddleware extends AbstractMiddleware
         return null;
     }
 
-    private function isValidTenantId(string $tenantId): bool
+    /**
+     * @return false|int
+     *
+     * @psalm-return 0|1|false
+     */
+    private function isValidTenantId(string $tenantId)
     {
         return preg_match('/^[a-zA-Z0-9_-]+$/', $tenantId);
     }

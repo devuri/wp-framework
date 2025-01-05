@@ -69,10 +69,8 @@ class EnvLoader
      *
      * @param array   $envFiles
      * @param EnvType $envType
-     *
-     * @return null|Dotenv
      */
-    public function load(array $envFiles, EnvType $envType): ?Dotenv
+    public function load(array $envFiles, EnvType $envType): Dotenv
     {
         $dotenv = Dotenv::createImmutable($this->appDirPath, $envFiles);
 

@@ -47,10 +47,8 @@ class SpamDetectionMiddleware extends AbstractMiddleware
 
     /**
      * @param array|string $array
-     *
-     * @return bool
      */
-    protected static function toString($array)
+    protected static function toString($array): string
     {
         $result = '';
 
@@ -90,7 +88,10 @@ class SpamDetectionMiddleware extends AbstractMiddleware
         return false;
     }
 
-    private function blockRequest(string $message): ResponseInterface
+    /**
+     * @return never
+     */
+    private function blockRequest(string $message)
     {
         throw new Exception($message);
     }

@@ -116,9 +116,9 @@ class AuthManager
      * verifies if the user is a kiosk user. If not, it returns `false`. Otherwise,
      * it checks if the kiosk user's role is 'admin'.
      *
-     * @return null|bool Returns `true` if the user is an admin, `false` if not a kiosk user.
+     * @return bool Returns `true` if the user is an admin, `false` if not a kiosk user.
      */
-    public function isAdmin(): ?bool
+    public function isAdmin(): bool
     {
         $kioskUser = $this->isKioskUser();
 
@@ -129,7 +129,10 @@ class AuthManager
         return ($kioskUser['role'] ?? null) === 'admin';
     }
 
-    public function isKioskUser(): ?array
+    /**
+     * @return null|array|false
+     */
+    public function isKioskUser()
     {
         if (! $this->currentUser) {
             return false;

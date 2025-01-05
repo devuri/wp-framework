@@ -45,7 +45,7 @@ class DB
     /**
      * Fetch all records from the table.
      *
-     * @return null|object
+     * @return null|array
      */
     public function all(): ?array
     {
@@ -174,6 +174,8 @@ class DB
 
     /**
      * @param string $table_name_no_prefix
+     *
+     * @return static
      */
     public function table(string $table_name_no_prefix = 'options'): self
     {
