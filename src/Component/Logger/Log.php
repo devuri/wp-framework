@@ -131,19 +131,19 @@ class Log
     {
         $logDir = \dirname($logFile);
 
-        if ( ! is_dir($logDir)) {
-            if ( ! mkdir($logDir, 0777, true) && ! is_dir($logDir)) {
+        if (! is_dir($logDir)) {
+            if (! mkdir($logDir, 0777, true) && ! is_dir($logDir)) {
                 throw new RuntimeException("Unable to create directory: $logDir");
             }
         }
 
-        if ( ! file_exists($logFile)) {
+        if (! file_exists($logFile)) {
             if (false === file_put_contents($logFile, '')) {
                 throw new RuntimeException("Unable to create log file: $logFile");
             }
         }
 
-        if ( ! is_writable($logFile)) {
+        if (! is_writable($logFile)) {
             throw new RuntimeException("Log file is not writable: $logFile");
         }
     }

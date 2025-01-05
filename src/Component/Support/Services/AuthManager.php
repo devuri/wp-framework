@@ -122,7 +122,7 @@ class AuthManager
     {
         $kioskUser = $this->isKioskUser();
 
-        if ( ! $kioskUser) {
+        if (! $kioskUser) {
             return false;
         }
 
@@ -131,7 +131,7 @@ class AuthManager
 
     public function isKioskUser(): ?array
     {
-        if ( ! $this->currentUser) {
+        if (! $this->currentUser) {
             return false;
         }
 

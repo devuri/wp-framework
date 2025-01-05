@@ -52,12 +52,12 @@ class HttpClient
         }
     }
 
-    public function set_user_agent(string $user_agent): void
+    public function setUserAgent(string $user_agent): void
     {
         $this->user_agent = $user_agent;
     }
 
-    public function set_referrer(string $referrer): void
+    public function setReferrer(string $referrer): void
     {
         $this->referrer = $referrer;
     }
@@ -77,17 +77,17 @@ class HttpClient
         return $this->request($endpoint, 'POST', $data, $headers);
     }
 
-    public function curl_request(string $endpoint, string $method = 'GET', array $data = [], array $headers = [])
+    public function curlRequest(string $endpoint, string $method = 'GET', array $data = [], array $headers = [])
     {
-        return $this->_curl($endpoint, $method, $data, $headers);
+        return $this->curl($endpoint, $method, $data, $headers);
     }
 
     /**
      * @psalm-return array<never, never>
      */
-    protected function set_http_response(array $http_response_header): array
+    protected function setHttpResponse(array $http_response_header): array
     {
-        if ( ! empty($http_response_header)) {
+        if (! empty($http_response_header)) {
             $this->http_response['referrer'] = $this->referrer;
             $this->http_response['response'] = $http_response_header;
             $this->http_response['http']     = explode(' ', $http_response_header[0], 3);
@@ -104,37 +104,37 @@ class HttpClient
      *
      * @psalm-return list{0?: string}
      */
-    protected function get_default_headers(): array
+    protected function getDefaultHeaders(): array
     {
         return $this->api_key ? [ 'Authorization: Bearer ' . $this->api_key ] : [];
     }
 
-    protected function set_headers(array $headers = []): void
+    protected function setHeaders(array $headers = []): void
     {
         $this->headers = $headers;
     }
 
     private function request(string $endpoint, string $method, array $data = [], array $headers = []): array
     {
-        if ( ! $this->user_agent) {
+        if (! $this->user_agent) {
             $this->user_agent = $this->agents['chrome'];
         }
 
         $url      = $this->base_url . $endpoint;
-        $defaults = $this->get_default_headers();
+        $defaults = $this->getDefaultHeaders();
         $headers  = array_merge($defaults, $headers, [ 'User-Agent' => $this->user_agent ]);
 
         if ($this->referrer && ! empty($this->referrer)) {
             $headers[] = 'Referer: ' . $this->referrer;
         }
 
-        $this->set_headers($headers);
+        $this->setHeaders($headers);
 
         $opts = [
             'http' => [
                 'method'  => $method,
                 'header'  => implode("\r\n", $headers),
-                'content' => $this->prepare_http_content($method, $data),
+                'content' => $this->prepareHttpContent($method, $data),
                 'timeout' => $this->context->get('timeout'),
             ],
             'ssl'  => [
@@ -144,7 +144,7 @@ class HttpClient
             ],
         ];
 
-        $_ca_path_file = $this->get_ca_bundle();
+        $_ca_path_file = $this->getCaBundle();
 
         if (is_dir($_ca_path_file)) {
             $opts['ssl']['capath'] = $_ca_path_file;
@@ -164,7 +164,7 @@ class HttpClient
             }
         } catch (Exception $e) {
             // error_log( $e->getMessage() );
-            if ( ! isset($http_response_header)) {
+            if (! isset($http_response_header)) {
                 return [
                     'status'   => 0,
                     'message'  => 'unknown error',
@@ -172,7 +172,7 @@ class HttpClient
                 ];
             }
 
-            $this->set_http_response($http_response_header);
+            $this->setHttpResponse($http_response_header);
 
             return [
                 'status'  => $this->http_response['code'],
@@ -181,7 +181,7 @@ class HttpClient
         }// end try
 
         // https://www.php.net/manual/en/reserved.variables.httpresponseheader.php
-        $this->set_http_response($http_response_header);
+        $this->setHttpResponse($http_response_header);
 
         return $this->http_response;
     }
@@ -191,11 +191,11 @@ class HttpClient
      *
      * @psalm-return array{status?: mixed, response?: bool|string, error?: 'curl_init not found'}
      */
-    private function _curl(string $endpoint, string $method, array $data = [], array $headers = []): array
+    private function curl(string $endpoint, string $method, array $data = [], array $headers = []): array
     {
         $url = $this->base_url . $endpoint;
 
-        if ( ! $this->is_curl_available()) {
+        if (! $this->isCurlAvailable()) {
             return [ 'error' => 'curl_init not found' ];
         }
 
@@ -236,14 +236,14 @@ class HttpClient
         ];
     }
 
-    private function is_curl_available(): bool
+    private function isCurlAvailable(): bool
     {
         return \function_exists('curl_init');
     }
 
-    private function parse_http_status(array $http_response_header): int
+    private function parseHttpStatus(array $http_response_header): int
     {
-        if ( ! empty($http_response_header)) {
+        if (! empty($http_response_header)) {
             $status_line = explode(' ', $http_response_header[0], 3);
 
             return (int) $status_line[1];
@@ -252,7 +252,7 @@ class HttpClient
         return 0;
     }
 
-    private function get_ca_bundle(): string
+    private function getCaBundle(): string
     {
         return \Composer\CaBundle\CaBundle::getSystemCaRootBundlePath();
     }
@@ -265,7 +265,7 @@ class HttpClient
      *
      * @return null|string Returns the URL-encoded query string if method is 'POST'; otherwise, null.
      */
-    private function prepare_http_content($method, $data)
+    private function prepareHttpContent($method, $data)
     {
         return 'POST' === $method ? http_build_query($data) : null;
     }

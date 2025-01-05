@@ -20,7 +20,7 @@ class HostManager implements HostInterface
      *
      * @return bool True if the request is over HTTPS, false otherwise.
      */
-    public function is_https_secure(): bool
+    public function isHttpsSecure(): bool
     {
         if (isset($_SERVER['HTTPS']) && filter_var($_SERVER['HTTPS'], FILTER_VALIDATE_BOOLEAN)) {
             return true;
@@ -39,10 +39,10 @@ class HostManager implements HostInterface
      *
      * @return string The sanitized host name or a default value.
      */
-    public function get_http_host(): string
+    public function getHttpHost(): string
     {
         if (isset($_SERVER['HTTP_HOST'])) {
-            $httpHost = $this->sanitize_http_host($_SERVER['HTTP_HOST']);
+            $httpHost = $this->sanitizeHttpHost($_SERVER['HTTP_HOST']);
 
             if ($httpHost) {
                 return strtolower(rtrim($httpHost, '/'));
@@ -59,9 +59,9 @@ class HostManager implements HostInterface
      *
      * @psalm-return array{prefix: 'http'|'https', domain: false|string}
      */
-    public function get_server_host(): array
+    public function getServerHost(): array
     {
-        $host_domain = $this->get_http_host();
+        $host_domain = $this->getHttpHost();
 
         // Remove port information if present
         $portPosition = strrpos($host_domain, ':');
@@ -69,7 +69,7 @@ class HostManager implements HostInterface
             $host_domain = substr($host_domain, 0, $portPosition);
         }
 
-        $prefix = $this->is_https_secure() ? 'https' : 'http';
+        $prefix = $this->isHttpsSecure() ? 'https' : 'http';
 
         return [
             'prefix' => $prefix,
@@ -82,10 +82,10 @@ class HostManager implements HostInterface
      *
      * @return string The full request URL or null if the app host is not available.
      */
-    public function get_request_url(): string
+    public function getRequestUrl(): string
     {
-        $isHttps  = $this->is_https_secure();
-        $app_host = $this->get_http_host();
+        $isHttps  = $this->isHttpsSecure();
+        $app_host = $this->getHttpHost();
 
         $protocol = $isHttps ? 'https' : 'http';
 
@@ -99,7 +99,7 @@ class HostManager implements HostInterface
      *
      * @return null|string The sanitized host or null if invalid.
      */
-    protected function sanitize_http_host(string $httpHost): ?string
+    protected function sanitizeHttpHost(string $httpHost): ?string
     {
         $sanitizedHost = filter_var($httpHost, FILTER_SANITIZE_URL);
 

@@ -65,6 +65,7 @@
         "phpstan/phpstan-strict-rules": "^1.3",
         "phpunit/phpunit": "^9.5",
         "spatie/ssh": "^1.9",
+        "squizlabs/php_codesniffer": "^3.9",
         "symfony/console": "^5.4",
         "szepeviktor/phpstan-wordpress": "^1.1",
         "vimeo/psalm": "^4.24 || ^5.0"
@@ -87,6 +88,15 @@
             "composer install",
             "vendor/bin/phpunit --testdox",
             "composer no-dev -q"
+        ],
+		"phpcs": [
+			"composer install",
+			"vendor/bin/phpcs",
+			"composer no-dev -q"
+		],
+		"phpcs-fix": [
+            "composer install -q",
+            "vendor/bin/phpcbf src"
         ],
         "test-covers": [
             "@putenv XDEBUG_MODE=coverage",

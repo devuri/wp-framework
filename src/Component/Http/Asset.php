@@ -30,7 +30,7 @@ class Asset
             return WP_HOME . $path . $asset;
         }
 
-        if ( ! \defined('ASSET_URL')) {
+        if (! \defined('ASSET_URL')) {
             return WP_HOME . '/assets/dist' . $asset;
         }
 

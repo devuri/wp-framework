@@ -196,7 +196,7 @@ function isMultitenantApp(): bool
 
 function getWpframeworkHttpEnv(): ?string
 {
-    if ( ! \defined('HTTP_ENV_CONFIG')) {
+    if (! \defined('HTTP_ENV_CONFIG')) {
         return null;
     }
 
@@ -290,7 +290,7 @@ function exitWithThemeError(array $themeInfo): void
 }
 
 
-if ( ! \function_exists('logMessage')) {
+if (! \function_exists('logMessage')) {
     /**
      * Logs a message with the specified level and an optional log file.
      *

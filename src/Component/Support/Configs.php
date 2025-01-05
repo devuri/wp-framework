@@ -214,7 +214,7 @@ class Configs implements ConfigsInterface
 
     public function get(?string $key = null, $default = null)
     {
-        if ( ! isset($this->configCache['app'])) {
+        if (! isset($this->configCache['app'])) {
             $this->configCache['app'] = new DotAccess($this->appOptions());
         }
 
@@ -269,7 +269,7 @@ class Configs implements ConfigsInterface
     {
         $jsonFilePath = $filePath;
 
-        if ( ! file_exists($jsonFilePath)) {
+        if (! file_exists($jsonFilePath)) {
             throw new RuntimeException("json file not found at {$jsonFilePath}");
         }
 
@@ -386,7 +386,7 @@ class Configs implements ConfigsInterface
             $appOptions = [];
         }
 
-        if ( ! \is_array($appOptions)) {
+        if (! \is_array($appOptions)) {
             throw new InvalidArgumentException('Error: Config::siteConfig must be of type array', 1);
         }
 
@@ -403,7 +403,7 @@ class Configs implements ConfigsInterface
             $appMiddleware = [];
         }
 
-        if ( ! \is_array($appMiddleware)) {
+        if (! \is_array($appMiddleware)) {
             throw new InvalidArgumentException('Error: Config::$appMiddleware must be of type array', 1);
         }
 

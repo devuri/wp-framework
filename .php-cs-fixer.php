@@ -132,7 +132,7 @@ return (new PhpCsFixer\Config())
 		'logical_operators' => true,
 		'new_with_braces' => true,
 		'no_space_around_double_colon' => true,
-		'not_operator_with_space' => true,
+		'not_operator_with_space' => false,
 		'object_operator_without_whitespace' => true,
 		'standardize_increment' => true,
 		'standardize_not_equals' => true,

@@ -33,7 +33,7 @@ class TenantIdMiddleware extends AbstractMiddleware
         $this->configs = $this->services->get('configs');
         $this->isMultitenant = self::isMultitenantApp($this->configs->config['composer']);
 
-        if ( ! $this->isMultitenant) {
+        if (! $this->isMultitenant) {
             return $handler->handle($request);
         }
 

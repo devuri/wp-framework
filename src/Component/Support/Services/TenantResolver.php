@@ -26,7 +26,7 @@ class TenantResolver
     {
         $tenant = $this->tenantRepository->findById($tenantDomain);
 
-        if ( ! $tenant) {
+        if (! $tenant) {
             throw new TenantNotFoundException("Tenant with ID {$tenantDomain[0]} not found.");
         }
 

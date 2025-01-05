@@ -37,7 +37,7 @@ class AppFactory
         \define('CONFIGS_DIR_PATH', \dirname(__DIR__) . '/inc/configs/');
 
         // Retrieve the HTTP host using HttpFactory
-        $httpHost = HttpFactory::init()->get_http_host();
+        $httpHost = HttpFactory::init()->getHttpHost();
 
         // Create the initial request object
         self::$request = Request::create();
@@ -87,7 +87,7 @@ class AppFactory
         }
 
         // twig usage.
-        if ( ! \defined('USE_TWIGIT')) {
+        if (! \defined('USE_TWIGIT')) {
             \define('USE_TWIGIT', false);
         }
 
@@ -122,7 +122,7 @@ class AppFactory
      */
     private static function setEnvironment(?string $environment = null): void
     {
-        if ( ! \defined('RAYDIUM_ENVIRONMENT_TYPE')) {
+        if (! \defined('RAYDIUM_ENVIRONMENT_TYPE')) {
             \define('RAYDIUM_ENVIRONMENT_TYPE', $environment);
         }
     }

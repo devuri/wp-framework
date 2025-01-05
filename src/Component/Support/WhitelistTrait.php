@@ -25,7 +25,7 @@ trait WhitelistTrait
             $appWhitelist = [];
         }
 
-        if ( ! \is_array($appWhitelist)) {
+        if (! \is_array($appWhitelist)) {
             throw new InvalidArgumentException('Error: Config::$appWhitelist must be of type array', 1);
         }
 

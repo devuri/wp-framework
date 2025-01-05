@@ -29,7 +29,7 @@ class SapiEmitter
             $body->rewind();
         }
 
-        while ( ! $body->eof()) {
+        while (! $body->eof()) {
             echo $body->read(8192);
         }
     }

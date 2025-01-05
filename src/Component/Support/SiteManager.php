@@ -73,7 +73,7 @@ class SiteManager
      */
     public function debug(?string $errorLogsDir): self
     {
-        if ( ! EnvType::isValid($this->environment)) {
+        if (! EnvType::isValid($this->environment)) {
             $this->switcher->createEnvironment('production', $this->errorLogsDir);
         } else {
             $this->switcher->createEnvironment($this->environment, $this->errorLogsDir);
@@ -113,7 +113,10 @@ class SiteManager
 
     public function setOptimize(): void
     {
-        $this->constManager->addConstant('CONCATENATE_SCRIPTS', env('CONCATENATE_SCRIPTS') ?? self::default('optimize'));
+        $this->constManager->addConstant(
+            'CONCATENATE_SCRIPTS',
+            env('CONCATENATE_SCRIPTS') ?? self::default('optimize')
+        );
     }
 
     public function setMemory(): void
@@ -227,7 +230,7 @@ class SiteManager
             $this->resetEnvironment(env('WP_ENVIRONMENT_TYPE', $default_env));
         }
 
-        if ( ! EnvType::isValid($this->environment)) {
+        if (! EnvType::isValid($this->environment)) {
             $this->resetEnvironment($default_env);
         }
     }

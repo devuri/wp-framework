@@ -46,7 +46,7 @@ class IgnitionMiddleware extends AbstractMiddleware
         $this->tenant = $request->getAttribute('tenant', false);
         $this->isMultitenant = $request->getAttribute('isMultitenant', false);
 
-        if ( ! $this->tenant) {
+        if (! $this->tenant) {
             return $handler->handle($request);
         }
 

@@ -91,7 +91,7 @@ class DB
 
     public function getUser(string $user_login): ?object
     {
-        if ( ! $this->tableExist()) {
+        if (! $this->tableExist()) {
             return null;
         }
 
@@ -232,7 +232,7 @@ class DB
      */
     private function isSerialized($data)
     {
-        if ( ! \is_string($data)) {
+        if (! \is_string($data)) {
             return false;
         }
 

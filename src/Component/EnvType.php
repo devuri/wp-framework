@@ -104,7 +104,7 @@ final class EnvType
     public function filterFiles(array $envFiles, string $appPath): array
     {
         foreach ($envFiles as $key => $file) {
-            if ( ! file_exists($appPath . '/' . $file)) {
+            if (! file_exists($appPath . '/' . $file)) {
                 unset($envFiles[$key]);
             }
         }
@@ -122,14 +122,14 @@ final class EnvType
     public function tryRegenerateFile(string $appPath, string $appHttpHost, array $availableFiles = [], string $dbPrefix = ''): void
     {
         $mainEnvFile = "{$appPath}/.env";
-        if ( ! $this->filesystem->exists($mainEnvFile)) {
+        if (! $this->filesystem->exists($mainEnvFile)) {
             $this->createFile($mainEnvFile, $appHttpHost, $dbPrefix);
         }
     }
 
     public function createFile(string $filePath, string $domain, ?string $prefix = null): void
     {
-        if ( ! $this->filesystem->exists($filePath)) {
+        if (! $this->filesystem->exists($filePath)) {
             $this->filesystem->dumpFile($filePath, $this->generateFileContent($domain, $prefix));
         }
     }

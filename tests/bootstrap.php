@@ -19,15 +19,15 @@ require_once \dirname(__FILE__, 2) . '/vendor/autoload.php';
 \define('IS_MULTITENANT', false);
 
 
-if ( ! \defined('SITE_CONFIGS_DIR')) {
+if (! \defined('SITE_CONFIGS_DIR')) {
     \define('SITE_CONFIGS_DIR', 'configs');
 }
 
-if ( ! \defined('APP_HTTP_HOST')) {
+if (! \defined('APP_HTTP_HOST')) {
     \define('APP_HTTP_HOST', 'example.com');
 }
 
-if ( ! \defined('APP_DIR_PATH')) {
+if (! \defined('APP_DIR_PATH')) {
     \define('APP_DIR_PATH', __DIR__);
 }
 

@@ -48,7 +48,7 @@ class MiddlewareRegistry
         $coreMiddlewares = $core->getAll($filter);
 
         foreach ($coreMiddlewares as $key => $middleware) {
-            if ( ! \is_string($key) || empty($key)) {
+            if (! \is_string($key) || empty($key)) {
                 continue;
             }
             $this->register($middleware, $key);

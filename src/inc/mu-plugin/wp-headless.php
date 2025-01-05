@@ -1,7 +1,5 @@
 <?php
 
-namespace WPframework\Headless;
-
 /**
  * Plugin Name:       Headless CMS Mode
  * Plugin URI:        https://github.com/devuri/wpframework
@@ -15,28 +13,30 @@ namespace WPframework\Headless;
  * Network: true
  */
 
-if ( ! \defined('ABSPATH')) {
+namespace WPframework\Headless;
+
+if (! \defined('ABSPATH')) {
     exit;
 }
 
-if ( ! \defined('HEADLESS_MODE')) {
-	\define('HEADLESS_MODE', true);
+if (! \defined('HEADLESS_MODE')) {
+    \define('HEADLESS_MODE', true);
 }
 
-if ( ! \defined('DISABLE_PAGE_EDITOR_FIELD')) {
-	\define('DISABLE_PAGE_EDITOR_FIELD', false);
+if (! \defined('DISABLE_PAGE_EDITOR_FIELD')) {
+    \define('DISABLE_PAGE_EDITOR_FIELD', false);
 }
 
-if ( ! \defined('DISABLE_PAGE_EDITOR_FIELD')) {
-	\define('DISABLE_PAGE_EDITOR_FIELD', false);
+if (! \defined('DISABLE_PAGE_EDITOR_FIELD')) {
+    \define('DISABLE_PAGE_EDITOR_FIELD', false);
 }
 
 final class HeadlessMode
 {
     public function __construct()
     {
-		// Disable editor for post/page if constants are defined
-		add_action('init', [$this, 'removeEditorFields']);
+        // Disable editor for post/page if constants are defined
+        add_action('init', [$this, 'removeEditorFields']);
 
         if (HEADLESS_MODE) {
             add_action('template_redirect', [$this, 'redirectNonApiRequests']);
@@ -63,10 +63,10 @@ final class HeadlessMode
         $this->polyfillStrStartsWith();
     }
 
-	public static function init()
-	{
-		return new self();
-	}
+    public static function init()
+    {
+        return new self();
+    }
 
     /**
      * Redirect all non-API requests (except wp-admin) to 404.
@@ -74,7 +74,7 @@ final class HeadlessMode
     public function redirectNonApiRequests(): void
     {
         // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-        if ( ! is_admin() && ! $this->strStartsWith($_SERVER['REQUEST_URI'] ?? '', '/wp-json/')) {
+        if (! is_admin() && ! $this->strStartsWith($_SERVER['REQUEST_URI'] ?? '', '/wp-json/')) {
             // Uncomment if you want a real 404 response:
             // wp_die('Headless mode active. Frontend is disabled.', 'Headless Mode', ['response' => 404]);
         }
@@ -132,7 +132,7 @@ final class HeadlessMode
      */
     private function polyfillStrStartsWith()
     {
-        if ( ! \function_exists('str_starts_with')) {
+        if (! \function_exists('str_starts_with')) {
             function str_starts_with($haystack, $needle)
             {
                 return substr($haystack, 0, \strlen($needle)) === $needle;

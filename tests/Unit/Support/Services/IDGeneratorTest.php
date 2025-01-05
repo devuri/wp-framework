@@ -91,7 +91,7 @@ class IDGeneratorTest extends TestCase
     private function loadConfig($filename)
     {
         $filePath = APP_TEST_PATH . "/fixtures/tenentconfigs/{$filename}";
-        if ( ! file_exists($filePath)) {
+        if (! file_exists($filePath)) {
             throw new RuntimeException("Configuration file {$filename} not found.");
         }
 
