@@ -1,3 +1,5 @@
+# Functions
+
 1. [?](../reference/functions/env) **env**
 Get $_ENV vars.
 

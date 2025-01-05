@@ -1,6 +1,6 @@
 {
     "name": "wpframework",
-	"version": "0.7.0",
+	"version": "0.7.x",
     "description": "Effortlessly develop scalable WordPress applications",
     "license": "MIT",
     "author": "Uriel Wilson",

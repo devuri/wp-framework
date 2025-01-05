@@ -73,16 +73,42 @@ export default defineConfig({
 
 function navBar(){
   return [
-    {
-      text: 'Guide',
-      link: 'guide/overview/what-is-raydium',
-      activeMatch: '/guide/'
-    },
 	{
-	  text: 'Reference',
-	  link: '/reference/configuration',
-	  activeMatch: '/reference/'
+	text: 'Guide',
+	items: [
+	  {text: "Overview", link: "guide/overview/what-is-raydium"},
+	  {text: "Quick Start", link: "guide/getting-started"},
+	  {text: "Multi-Tenant", link: "multi-tenant/overview"},
+	  {text: "Deploy", link: "deployment/deploy"},
+	]
+  },
+	{
+		text: 'Customization',
+		items: [
+			{ text: 'Configuration', link: 'guide/customization/config-overview' },
+			{ text: 'Environments', link: 'guide/customization/environments' },
+			{ text: 'Env File', link: 'guide/customization/environment-file' },
+			{ text: 'Constants', link: 'guide/customization/constants' },
+			{ text: 'Compatibility', link: 'guide/customization/compatibility' },
+			{ text: 'GitHub Token', link: 'guide/customization/auth-json' },
+			{ text: 'Kiosk', link: 'guide/customization/kiosk' },
+			{ text: 'Install Protection', link: 'guide/customization/install-protection' }
+		]
 	},
+	{
+	  text: 'Ecosystem',
+	  items: [
+		{
+		  text: 'Twigit',
+		  link: 'https://github.com/devuri/twigit'
+		},
+		{text: "xe", link: "https://github.com/devuri/raydiumxe"},
+		{text: "cpt-meta", link: "https://packagist.org/packages/devuri/cpt-meta-box"},
+		{text: "zipit", link: "https://packagist.org/packages/devuri/zipit"},
+		{text: "site-status", link: "https://packagist.org/packages/devuri/advanced-custom-site-status"},
+		{text: "kdx-canvas", link: "https://packagist.org/packages/devuri/wp-kdx-canvas"},
+	  ]
+   },
     {
       text: pkg.version,
       items: [
@@ -96,7 +122,28 @@ function navBar(){
 	  	},
 		{text: "Code", link: "https://devuri.github.io/wpframework/code/"}
       ]
-    }
+  },
+  {
+	text: 'Environments',
+	link: '/guide/customization/environments'
+  },
+  {
+	text: 'Reference',
+	items: [
+	  {
+		  text: 'Twig',
+		  link: '/reference/twigit',
+	  },
+	  {
+		  text: 'Premium Plugin',
+		  link: '/reference/premium-plugins',
+	  },
+	  {
+		  text: 'Functions',
+		  link: '/reference/functions',
+	  },
+	]
+  },
   ]
 }
 
@@ -209,7 +256,6 @@ function sidebarReference() {
 				base: '/reference/framework/',
 				items: [
 					{ text: 'Lifecycle', link: 'lifecycle' },
-					{ text: 'Switcher', link: 'switcher' },
 					{ text: 'Terminate', link: 'terminate' },
 					{ text: 'Architecture', link: 'architecture' },
 					{ text: 'Framework', link: 'framework' }
