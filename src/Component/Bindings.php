@@ -121,6 +121,9 @@ class Bindings
             'configs' => function ($c) {
                 return Configs::init(APP_DIR_PATH);
             },
+			'env_type' => function ($c) {
+                return new EnvType($c['filesystem']);
+            },
             'const_builder' => function ($c) {
                 return new ConstantBuilder();
             },
