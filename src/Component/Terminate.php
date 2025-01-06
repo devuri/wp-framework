@@ -140,7 +140,7 @@ class Terminate
 
     protected function linkUrl(): string
     {
-        $path = htmlspecialchars(($this->request['path'] ?? null), ENT_QUOTES);
+        $path = htmlspecialchars(($this->request['path'] ?? '/'), ENT_QUOTES);
         $linkedUrl = "{$path}";
 
         return '<a class="btn btn-outline" href="' . $linkedUrl . '">Retry</a>';
@@ -179,6 +179,12 @@ class Terminate
     protected static function showStackTrace(): bool
     {
         $isProd = Configs::isInProdEnvironment();
+
+        // override and show debug info.
+        if (\defined('DEBUG_STACK_TRACE') && true === \constant('DEBUG_STACK_TRACE')) {
+            return true;
+        }
+
         if ($isProd) {
             return false;
         }

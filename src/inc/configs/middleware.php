@@ -10,7 +10,6 @@
  */
 
 return [
-    'favicon' => WPframework\Middleware\FaviconCache::class,
     'security' => WPframework\Middleware\SecurityHeadersMiddleware::class,
     'https' => WPframework\Middleware\HttpsOnlyMiddleware::class,
     'spam' => WPframework\Middleware\SpamDetectionMiddleware::class,

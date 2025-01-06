@@ -30,15 +30,15 @@ class SpamDetectionMiddleware extends AbstractMiddleware
             $content = self::toString($postData);
 
             if ($this->containsCyrillicCharacters($content)) {
-                return $this->blockRequest('Spam detected: Cyrillic characters found');
+                $this->blockRequest('Spam detected: Cyrillic characters found');
             }
 
             if ($this->containsMixedLanguagePhrases($content)) {
-                return $this->blockRequest('Spam detected: Mixed-language phrase detected');
+                $this->blockRequest('Spam detected: Mixed-language phrase detected');
             }
 
             if ($this->containsSuspiciousKeywords($content)) {
-                return $this->blockRequest('Spam detected: Suspicious keyword found');
+                $this->blockRequest('Spam detected: Suspicious keyword found');
             }
         }
 

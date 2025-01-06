@@ -22,6 +22,7 @@ class ErrorHandler extends AbstractError
     {
         $exception = $this->getException();
 
+        // @phpstan-ignore-next-line
         Terminate::exit($exception);
     }
 }

@@ -16,21 +16,15 @@ use Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Symfony\Component\Filesystem\Filesystem;
 use WPframework\EnvType;
 use WPframework\Terminate;
 
 class IgnitionMiddleware extends AbstractMiddleware
 {
-    protected $envType;
+    protected ?EnvType $envType;
     private $tenant;
     private $configs;
     private $isMultitenant;
-
-    public function __construct()
-    {
-        $this->envType = new EnvType(new Filesystem());
-    }
 
     /**
      * Process an incoming server request.
@@ -49,6 +43,7 @@ class IgnitionMiddleware extends AbstractMiddleware
             return $handler->handle($request);
         }
 
+        $this->envType = $this->services->get('env_type');
         $this->configs = $this->services->get('configs');
         $tenantConfigPath = $this->configs->getConfigsDir() . '/' . $this->tenant['uuid'];
         $envFiles = $this->envType->filterFiles(
