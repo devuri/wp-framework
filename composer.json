@@ -106,6 +106,7 @@
         ],
         "lint": [
             "composer install -q",
+            "composer phpcs",
             "composer psalm-secure",
             "composer psalm",
             "composer phpstan",
