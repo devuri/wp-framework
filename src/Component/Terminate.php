@@ -140,7 +140,7 @@ class Terminate
 
     protected function linkUrl(): string
     {
-        $path = htmlspecialchars(($this->request['path'] ?? null), ENT_QUOTES);
+        $path = htmlspecialchars(($this->request['path'] ?? '/'), ENT_QUOTES);
         $linkedUrl = "{$path}";
 
         return '<a class="btn btn-outline" href="' . $linkedUrl . '">Retry</a>';
