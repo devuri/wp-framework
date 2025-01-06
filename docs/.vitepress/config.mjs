@@ -103,6 +103,7 @@ function navBar(){
 		  link: 'https://github.com/devuri/twigit'
 		},
 		{text: "xe", link: "https://github.com/devuri/raydiumxe"},
+		{text: "deployer", link: "https://github.com/devuri/rdx-release-deployer-action/"},
 		{text: "cpt-meta", link: "https://packagist.org/packages/devuri/cpt-meta-box"},
 		{text: "zipit", link: "https://packagist.org/packages/devuri/zipit"},
 		{text: "site-status", link: "https://packagist.org/packages/devuri/advanced-custom-site-status"},
