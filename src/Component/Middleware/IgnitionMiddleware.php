@@ -16,7 +16,6 @@ use Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Symfony\Component\Filesystem\Filesystem;
 use WPframework\EnvType;
 use WPframework\Terminate;
 

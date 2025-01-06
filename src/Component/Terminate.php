@@ -180,10 +180,10 @@ class Terminate
     {
         $isProd = Configs::isInProdEnvironment();
 
-		// override and show debug info.
-		if (defined('DEBUG_STACK_TRACE') && true === constant('DEBUG_STACK_TRACE')) {
-			return true;
-		}
+        // override and show debug info.
+        if (\defined('DEBUG_STACK_TRACE') && true === \constant('DEBUG_STACK_TRACE')) {
+            return true;
+        }
 
         if ($isProd) {
             return false;

@@ -319,6 +319,6 @@ class App implements RequestHandlerInterface
             return $ex;
         }
 
-        return new HttpException($ex->getMessage(), 500,$statusCode, $ex);
+        return new HttpException($ex->getMessage(), 500, $statusCode, $ex);
     }
 }
