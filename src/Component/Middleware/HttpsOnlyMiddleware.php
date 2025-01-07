@@ -14,10 +14,9 @@ namespace WPframework\Middleware;
 use Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-class HttpsOnlyMiddleware implements MiddlewareInterface
+class HttpsOnlyMiddleware extends AbstractMiddleware
 {
     /**
      * Process the incoming request and enforce HTTPS for specific routes.
@@ -34,19 +33,5 @@ class HttpsOnlyMiddleware implements MiddlewareInterface
         }
 
         return $handler->handle($request);
-    }
-
-    /**
-     * Check if a given URL or route matches the WordPress admin route pattern.
-     *
-     * @param ServerRequestInterface $request
-     *
-     * @return bool Returns true if the route matches a wp-admin route, false otherwise.
-     */
-    protected function isAdminRoute(ServerRequestInterface $request): bool
-    {
-        $pattern = '/\/wp(?:\/.*)?\/wp-admin\/.*$/';
-
-        return 1 === preg_match($pattern, $request->getUri()->getPath());
     }
 }

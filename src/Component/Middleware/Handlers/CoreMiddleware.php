@@ -73,6 +73,7 @@ class CoreMiddleware
             'kernel',
             'auth',
             'logger',
+            'adminer',
             'whoops',
         ];
     }

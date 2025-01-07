@@ -43,6 +43,75 @@ return [
     ],
 
     /*
+     * Configuration settings for the Adminer database administrator interface.
+     *
+     * Adminer provides a web-based interface for managing databases. These settings
+     * control its availability and behavior within the application. Note that regardless
+     * of these settings, Adminer will never be accessible in secure environments (when
+     * the application is running with the `secure` flag set). In such cases, these
+     * settings will have no effect.
+     */
+    'dbadmin'     => [
+        /*
+         * Whether or not to enable the Adminer interface.
+         *
+         * Controls whether Adminer is accessible for database management.
+         *
+         * @var bool $enabled Default true.
+         */
+        'enabled' => true,
+
+        /*
+         * The URI path for accessing the Adminer interface.
+         *
+         * Defines the URI path that will be used to access Adminer.
+         * The resulting URL will take the form `example.com/wp/wp-admin/{uri}`.
+         *
+         * @var string $uri Must be a valid string. Default is 'dbadmin'.
+         */
+        'uri' => 'dbadmin',
+
+        /*
+         * Whether to validate that the WordPress user is authenticated.
+         *
+         * Adds an additional layer of security by requiring authentication
+         * before granting access to Adminer. This setting is useful when
+         * `autologin` is enabled, as it ensures only authenticated users
+         * with the necessary capabilities can access the interface.
+         *
+         * Note: Only users in the `kiosk` list with the `manage_database`
+         * capability will be allowed access.
+         *
+         * @var bool $validate Default false.
+         */
+        'validate' => false,
+
+        /*
+         * Whether to enable autologin for the Adminer interface.
+         *
+         * When set to true, users can bypass the Adminer login screen.
+         * Use with caution, as this bypasses WordPress authentication,
+         * potentially allowing access to anyone with the URL.
+         *
+         * @var bool $autologin Default true.
+         */
+        'autologin' => true,
+
+        /*
+         * Optional passkey for generating signed access URLs.
+         *
+         * When set, this secret key allows for the creation of signed URLs
+         * that bypass authentication for Adminer access. This is useful for
+         * debugging or granting temporary access without requiring database
+         * credentials. The framework validates these signed URLs before
+         * granting access.
+         *
+         * @var string|null $secret Default null.
+         */
+        'secret' => null,
+    ],
+
+    /*
      * Determines if the application should run internal middleware to check the application's health status.
      *
      * This setting enables an internal middleware that activates exclusively for `/health-status` routes.

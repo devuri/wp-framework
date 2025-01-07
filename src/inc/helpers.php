@@ -385,7 +385,7 @@ function toMillisecond(float $seconds)
 function twigit(): ?Twigit\Twigit
 {
     $userTwigFile = APP_DIR_PATH . '/configs/twig.php';
-    $coreTwigFile = CONFIGS_DIR_PATH . 'twig.php';
+    $coreTwigFile = CONFIGS_DIR_PATH . DIRECTORY_SEPARATOR . 'twig.php';
 
     if (file_exists($userTwigFile)) {
         $twig = $userTwigFile;

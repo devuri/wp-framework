@@ -98,4 +98,18 @@ abstract class AbstractMiddleware implements MiddlewareInterface
     {
         return $composerConfig->get('extra.multitenant.is_active', false);
     }
+
+    /**
+     * Check if a given URL or route matches the WordPress admin route pattern.
+     *
+     * @param ServerRequestInterface $request
+     *
+     * @return bool Returns true if the route matches a wp-admin route, false otherwise.
+     */
+    protected function isAdminRoute(ServerRequestInterface $request): bool
+    {
+        $pattern = '/\/wp(?:\/.*)?\/wp-admin\/.*$/';
+
+        return 1 === preg_match($pattern, $request->getUri()->getPath());
+    }
 }
