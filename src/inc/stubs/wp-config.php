@@ -37,6 +37,11 @@ AppFactory::run();
 // Set the table prefix.
 $table_prefix = env('DB_PREFIX');
 
+//  if hybridx is running do not load wp.
+if ( defined('HYBRIDX') && true === constant('HYBRIDX') ) {
+	return null;
+}
+
 // Define ABSPATH.
 if (! defined('ABSPATH')) {
     define('ABSPATH', __DIR__ . '/');
