@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.2](https://github.com/devuri/wpframework/compare/v0.7.1...v0.7.2) (2025-01-07)
+
+
+### Bug Fixes
+
+* fixes the authentication for database admin requests ([425f294](https://github.com/devuri/wpframework/commit/425f2944562c7d895f55b3f736961e46eb6609df))
+
 ## [0.7.1](https://github.com/devuri/wpframework/compare/v0.7.0...v0.7.1) (2025-01-07)
 
 
