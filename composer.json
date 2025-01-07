@@ -91,7 +91,7 @@
         ],
         "phpcs": [
             "composer install",
-            "vendor/bin/phpcs"
+            "vendor/bin/phpcs src"
         ],
         "phpcs-fix": [
             "composer install -q",

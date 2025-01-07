@@ -129,6 +129,22 @@ class AuthManager
         return ($kioskUser['role'] ?? null) === 'admin';
     }
 
+    public function userCan(string $capability = 'manage_kiosk'): bool
+    {
+        $kioskUser = $this->isKioskUser();
+
+        if (! $kioskUser) {
+            return false;
+        }
+
+        $permissions = $this->configs->config['kiosk']->get(
+            "{$this->currentUser->user_login}.permissions",
+            null
+        );
+
+        return \in_array($capability, $permissions, true);
+    }
+
     /**
      * @return null|array|false
      */

@@ -34,7 +34,7 @@ class AppFactory
      */
     public static function create(string $appDirPath, ?string $environment = null): App
     {
-        \define('CONFIGS_DIR_PATH', \dirname(__DIR__) . '/inc/configs/');
+        \define('CONFIGS_DIR_PATH', \dirname(__DIR__) . '/inc/configs');
 
         // Retrieve the HTTP host using HttpFactory
         $httpHost = HttpFactory::init()->getHttpHost();

@@ -87,9 +87,47 @@ class Configs implements ConfigsInterface
         return DBFactory::create($tableNameNoPrefix);
     }
 
+    /**
+     * Load a configuration file by name.
+     *
+     * @param string $file The configuration file name (without extension).
+     *
+     * @throws InvalidArgumentException If the file does not exist.
+     *
+     * @return void
+     */
     public static function load(string $file): void
     {
-        require CONFIGS_DIR_PATH . "$file.php";
+        $filePath = CONFIGS_DIR_PATH . DIRECTORY_SEPARATOR . $file . '.php';
+
+        if (!file_exists($filePath)) {
+            throw new InvalidArgumentException("Configuration file '$file.php' not found in directory.");
+        }
+
+        require $filePath;
+    }
+
+    /**
+     * Load the Adminer script.
+     *
+     * @throws RuntimeException If the Adminer script cannot be found.
+     *
+     * @return void
+     */
+    public static function dbAdminer(): void
+    {
+        $defaultAdminer = CONFIGS_DIR_PATH . DIRECTORY_SEPARATOR . 'dbadmin' . DIRECTORY_SEPARATOR . 'adminer.php';
+        $customAdminer =  APP_DIR_PATH . DIRECTORY_SEPARATOR . 'configs/dbadmin' . DIRECTORY_SEPARATOR . 'adminer.php';
+
+        if (file_exists($customAdminer)) {
+            self::load('adminer/adminer');
+        } elseif (file_exists($defaultAdminer)) {
+            require $defaultAdminer;
+        } else {
+            throw new RuntimeException(
+                'Adminer script not found. Please ensure "configs/dbadmin/adminer.php" exists in the configuration directory.'
+            );
+        }
     }
 
     /**
@@ -104,6 +142,13 @@ class Configs implements ConfigsInterface
                 'class'   => ErrorHandler::class,
                 'quit'    => true,
                 'logs'    => true,
+            ],
+            'dbadmin'     => [
+                'enabled'   => true,
+                'uri'       => self::dbUrl('fnv1a64'),
+                'validate'  => true,
+                'autologin' => true,
+                'secret'    => null,
             ],
             'prod'             => [ 'secure', 'sec', 'production', 'prod' ],
             'config_file'      => 'config',
@@ -503,6 +548,11 @@ class Configs implements ConfigsInterface
         return $merged;
     }
 
+    private static function dbUrl(string $hashAlgo): string
+    {
+        return hash($hashAlgo, urlencode(env('SECURE_AUTH_SALT')));
+    }
+
     private static function getDefaultMiddlewares()
     {
         return [
@@ -516,6 +566,7 @@ class Configs implements ConfigsInterface
             'kernel' => \WPframework\Middleware\KernelMiddleware::class,
             'auth' => \WPframework\Middleware\AuthMiddleware::class,
             'logger' => \WPframework\Middleware\LoggingMiddleware::class,
+            'adminer' => \WPframework\Middleware\AdminerMiddleware::class,
             'whoops' => \WPframework\Middleware\WhoopsMiddleware::class,
         ];
     }

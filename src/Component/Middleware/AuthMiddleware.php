@@ -47,24 +47,9 @@ class AuthMiddleware extends AbstractMiddleware
         }
 
         // TODO we can block admin routes with authCheck.
-        $request = $request->withAttribute('authCheck', $userAuth);
+        $request = $request->withAttribute('authCheck', $userAuth)->withAttribute('isAdmin', $this->auth->isAdmin());
 
         return $handler->handle($request);
-    }
-
-
-    /**
-     * Check if a given URL or route matches the WordPress admin route pattern.
-     *
-     * @param ServerRequestInterface $request
-     *
-     * @return bool Returns true if the route matches a wp-admin route, false otherwise.
-     */
-    protected function isAdminRoute(ServerRequestInterface $request): bool
-    {
-        $pattern = '/\/wp(?:\/[^\/]*)?\/wp-admin(?:\/.*)?$/';
-
-        return 1 === preg_match($pattern, $request->getUri()->getPath());
     }
 
     protected static function isInstallBlocked(): bool
