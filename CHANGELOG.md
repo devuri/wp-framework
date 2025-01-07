@@ -1,5 +1,28 @@
 # Changelog
 
+## [0.7.1](https://github.com/devuri/wpframework/compare/v0.7.0...v0.7.1) (2025-01-07)
+
+
+### Features
+
+* add `DEBUG_STACK_TRACE` override constant to show stack trace. ([2463636](https://github.com/devuri/wpframework/commit/246363637218a97b500243ce3fefcb06a89a1787))
+* adds `Adminer` database administrator interface ([a839eca](https://github.com/devuri/wpframework/commit/a839ecaac2e5e4c1458f23c419cb49948c0aaadd))
+
+
+### Bug Fixes
+
+* add `IgnitionMiddleware` initial `EnvType` to the container ([dd06a58](https://github.com/devuri/wpframework/commit/dd06a58c3dfc21a2da70e296f257465622e8aaa7))
+* add `phpcs` to `composer lint` ([86d5bcf](https://github.com/devuri/wpframework/commit/86d5bcffd21bd82f035129c7d276f638bdc50205))
+* delete `FaviconCache` ([d6969cc](https://github.com/devuri/wpframework/commit/d6969ccce1364964eec14440ca306a94d1e041c9))
+* passes on previous Exception to `HttpException` ([59c7c07](https://github.com/devuri/wpframework/commit/59c7c074570b1231a3a951c8d9b4309ead9893c7))
+* use `/` when link path is empty ([2692786](https://github.com/devuri/wpframework/commit/2692786eae2e2612af3985dbeeb3a84ff5f80131))
+
+
+### Miscellaneous Chores
+
+* build ([62267d8](https://github.com/devuri/wpframework/commit/62267d83f6c8d44e0d11b0e6b5fe1142d3a5e801))
+* build ([9bd11c3](https://github.com/devuri/wpframework/commit/9bd11c35cb0b651a786651f967d4dd24fd5c696c))
+
 ## [0.7.0](https://github.com/devuri/wpframework/compare/v0.6.2...v0.7.0) (2025-01-05)
 
 
