@@ -19,33 +19,46 @@ use Psr\Http\Server\RequestHandlerInterface;
 class AdminerMiddleware extends AbstractMiddleware
 {
     /**
-     * Process the incoming request and enforce HTTPS for specific routes.
+     * Process the database administration panel request routes.
+     *
+     * Handles requests related to the database administration panel by validating user access
+     * and serving the appropriate content or delegating further processing.
      *
      * @param ServerRequestInterface  $request
      * @param RequestHandlerInterface $handler
+     *
+     * @throws Exception If authentication is required but not provided.
+     *
+     * @return ResponseInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $configs = $this->services->get('configs');
-        $dbadmin = $configs->config['app']->get('dbadmin');
-        $dbadminUrlPath = $dbadmin['uri'] ? '/wp/wp-admin/' . $dbadmin['uri'] : '/wp-admin/dbadmin';
+        $dbAdminConfig = $configs->config['app']->get('dbadmin');
 
-        if (! $dbadmin['enabled']) {
+        // Determine the database admin URL path
+        $dbAdminUrlPath = $dbAdminConfig['uri']
+            ? '/wp/wp-admin/' . $dbAdminConfig['uri']
+            : '/wp-admin/dbadmin';
+
+        // If database admin is disabled.
+        if (!$dbAdminConfig['enabled']) {
             return $handler->handle($request);
         }
 
         $uriPath = $request->getUri()->getPath();
-        $uri = $request->getUri();
-        $userAuth = $request->getAttribute('authCheck', false);
+        $isDbAdminRequest = self::matchPaths($uriPath, $dbAdminUrlPath);
 
-        // Only users in the `kiosk` list with the `manage_database` or admin role
+        $isAuthenticated = $request->getAttribute('authCheck', false);
         $isAdmin = $request->getAttribute('isAdmin', false);
 
-        if ($this->isAdminRoute($request) && $dbadmin['validate'] && ! $userAuth) {
-            throw new Exception("Authentication Is Required", 401);
+        // Validate authentication for database admin requests
+        if ($isDbAdminRequest && $dbAdminConfig['validate'] && !$isAuthenticated) {
+            throw new Exception("Authentication is required", 401);
         }
 
-        if (self::matchPaths($uriPath, $dbadminUrlPath) && $isAdmin) {
+        // Serve the database admin page
+        if ($isDbAdminRequest && $isAdmin) {
             require \dirname(__FILE__, 3) . DIRECTORY_SEPARATOR . 'inc/configs/dbadmin/index.php';
             exit;
         }
