@@ -90,14 +90,15 @@ class KernelMiddleware extends AbstractMiddleware
      */
     protected function inMaintenanceMode(): bool
     {
-        $configs_dir = SITE_CONFIGS_DIR;
+        $configsDir = SITE_CONFIGS_DIR;
+        $tenantId = \defined('APP_TENANT_ID') ? APP_TENANT_ID : null;
         $maintenanceChecks = [
             // Affects the entire tenant network.
             PUBLIC_WEB_DIR . '/.maintenance' => 'Will affect the entire tenant network.',
-            APP_DIR_PATH . "/{$configs_dir}/.maintenance" => 'Will affect the entire tenant network.',
+            APP_DIR_PATH . "/{$configsDir}/.maintenance" => 'Will affect the entire tenant network.',
 
             // Affects a single tenant.
-            // $this->siteSetup->getAppPath() . '/.maintenance' => 'For single tenant.',
+            APP_DIR_PATH . "/{$configsDir}/{$tenantId}/.maintenance" => 'Will affect the a single tenant.',
         ];
 
         foreach ($maintenanceChecks as $path => $scope) {
