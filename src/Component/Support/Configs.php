@@ -130,11 +130,6 @@ class Configs implements ConfigsInterface
         }
     }
 
-	private function static function dbUrl(string $hashAlgo): string
-	{
-		return hash($hashAlgo, urlencode(env('SECURE_AUTH_SALT')));
-	}
-
     /**
      * @return (null|mixed|(null|bool|mixed|(null|false|int|mixed|string)[]|string)[]|string)[]
      *
@@ -551,6 +546,11 @@ class Configs implements ConfigsInterface
         }
 
         return $merged;
+    }
+
+    private static function dbUrl(string $hashAlgo): string
+    {
+        return hash($hashAlgo, urlencode(env('SECURE_AUTH_SALT')));
     }
 
     private static function getDefaultMiddlewares()
