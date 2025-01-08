@@ -1,0 +1,29 @@
+
+{% extends 'base.twig' %}
+{% block content %}
+<h1>Users</h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>1</td>
+            <td>John Doe</td>
+            <td>john.doe@example.com</td>
+            <td><button class="btn btn-sm btn-primary">View</button></td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>Jane Smith</td>
+            <td>jane.smith@example.com</td>
+            <td><button class="btn btn-sm btn-primary">View</button></td>
+        </tr>
+    </tbody>
+</table>
+{% endblock %}
