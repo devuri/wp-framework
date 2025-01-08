@@ -92,6 +92,10 @@ class MiddlewareDispatcher implements RequestHandlerInterface
             return $this->finalHandler->handle($request);
         }
 
+        if ($request->getAttribute('responseHandled', false)) {
+            return $this->finalHandler->handle($request);
+        }
+
         $middleware = array_shift($this->middlewareQueue);
 
         if (\is_string($middleware)) {
