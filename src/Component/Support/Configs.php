@@ -625,9 +625,14 @@ class Configs implements ConfigsInterface
      *
      * @return string The hashed database URL.
      */
-    private static function dbUrl(string $hashAlgo): string
+    private static function dbUrl(string $hashAlgo): ?string
     {
-        return hash($hashAlgo, urlencode(env('SECURE_AUTH_SALT')));
+        if (env('SECURE_AUTH_SALT')) {
+            return hash($hashAlgo, urlencode(env('SECURE_AUTH_SALT')));
+        }
+
+        // TODO we need alternative when running in hibridx mode.
+        return null;
     }
 
     private static function getDefaultMiddlewares()
