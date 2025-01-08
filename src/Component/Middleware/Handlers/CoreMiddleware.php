@@ -67,6 +67,7 @@ class CoreMiddleware
         return [
             'security',
             'tenant',
+            'kiosk',
             'ignit',
             'status',
             'config',

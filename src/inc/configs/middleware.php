@@ -14,6 +14,7 @@ return [
     'https' => WPframework\Middleware\HttpsOnlyMiddleware::class,
     'spam' => WPframework\Middleware\SpamDetectionMiddleware::class,
     'tenant' => WPframework\Middleware\TenantIdMiddleware::class,
+    'kiosk' => WPframework\Middleware\KioskMiddleware::class,
     'ignit' => WPframework\Middleware\IgnitionMiddleware::class,
     'status' => WPframework\Middleware\StatusMiddleware::class,
     'config' => WPframework\Middleware\ConstMiddleware::class,

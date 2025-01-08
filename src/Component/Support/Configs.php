@@ -100,7 +100,7 @@ class Configs implements ConfigsInterface
         $this->loadConfigFile('composer');
         $this->configCache['whitelist'] = $this->setEnvWhitelist(self::$defaultWhitelist);
         $this->configCache['middlewares'] = $this->setMiddlewares(self::$defaultMiddlewares);
-        //$this->configCache['hybrid'] = new DotAccess(['enabled' => null]);
+        // $this->configCache['hybrid'] = new DotAccess(['enabled' => null]);
         $this->config = $this->configCache;
     }
 
@@ -642,6 +642,7 @@ class Configs implements ConfigsInterface
             'https' => \WPframework\Middleware\HttpsOnlyMiddleware::class,
             'spam' => \WPframework\Middleware\SpamDetectionMiddleware::class,
             'tenant' => \WPframework\Middleware\TenantIdMiddleware::class,
+            'kiosk' => \WPframework\Middleware\KioskMiddleware::class,
             'ignit' => \WPframework\Middleware\IgnitionMiddleware::class,
             'status' => \WPframework\Middleware\StatusMiddleware::class,
             'config' => \WPframework\Middleware\ConstMiddleware::class,
