@@ -22,17 +22,73 @@ class Configs implements ConfigsInterface
 {
     use WhitelistTrait;
 
+    /**
+     * Configuration array used by the application.
+     *
+     * Gives us back an array with DotAccess
+     *
+     * @var mixed Configuration settings.
+     */
     public $config;
+
+    /**
+     * The absolute path to the application directory.
+     *
+     * @var string Path to the application directory.
+     */
     protected $appPath;
+
+    /**
+     * The absolute path to the application configurations directory.
+     *
+     * @var string Path to the configuration directory.
+     */
     protected $configsPath;
-    protected $configsDir;
+
+    /**
+     * Cache for loaded configurations.
+     *
+     * @var array An array holding cached configuration data.
+     */
     protected array $configCache = [];
+
+    /**
+     * The absolute path to the framework's configuration files.
+     *
+     * @var string Path to the framework's configuration directory.
+     */
+    protected static $frameworkConfigsPath;
+
+    /**
+     * Default whitelist settings for the application.
+     *
+     * @var array Default whitelist settings.
+     */
     protected static $defaultWhitelist;
+
+    /**
+     * Default middlewares applied to the application.
+     *
+     * @var array Default middlewares.
+     */
     protected static $defaultMiddlewares;
 
+    /**
+     * Constructor for the configuration manager.
+     *
+     * Initializes the application paths, framework configuration paths,
+     * and preloads specific configuration files. Also sets default values
+     * for the whitelist and middlewares, and caches the configuration.
+     *
+     * @param array       $preloadConfigs Optional. List of configuration files to preload.
+     *                                    Defaults to ['tenancy', 'tenants', 'kiosk'].
+     * @param null|string $appPath        Optional. Custom application directory path.
+     *                                    If not provided, defaults to the `APP_DIR_PATH` constant.
+     */
     public function __construct(array $preloadConfigs = ['tenancy', 'tenants', 'kiosk'], ?string $appPath = null)
     {
         $this->appPath     = $appPath ?? APP_DIR_PATH;
+        self::$frameworkConfigsPath = FRAMEWORK_CONFIGS_DIR;
         $this->configsPath = $this->getConfigsPath($this->appPath);
         self::$defaultWhitelist = self::getDefaultWhitelist();
         self::$defaultMiddlewares = self::getDefaultMiddlewares();
@@ -44,18 +100,32 @@ class Configs implements ConfigsInterface
         $this->loadConfigFile('composer');
         $this->configCache['whitelist'] = $this->setEnvWhitelist(self::$defaultWhitelist);
         $this->configCache['middlewares'] = $this->setMiddlewares(self::$defaultMiddlewares);
+        //$this->configCache['hybrid'] = new DotAccess(['enabled' => null]);
         $this->config = $this->configCache;
     }
 
+    /**
+     * Initializes the configuration manager with a specific application path.
+     *
+     * Creates a new instance of the class, preloading the default configuration
+     * files ('tenancy', 'tenants', 'kiosk') and setting the provided application path.
+     *
+     * @param string $appPath The absolute path to the application directory.
+     *
+     * @return self Returns an instance of the class.
+     */
     public static function init(string $appPath): self
     {
         return new self(['tenancy', 'tenants', 'kiosk'], $appPath);
     }
 
     /**
-     * Load `app` options separately to avoid side effects.
+     * Loads the `app` options separately to avoid side effects.
      *
-     * @return self
+     * This method initializes the `app` configuration options and caches it.
+     * Afterward, it refreshes the entire configuration.
+     *
+     * @return self Returns the current instance of the class after refreshing the configuration.
      */
     public function app(): self
     {
@@ -98,7 +168,7 @@ class Configs implements ConfigsInterface
      */
     public static function load(string $file): void
     {
-        $filePath = CONFIGS_DIR_PATH . DIRECTORY_SEPARATOR . $file . '.php';
+        $filePath = self::$frameworkConfigsPath . DIRECTORY_SEPARATOR . $file . '.php';
 
         if (!file_exists($filePath)) {
             throw new InvalidArgumentException("Configuration file '$file.php' not found in directory.");
@@ -116,7 +186,7 @@ class Configs implements ConfigsInterface
      */
     public static function dbAdminer(): void
     {
-        $defaultAdminer = CONFIGS_DIR_PATH . DIRECTORY_SEPARATOR . 'dbadmin' . DIRECTORY_SEPARATOR . 'adminer.php';
+        $defaultAdminer = self::$frameworkConfigsPath . DIRECTORY_SEPARATOR . 'dbadmin' . DIRECTORY_SEPARATOR . 'adminer.php';
         $customAdminer =  APP_DIR_PATH . DIRECTORY_SEPARATOR . 'configs/dbadmin' . DIRECTORY_SEPARATOR . 'adminer.php';
 
         if (file_exists($customAdminer)) {
@@ -548,6 +618,13 @@ class Configs implements ConfigsInterface
         return $merged;
     }
 
+    /**
+     * Generates a hashed Adminer URL using a specified hashing algorithm.
+     *
+     * @param string $hashAlgo The hashing algorithm to use (e.g., 'fnv1a64', 'sha256', 'md5').
+     *
+     * @return string The hashed database URL.
+     */
     private static function dbUrl(string $hashAlgo): string
     {
         return hash($hashAlgo, urlencode(env('SECURE_AUTH_SALT')));

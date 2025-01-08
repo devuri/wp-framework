@@ -47,6 +47,22 @@ abstract class AbstractMiddleware implements MiddlewareInterface
     abstract public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface;
 
     /**
+     * Matches two URL paths, considering optional trailing slashes.
+     *
+     * @param string $uriPath
+     * @param string $dbadminUrlPath
+     *
+     * @return bool
+     */
+    public static function matchPaths(string $uriPath, string $dbadminUrlPath): bool
+    {
+        $normalizedUriPath = rtrim($uriPath, '/');
+        $normalizedDbAdminUrlPath = rtrim($dbadminUrlPath, '/');
+
+        return $normalizedUriPath === $normalizedDbAdminUrlPath;
+    }
+
+    /**
      * @return LoggerInterface
      */
     protected function log(): LoggerInterface

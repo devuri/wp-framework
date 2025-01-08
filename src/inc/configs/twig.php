@@ -43,4 +43,4 @@ $extraTemplates = [];
  * @return \Twigit\Twigit The Twigit instance with autoescape disabled and additional templates configured.
  *
  */
-return twig(['autoescape' => false], $extraTemplates);
+return twig(['autoescape' => true], $extraTemplates);

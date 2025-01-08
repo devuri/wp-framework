@@ -32,6 +32,8 @@ class TenantIdMiddleware extends AbstractMiddleware
         $this->configs = $this->services->get('configs');
         $this->isMultitenant = self::isMultitenantApp($this->configs->config['composer']);
 
+		// set cpanel subdomain for the control panel.
+
         if (! $this->isMultitenant) {
             return $handler->handle($request);
         }
