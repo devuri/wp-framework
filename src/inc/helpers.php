@@ -385,7 +385,7 @@ function toMillisecond(float $seconds)
 function twigit(): ?Twigit\Twigit
 {
     $userTwigFile = APP_DIR_PATH . '/configs/twig.php';
-    $coreTwigFile = CONFIGS_DIR_PATH . DIRECTORY_SEPARATOR . 'twig.php';
+    $coreTwigFile = FRAMEWORK_CONFIGS_DIR . DIRECTORY_SEPARATOR . 'twig.php';
 
     if (file_exists($userTwigFile)) {
         $twig = $userTwigFile;
@@ -436,6 +436,10 @@ function twig(array $options = [], array $templates = []): Twigit\Twigit
         $env_options = $cfgs->config['app']->get('twig.env_options', []);
     } else {
         $env_options = $options;
+    }
+
+    if (!class_exists(Twigit\Twigit::class)) {
+        throw new LogicException('The "devuri/twigit" package is required to use Twig. Run the command "composer require devuri/twigit".');
     }
 
     return Twigit\Twigit::init(APP_DIR_PATH, $env_options, $templates);

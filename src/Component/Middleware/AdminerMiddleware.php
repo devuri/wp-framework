@@ -65,20 +65,4 @@ class AdminerMiddleware extends AbstractMiddleware
 
         return $handler->handle($request);
     }
-
-    /**
-     * Matches two URL paths, considering optional trailing slashes.
-     *
-     * @param string $uriPath
-     * @param string $dbadminUrlPath
-     *
-     * @return bool
-     */
-    public static function matchPaths(string $uriPath, string $dbadminUrlPath): bool
-    {
-        $normalizedUriPath = rtrim($uriPath, '/');
-        $normalizedDbAdminUrlPath = rtrim($dbadminUrlPath, '/');
-
-        return $normalizedUriPath === $normalizedDbAdminUrlPath;
-    }
 }

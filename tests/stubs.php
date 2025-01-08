@@ -6,8 +6,8 @@ if ( ! \defined('RAYDIUM_ENVIRONMENT_TYPE')) {
 	\define('RAYDIUM_ENVIRONMENT_TYPE', null);
 }
 
-if (!defined('CONFIGS_DIR_PATH')) {
-    define('CONFIGS_DIR_PATH', '');
+if (!defined('FRAMEWORK_CONFIGS_DIR')) {
+    define('FRAMEWORK_CONFIGS_DIR', '');
 }
 
 if (!defined('APP_HTTP_HOST')) {
