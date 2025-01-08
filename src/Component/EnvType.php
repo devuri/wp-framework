@@ -139,17 +139,27 @@ final class EnvType
      *
      * @param int  $length          The length of the password to generate.
      * @param bool $useSpecialChars Whether to include special characters in the password.
+     * @param bool $startWithLetter Whether to start the password with a letter.
      *
      * @return string The generated password.
      */
-    public static function randStr(int $length = 8, bool $useSpecialChars = false): string
+    public static function randStr(int $length = 8, bool $useSpecialChars = false, bool $startWithLetter = true): string
     {
-        $characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
+        $letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $characters = $letters . '1234567890';
+
         if ($useSpecialChars) {
             $characters .= '!@#$%^&*()';
         }
+
         $charactersLength = \strlen($characters);
         $password = '';
+
+        // Ensure the first character is a letter
+        if ($startWithLetter && $length > 0) {
+            $password .= $letters[random_int(0, \strlen($letters) - 1)];
+            $length--;
+        }
 
         for ($i = 0; $i < $length; $i++) {
             $password .= $characters[random_int(0, $charactersLength - 1)];
@@ -163,7 +173,8 @@ final class EnvType
         $salt              = null;
         $auto_login_secret = bin2hex(random_bytes(32));
         $app_tenant_secret = bin2hex(random_bytes(32));
-        $dbrootpass        = strtolower(self::randStr(14));
+        $dbrootpass        = strtolower(self::randStr(16));
+        $kioskpanelId      = strtolower(self::randStr(10));
 
         try {
             $salt = (object) self::wpSalts();
@@ -171,14 +182,15 @@ final class EnvType
             // Handle exception if needed
         }
 
-        $home_url = "https://$wpdomain";
-        $site_url = '${WP_HOME}/wp';
+        $homeUrl = "https://$wpdomain";
+        $siteUrl = '${WP_HOME}/wp';
         $dbprefix = $prefix ? "wp_{$prefix}_" : strtolower('wp_' . self::randStr(8) . '_');
 
         return <<<END
-        WP_HOME='$home_url'
-        WP_SITEURL="$site_url"
-        ADMIN_LOGIN_URL="$site_url/wp-login.php"
+        WP_HOME='$homeUrl'
+        WP_SITEURL="{$siteUrl}"
+        ADMIN_LOGIN_URL="{$siteUrl}/wp-login.php"
+        KIOSK_DOMAIN_ID={$kioskpanelId}
 
         WP_ENVIRONMENT_TYPE='prod'
         WP_DEVELOPMENT_MODE='theme'
@@ -200,7 +212,7 @@ final class EnvType
         ELEMENTOR_AUTO_ACTIVATION=true
 
         MEMORY_LIMIT='256M'
-        MAX_MEMORY_LIMIT='256M'
+        MAX_MEMORY_LIMIT='512M'
 
         FORCE_SSL_ADMIN=false
         FORCE_SSL_LOGIN=false
