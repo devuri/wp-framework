@@ -35,10 +35,11 @@ class AdminerMiddleware extends AbstractMiddleware
     {
         $configs = $this->services->get('configs');
         $dbAdminConfig = $configs->config['app']->get('dbadmin');
+        $adminerUri = env('ADMINER_URI', $dbAdminConfig['uri']);
 
         // Determine the database admin URL path
-        $dbAdminUrlPath = $dbAdminConfig['uri']
-            ? '/wp/wp-admin/' . $dbAdminConfig['uri']
+        $dbAdminUrlPath = $adminerUri
+            ? '/wp/wp-admin/' . $adminerUri
             : '/wp-admin/dbadmin';
 
         // If database admin is disabled.
@@ -50,7 +51,7 @@ class AdminerMiddleware extends AbstractMiddleware
         $isDbAdminRequest = self::matchPaths($uriPath, $dbAdminUrlPath);
 
         $isAuthenticated = $request->getAttribute('authCheck', false);
-        $isAdmin = $request->getAttribute('isAdmin', false);
+        $isSuperAdmin = $request->getAttribute('isSuperAdmin', false);
 
         // Validate authentication for database admin requests
         if ($isDbAdminRequest && $dbAdminConfig['validate'] && !$isAuthenticated) {
@@ -58,7 +59,7 @@ class AdminerMiddleware extends AbstractMiddleware
         }
 
         // Serve the database admin page
-        if ($isDbAdminRequest && $isAdmin) {
+        if ($isDbAdminRequest && $isSuperAdmin) {
             require \dirname(__FILE__, 3) . DIRECTORY_SEPARATOR . 'inc/configs/dbadmin/index.php';
             exit;
         }
