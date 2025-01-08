@@ -1,9 +1,64 @@
 {
-    "alice": {
-		"id": "23566",
+  "panel": {
+	"id": "kiosk",
+	"enabled": true,
+    "version": "1.0.0",
+    "branding": {
+      "logo": "asset/kiosk/logo.png",
+      "title": "Admin Panel Kiosk",
+      "theme": "dark"
+    },
+    "security": {
+      "authentication": {
+        "method": "OAuth2",
+        "loginEndpoint": "https://example.com/api/login",
+        "tokenExpiration": 3600
+      },
+      "encryption": {
+        "enabled": true,
+        "algorithm": "AES-256"
+      },
+      "allowedIPs": []
+    },
+    "features": {
+      "dashboard": {
+        "enabled": true,
+        "widgets": [
+          {
+            "name": "System Status",
+            "type": "status",
+            "refreshInterval": 60
+          },
+          {
+            "name": "User Activity",
+            "type": "chart",
+            "refreshInterval": 300
+          }
+        ]
+      },
+      "userManagement": {
+        "enabled": true,
+        "permissions": {
+          "createUser": true,
+          "editUser": true,
+          "deleteUser": false
+        }
+      }
+    },
+    "logging": {
+      "level": "info",
+      "output": "/var/log/kiosk.log",
+      "retention": 7
+    },
+    "support": {
+      "email": "support@example.com",
+      "number": "+1234567890"
+    },
+    "users": {
+      "alice": {
+        "id": "23566",
         "username": "alice",
         "email": "alice.johnson@example.com",
-        "name": "Alice Johnson",
         "role": "admin",
         "permissions": [
           "read",
@@ -12,12 +67,11 @@
           "manage_kiosk"
         ],
         "active": true
-    },
-    "bsmith": {
-		"id": "325523",
+      },
+      "bsmith": {
+        "id": "325523",
         "username": "bsmith",
         "email": "bob.smith@example.com",
-        "name": "Bob Smith",
         "role": "editor",
         "permissions": [
           "read",
@@ -25,16 +79,17 @@
           "deploy"
         ],
         "active": true
-    },
-    "charlie": {
-		"id": "523563",
+      },
+      "charlie": {
+        "id": "523563",
         "username": "charlie",
         "email": "charlie.lee@example.com",
-        "name": "Charlie Lee",
         "role": "viewer",
         "permissions": [
           "read"
         ],
         "active": false
+      }
     }
+  }
 }

@@ -47,7 +47,7 @@ class AuthMiddleware extends AbstractMiddleware
         }
 
         // TODO we can block admin routes with authCheck.
-        $request = $request->withAttribute('authCheck', $userAuth)->withAttribute('isAdmin', $this->auth->isAdmin());
+        $request = $request->withAttribute('authCheck', $userAuth)->withAttribute('isSuperAdmin', $this->auth->isSuperAdmin());
 
         return $handler->handle($request);
     }
