@@ -205,6 +205,7 @@ function sidebarGuide() {
 				{ text: 'Getting Started', link: 'getting-started' },
 				{ text: 'Installation', link: 'installation' },
 				{ text: 'Ignore Platform', link: 'ignore-platform' },
+				{ text: 'Specify PHP Version', link: 'php-versions' },
 				{ text: 'Migration', link: 'migration' },
 				{ text: 'Updates', link: 'updates' }
 			]
