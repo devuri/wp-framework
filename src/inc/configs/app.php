@@ -112,26 +112,48 @@ return [
     ],
 
     /*
-     * Determines if the application should run internal middleware to check the application's health status.
+     * Configuration for the application's health status middleware.
      *
-     * This setting enables an internal middleware that activates exclusively for `/health-status` routes.
+     * This configuration determines whether the application should run an internal middleware
+     * to verify the application's health status. The middleware is triggered exclusively for
+     * requests to the `/up` route (or the custom route defined in this configuration).
+     *
      * When enabled:
-     * - The middleware verifies if the application is operational.
-     * - It checks the `DatabaseConnection` to ensure database connectivity.
+     * - The middleware checks if the application is operational.
+     * - Verifies database connectivity.
      *
-     * **Conditions for Activation:**
-     * 1. This configuration must be set to `true`.
-     * 2. The route must explicitly be `/health-status`.
+     * ## Conditions for Activation
+     * 1. The `enabled` key must be set to `true`.
+     * 2. The route in the request must explicitly match the `route` key in this configuration.
      *
-     * When these conditions are met, the application performs a partial boot to check its status.
-     * Only a JSON response is returned, and the rest of the application is not fully loaded. This allows
-     * monitoring tools to query the health status efficiently, e.g., `example.com/health-status`.
+     * If these conditions are satisfied, the application performs a partial boot to verify
+     * its status. Only a JSON response is returned, allowing monitoring tools to efficiently
+     * query the application's health, e.g., `example.com/up`.
      *
-     * **Future Considerations:**
-     * - Adding an authentication mechanism, such as a `key`, to restrict access.
-     * - Implementing rate limiting to prevent abuse.
+     * ## Configuration Options
+     * - `enabled` (bool): Whether to enable the health status middleware. Defaults to `true`.
+     * - `secret` (string|null): An optional secret key for securing health status checks.
+     *   Use `env('HEALTH_STATUS_SECRET')` to configure via environment variables. Defaults to `null`.
+     * - `route` (string): The route for the health status endpoint. Defaults to `'up'`.
+     *
+     * ## Future Considerations
+     * - Adding authentication, such as a secret key, to restrict access to the health status endpoint.
+     * - Implementing rate limiting to prevent misuse or abuse of the health status endpoint.
+     *
+     * Example Usage:
+     * ```
+     * 'health_status' => [
+     *     'enabled' => true,
+     *     'secret' => env('HEALTH_STATUS_SECRET', null),
+     *     'route' => 'up',
+     * ],
+     * ```
      */
-    'enable_health_status' => false,
+    'health_status' => [
+        'enabled' => true,
+        'secret' => env('HEALTH_STATUS_SECRET', null),
+        'route' => 'up',
+    ],
 
     /*
      * List of production environment identifiers.

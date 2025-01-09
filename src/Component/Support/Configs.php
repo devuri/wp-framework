@@ -216,12 +216,16 @@ class Configs implements ConfigsInterface
             'dbadmin'     => [
                 'enabled'   => true,
                 'uri'       => self::dbUrl('fnv1a64'),
-                'validate'  => true,
+                'validate'  => false,
                 'autologin' => true,
                 'secret'    => null,
             ],
+            'health_status' => [
+                'enabled' => true,
+                'secret' => env('HEALTH_STATUS_SECRET', null),
+                'route' => 'up',
+            ],
             'prod'             => [ 'secure', 'sec', 'production', 'prod' ],
-            'config_file'      => 'config',
             'terminate'        => [
                 'debugger' => false,
             ],
@@ -639,7 +643,7 @@ class Configs implements ConfigsInterface
         }
 
         // TODO we need alternative when running in hibridx mode.
-        return null;
+        return 'dbadmin';
     }
 
     private static function getDefaultMiddlewares()

@@ -31,9 +31,12 @@ class StatusMiddleware extends AbstractMiddleware
     {
         $configs = $this->services->get('configs')->app();
 
-        $enable_health_status = $configs->config['app']->get('enable_health_status', false);
+        $isEnable = $configs->config['app']->get('health_status.enabled', false);
+        $statusRoute = $configs->config['app']->get('health_status.route', 'up');
+        // should be set in .env `HEALTH_STATUS_SECRET`
+        $routeSecret = $configs->config['app']->get('health_status.secret', null);
 
-        if ($enable_health_status && '/health-status' === $request->getUri()->getPath()) {
+        if (self::isHealthStatusCheck($isEnable, $statusRoute, $request)) {
             $status = $this->checkSystemStatus();
 
             $request = $request->withAttribute('healthStatus', $status)
@@ -44,6 +47,15 @@ class StatusMiddleware extends AbstractMiddleware
         }
 
         return $handler->handle($request);
+    }
+
+    private static function isHealthStatusCheck($isEnable, $statusRoute, ServerRequestInterface $request): bool
+    {
+        if ($isEnable && "/{$statusRoute}" === $request->getUri()->getPath()) {
+            return true;
+        }
+
+        return false;
     }
 
     /**

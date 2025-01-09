@@ -31,6 +31,14 @@ class ConfigsTest extends TestCase
         $this->assertSame(['tenancy','tenants','kiosk','composer','whitelist', 'middlewares'], array_keys($configs->config));
     }
 
+    public function test_app_config_keys(): void
+    {
+        $defaults = Configs::getDefault();
+        $appSettings = self::appSettings();
+        $this->assertSame(array_keys($appSettings), array_keys($defaults));
+        $this->assertSame($appSettings, $defaults);
+    }
+
     /**
      * Test initialization without app path.
      */
@@ -158,6 +166,19 @@ class ConfigsTest extends TestCase
 
         $this->assertArrayHasKey('error_handler', $defaultConfig, "Default configuration should have error_handler key");
         $this->assertArrayHasKey('directory', $defaultConfig, "Default configuration should have directory key");
+    }
+
+    private static function appSettings(): array
+    {
+        $settingsFile = APP_SRC_PATH . '/inc/configs/app.php';
+
+        if (\is_array(@require $settingsFile)) {
+            $appSettings = require $settingsFile;
+        } else {
+            $appSettings = [];
+        }
+
+        return $appSettings;
     }
 
     private static function validTenantJsonOutput(): array
