@@ -1,5 +1,42 @@
 # Changelog
 
+## [0.7.3](https://github.com/devuri/wpframework/compare/v0.7.2...v0.7.3) (2025-01-09)
+
+
+### Features
+
+* add `strContains` ([29082d1](https://github.com/devuri/wpframework/commit/29082d1640fa6194bb0a7744492bc447e0bfacff))
+* add new `KioskMiddleware` middleware ([7b495ea](https://github.com/devuri/wpframework/commit/7b495ea9fbc2d160e6d1800fead7823351dc12e4))
+* adds `HYBRIDX` to bootstrap the framework in lightweight mode. ([49fd2b4](https://github.com/devuri/wpframework/commit/49fd2b4ce171e9ac440a091a5023dd1dea6c702a))
+* adds `nikic/fast-route` mainly for use in the `kiosk` admin ([369a135](https://github.com/devuri/wpframework/commit/369a13570ae461742668d96c1005e27be4c35f57))
+* adds checks for `kiosk` subdomain like: `kiosk.example.com` ([0604b6b](https://github.com/devuri/wpframework/commit/0604b6baeafd50493d7304b65a6245e15a15f5e1))
+* adds new `PanelHandler` for the `kiosk` ([a5cd3d4](https://github.com/devuri/wpframework/commit/a5cd3d4d4479526d16f8f6c9e6e81924f7970566))
+* adds templates for `kiosk` ([2b65df5](https://github.com/devuri/wpframework/commit/2b65df52a666b11a75eee065c662317d5da4e9bd))
+* domain parser ([27a2b06](https://github.com/devuri/wpframework/commit/27a2b06193873ae29eaff872b44b6acb3cda3189))
+* new `kiosk` json updated structure and `isSuperAdmin()` check ([8cec04e](https://github.com/devuri/wpframework/commit/8cec04edb0568b54239dc8cfa7ba91038a393e44))
+* the `adminer` now supports .env `ADMINER_URI` as primary setup ([89fafd8](https://github.com/devuri/wpframework/commit/89fafd8661f645564d35d93b286fb399e288a0de))
+* the `health_status` now includes `enabled`, `route` and `secret` ([d053176](https://github.com/devuri/wpframework/commit/d053176a18ec6b9964edf88bb377ef0d6d6e6363))
+* the `MiddlewareDispatcher` supports `responseHandled` Attribute ([94b03ed](https://github.com/devuri/wpframework/commit/94b03ed781ee7cd4db0a4dc45d7e27c8210b5cad))
+
+
+### Bug Fixes
+
+* adds `KIOSK_DOMAIN_ID` and `ADMINER_URI` ([ecc9ddf](https://github.com/devuri/wpframework/commit/ecc9ddf2dbb12796a0a838195eae3c74b8b162b9))
+* config test update for pull: [#258](https://github.com/devuri/wpframework/issues/258) ([4ad36a2](https://github.com/devuri/wpframework/commit/4ad36a22d016677b64739f0542336b4e3acee7c5))
+* fixes the return on `isAdminRouteRestricted` ([c4b84ac](https://github.com/devuri/wpframework/commit/c4b84ac511bcf60f89d10cb54f1c38891b0428e3))
+* if framework is not fully loaded we wont have `SECURE_AUTH_SALT` ([bbf0041](https://github.com/devuri/wpframework/commit/bbf0041ca3fdd39b75f6bc4aee4e956207724ec8))
+* update !IMPORTANT :restricting access to wp-admin, now allows ajax ([ef1f4d8](https://github.com/devuri/wpframework/commit/ef1f4d8c24594b85bc6805dc0c67cfb768a16808))
+* update `$this-&gt;finalRequest` will not always be available ([d44befb](https://github.com/devuri/wpframework/commit/d44befbba5e7a4c636fa46da941678334f6e156e))
+* update for single tenant `maintenance` mode ([05a42ee](https://github.com/devuri/wpframework/commit/05a42ee1659d26cd5461398b046d682eb58bb12b))
+* we can now ensure the first character is a `letter` in `randStr()` ([bdd6570](https://github.com/devuri/wpframework/commit/bdd6570c8c838cd8b70c4bee3186d6bf52d63646))
+
+
+### Miscellaneous Chores
+
+* add tests for appSettings `app.php` ([688f9e4](https://github.com/devuri/wpframework/commit/688f9e4abcb6253a08c8bd15c16e69babf60fd9e))
+* build ([8b150d1](https://github.com/devuri/wpframework/commit/8b150d1a9856da4c9ef258af7183322005fcd518))
+* build ([de9b7be](https://github.com/devuri/wpframework/commit/de9b7be51d3547e23f3a7d0fd1746140e79a7bdc))
+
 ## [0.7.2](https://github.com/devuri/wpframework/compare/v0.7.1...v0.7.2) (2025-01-07)
 
 
