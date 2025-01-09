@@ -326,7 +326,7 @@ class Configs implements ConfigsInterface
                 'adminbar'        => env('WP_REDIS_DISABLE_ADMINBAR', false),
                 'disable-metrics' => env('WP_REDIS_DISABLE_METRICS', false),
                 'disable-banners' => env('WP_REDIS_DISABLE_BANNERS', false),
-                'prefix'          => env('WP_REDIS_PREFIX', md5(env('WP_HOME', APP_HTTP_HOST)) . 'redis-cache'),
+                'prefix'          => env('WP_REDIS_PREFIX', md5(env('HOME_URL', APP_HTTP_HOST)) . 'redis-cache'),
                 'database'        => env('WP_REDIS_DATABASE', 0),
                 'timeout'         => env('WP_REDIS_TIMEOUT', 1),
                 'read-timeout'    => env('WP_REDIS_READ_TIMEOUT', 1),

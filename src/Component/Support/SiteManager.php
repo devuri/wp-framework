@@ -102,7 +102,8 @@ class SiteManager
 
     public function setSiteUrl(): void
     {
-        $this->constManager->addConstant('WP_HOME', env('WP_HOME'));
+        $this->constManager->addConstant('HOME_URL', env('HOME_URL'));
+        $this->constManager->addConstant('WP_HOME', env('HOME_URL'));
         $this->constManager->addConstant('WP_SITEURL', env('WP_SITEURL'));
     }
 
@@ -149,7 +150,7 @@ class SiteManager
 
     public function setCookies(): void
     {
-        $this->constManager->addConstant('COOKIEHASH', md5(env('WP_HOME')));
+        $this->constManager->addConstant('COOKIEHASH', md5(env('HOME_URL')));
 
         // Defines cookie-related override for WordPress constants.
         $this->constManager->addConstant('USER_COOKIE', 'wpx_user_' . COOKIEHASH);
@@ -158,7 +159,7 @@ class SiteManager
         $this->constManager->addConstant('SECURE_AUTH_COOKIE', 'wpx_sec_' . COOKIEHASH);
         $this->constManager->addConstant('RECOVERY_MODE_COOKIE', 'wpx_rec_' . COOKIEHASH);
         $this->constManager->addConstant('LOGGED_IN_COOKIE', 'wpx_logged_in_' . COOKIEHASH);
-        $this->constManager->addConstant('TEST_COOKIE', md5('wpx_test_cookie' . env('WP_HOME')));
+        $this->constManager->addConstant('TEST_COOKIE', md5('wpx_test_cookie' . env('HOME_URL')));
 
         // @see https://github.com/WordPress/WordPress/blob/6.5.1/wp-includes/default-constants.php#L241
     }
