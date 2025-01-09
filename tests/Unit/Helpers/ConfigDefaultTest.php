@@ -38,7 +38,7 @@ class ConfigDefaultTest extends TestCase
 
         // Security checks
         $this->assertArrayHasKey('security', $configs);
-        $this->assertCount(6, $configs['security']);
+        $this->assertCount(7, $configs['security']);
         $this->assertNull($configs['security']['encryption_key']);
         $this->assertTrue($configs['security']['brute-force']);
         $this->assertTrue($configs['security']['two-factor']);
