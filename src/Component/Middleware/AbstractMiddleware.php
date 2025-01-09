@@ -149,7 +149,8 @@ abstract class AbstractMiddleware implements MiddlewareInterface
      */
     protected function isAdminRouteRestricted(ServerRequestInterface $request): bool
     {
-        $allowedPaths = self::getAllowedAccessPaths();
+        $pattern = null;
+        $allowedPaths = $this->getAllowedAccessPaths();
 
         if (true === $allowedPaths['secure']) {
             $pattern = '/\/wp(?:\/.*)?\/wp-admin\/.*$/';
@@ -189,10 +190,9 @@ abstract class AbstractMiddleware implements MiddlewareInterface
      *
      * @return null|array Returns an array of allowed paths if restriction is enabled, null otherwise.
      */
-    protected static function getAllowedAccessPaths(): ?array
+    protected function getAllowedAccessPaths(): ?array
     {
-        $services = $this->services; // Assuming $this->services is accessible
-        $cfgs = $services->get('configs')->app();
+        $cfgs = $this->services->get('configs')->app();
 
         // Check if wp-admin restrictions are enabled
         $restrictWPadmin = $cfgs->config['app']->get('security.restrict_wpadmin.enabled', false);

@@ -11,9 +11,9 @@
 
 use WPframework\Support\Configs;
 
+// @codingStandardsIgnoreFile.
 function adminer_object()
 {
-    // @codingStandardsIgnoreLine
     class AdminerAuth extends Adminer
     {
         public function login($login, $password)

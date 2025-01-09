@@ -38,8 +38,8 @@ AppFactory::run();
 $table_prefix = env('DB_PREFIX');
 
 //  if hybridx is running do not load wp.
-if ( defined('HYBRIDX') && true === constant('HYBRIDX') ) {
-	return null;
+if (defined('HYBRIDX') && true === constant('HYBRIDX')) {
+    return null;
 }
 
 // Define ABSPATH.
