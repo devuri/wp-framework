@@ -24,7 +24,6 @@ class IgnitionMiddleware extends AbstractMiddleware
     protected ?EnvType $envType;
     private $tenant;
     private $configs;
-    private $isMultitenant;
 
     /**
      * Process an incoming server request.
@@ -55,7 +54,8 @@ class IgnitionMiddleware extends AbstractMiddleware
         $this->envType->tryRegenerateFile(
             $tenantConfigPath,
             APP_HTTP_HOST,
-            $envFiles
+            $envFiles,
+			($this->tenant['framework'] ?? null),
         );
 
         // set env values.

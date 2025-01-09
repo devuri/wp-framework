@@ -19,8 +19,6 @@ use WPframework\Support\Services\Router;
 
 class KioskMiddleware extends AbstractMiddleware
 {
-    private $isAdminKiosk;
-
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $cfgs = $this->services->get('configs')->app();

@@ -25,6 +25,16 @@ abstract class AbstractMiddleware implements MiddlewareInterface
      */
     protected $services;
 
+	/**
+	 * @var bool
+	 */
+	protected $isMultitenant;
+
+	/**
+	 * @var bool
+	 */
+	protected $isAdminKiosk;
+
     /**
      * @var LoggerInterface
      */
@@ -214,5 +224,32 @@ abstract class AbstractMiddleware implements MiddlewareInterface
         }
 
         return null;
+    }
+
+	/**
+     * @return null|string[]
+     *
+     * @psalm-return list{string, string}|null
+     */
+    protected function getSubdomain(ServerRequestInterface $request): ?array
+    {
+        $host = $request->getUri()->getHost();
+        $domainOrSubdomain = explode('.', $host)[0];
+
+        if ($this->isValidTenantId($domainOrSubdomain)) {
+            return [$domainOrSubdomain,$host];
+        }
+
+        return null;
+    }
+
+	/**
+     * @return false|int
+     *
+     * @psalm-return 0|1|false
+     */
+    protected function isValidTenantId(string $tenantId)
+    {
+        return preg_match('/^[a-zA-Z0-9_-]+$/', $tenantId);
     }
 }
