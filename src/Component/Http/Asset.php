@@ -27,11 +27,11 @@ class Asset
     public static function url(string $asset, ?string $path = null): string
     {
         if ($path) {
-            return WP_HOME . $path . $asset;
+            return HOME_URL . $path . $asset;
         }
 
         if (! \defined('ASSET_URL')) {
-            return WP_HOME . '/assets/dist' . $asset;
+            return HOME_URL . '/assets/dist' . $asset;
         }
 
         return ASSET_URL . '/dist' . $asset;

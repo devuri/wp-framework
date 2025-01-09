@@ -24,7 +24,7 @@ class TextHandler extends PlainTextHandler
     {
         $exception = $this->getException();
 
-        if (! self::isProd(env('WP_ENVIRONMENT_TYPE'))) {
+        if (! self::isProd(env('ENVIRONMENT_TYPE'))) {
             exit($this->getExceptionOutput($exception));
         }
         exit($exception->getMessage());

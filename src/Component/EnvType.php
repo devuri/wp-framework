@@ -122,18 +122,19 @@ final class EnvType
     public function tryRegenerateFile(string $appPath, string $appHttpHost, array $availableFiles = [], ?string $dbPrefix = null): void
     {
         $mainEnvFile = "{$appPath}/.env";
-		if (! $this->filesystem->exists($mainEnvFile)) {
+        if (! $this->filesystem->exists($mainEnvFile)) {
             $this->createFile($mainEnvFile, $appHttpHost, $dbPrefix);
         }
     }
 
     public function createFile(string $filePath, string $domain, ?string $prefix = null): void
     {
-		// handle kiosk file if framework is kiosk.
-		if('kiosk' === $prefix && ! $this->filesystem->exists($filePath)){
-			$this->filesystem->dumpFile($filePath, $this->generateKioskFile($domain));
-			return;
-		}
+        // handle kiosk file if framework is kiosk.
+        if ('kiosk' === $prefix && ! $this->filesystem->exists($filePath)) {
+            $this->filesystem->dumpFile($filePath, $this->generateKioskFile($domain));
+
+            return;
+        }
 
         if (! $this->filesystem->exists($filePath)) {
             $this->filesystem->dumpFile($filePath, $this->generateFileContent($domain, $prefix));
@@ -289,14 +290,14 @@ final class EnvType
         return $result;
     }
 
-	private function generateKioskFile(?string $wpdomain = null): string
+    private function generateKioskFile(?string $wpdomain = null): string
     {
         $salt              = null;
         $autoLoginSecret = bin2hex(random_bytes(32));
         $appTenantSecret = bin2hex(random_bytes(32));
         $dbrootpass        = strtolower(self::randStr(16));
         $kioskpanelId      = strtolower(self::randStr(10));
-		$homeUrl = "https://$wpdomain";
+        $homeUrl = "https://$wpdomain";
 
         try {
             $salt = (object) self::wpSalts();

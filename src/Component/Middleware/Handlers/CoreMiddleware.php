@@ -68,7 +68,7 @@ class CoreMiddleware
             'security',
             'tenant',
             'ignit',
-			'kiosk',
+            'kiosk',
             'status',
             'config',
             'kernel',

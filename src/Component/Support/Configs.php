@@ -654,7 +654,7 @@ class Configs implements ConfigsInterface
             'spam' => \WPframework\Middleware\SpamDetectionMiddleware::class,
             'tenant' => \WPframework\Middleware\TenantIdMiddleware::class,
             'ignit' => \WPframework\Middleware\IgnitionMiddleware::class,
-			'kiosk' => \WPframework\Middleware\KioskMiddleware::class,
+            'kiosk' => \WPframework\Middleware\KioskMiddleware::class,
             'status' => \WPframework\Middleware\StatusMiddleware::class,
             'config' => \WPframework\Middleware\ConstMiddleware::class,
             'kernel' => \WPframework\Middleware\KernelMiddleware::class,

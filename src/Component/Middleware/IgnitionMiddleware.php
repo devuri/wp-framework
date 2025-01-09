@@ -55,7 +55,7 @@ class IgnitionMiddleware extends AbstractMiddleware
             $tenantConfigPath,
             APP_HTTP_HOST,
             $envFiles,
-			($this->tenant['framework'] ?? null),
+            ($this->tenant['framework'] ?? null),
         );
 
         // set env values.

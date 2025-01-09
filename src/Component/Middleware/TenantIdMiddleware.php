@@ -39,14 +39,15 @@ class TenantIdMiddleware extends AbstractMiddleware
 
         if ($kioskDomain === $resolveKiosk[0] && $kioskConfig->get('panel.enabled', null)) {
             $request = $request->withAttribute('isAdminKiosk', true)
-								->withAttribute(
-									'tenant', self::kioskTenant($kioskConfig)
-								);
+                ->withAttribute(
+                    'tenant',
+                    self::kioskTenant($kioskConfig)
+                );
 
             return $handler->handle($request);
         }
 
-		// multitenants.
+        // multitenants.
         if (! $this->isMultitenant) {
             return $handler->handle($request);
         }
@@ -63,11 +64,12 @@ class TenantIdMiddleware extends AbstractMiddleware
             throw new Exception("Tenant not found: {$tenantDomain[0]}", 404);
         }
 
-		// check if disabled
-		if ('disabled' === ($tenant['status'] ?? null)) {
-			$definedStatus = ucfirst($tenant['status']);
-			throw new Exception("Tenant {$tenantDomain[0]}: {$definedStatus}", 404);
-		}
+        // check if disabled
+        if ('disabled' === ($tenant['status'] ?? null)) {
+            $definedStatus = ucfirst($tenant['status']);
+
+            throw new Exception("Tenant {$tenantDomain[0]}: {$definedStatus}", 404);
+        }
 
         // required.
         \define('APP_TENANT_ID', $tenant['uuid']);
@@ -93,16 +95,6 @@ class TenantIdMiddleware extends AbstractMiddleware
         return new TenantResolver($repository);
     }
 
-	private static function kioskTenant($kioskConfig): array
-	{
-		return [
-			'id' => $kioskConfig->get('panel.id', null),
-			'uuid' => $kioskConfig->get('panel.uuid', null),
-			'enabled' => $kioskConfig->get('panel.enabled', false),
-			'framework' => $kioskConfig->get('panel.framework', 'kiosk'),
-		];
-	}
-
     /**
      * Checks if the provided tenant ID matches the landlord's UUID.
      *
@@ -116,6 +108,16 @@ class TenantIdMiddleware extends AbstractMiddleware
     protected static function isLandlord(?string $tenantId = null): bool
     {
         return \defined('LANDLORD_UUID') && \constant('LANDLORD_UUID') === $tenantId;
+    }
+
+    private static function kioskTenant($kioskConfig): array
+    {
+        return [
+            'id' => $kioskConfig->get('panel.id', null),
+            'uuid' => $kioskConfig->get('panel.uuid', null),
+            'enabled' => $kioskConfig->get('panel.enabled', false),
+            'framework' => $kioskConfig->get('panel.framework', 'kiosk'),
+        ];
     }
 
     /**

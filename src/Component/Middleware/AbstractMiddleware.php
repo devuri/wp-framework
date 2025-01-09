@@ -25,15 +25,15 @@ abstract class AbstractMiddleware implements MiddlewareInterface
      */
     protected $services;
 
-	/**
-	 * @var bool
-	 */
-	protected $isMultitenant;
+    /**
+     * @var bool
+     */
+    protected $isMultitenant;
 
-	/**
-	 * @var bool
-	 */
-	protected $isAdminKiosk;
+    /**
+     * @var bool
+     */
+    protected $isAdminKiosk;
 
     /**
      * @var LoggerInterface
@@ -226,7 +226,7 @@ abstract class AbstractMiddleware implements MiddlewareInterface
         return null;
     }
 
-	/**
+    /**
      * @return null|string[]
      *
      * @psalm-return list{string, string}|null
@@ -243,7 +243,7 @@ abstract class AbstractMiddleware implements MiddlewareInterface
         return null;
     }
 
-	/**
+    /**
      * @return false|int
      *
      * @psalm-return 0|1|false

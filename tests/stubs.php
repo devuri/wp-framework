@@ -22,6 +22,10 @@ if (!defined('WP_HOME')) {
     define('WP_HOME', 'https://example.com');
 }
 
+if (!defined('HOME_URL')) {
+    define('HOME_URL', 'https://example.com');
+}
+
 if (!defined('ASSET_URL')) {
     define('ASSET_URL', 'https://example.com/assets');
 }
