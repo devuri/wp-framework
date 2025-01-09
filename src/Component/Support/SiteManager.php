@@ -227,8 +227,8 @@ class SiteManager
 
         $default_env = self::default('environment');
 
-        if (empty($this->environment) && env('WP_ENVIRONMENT_TYPE')) {
-            $this->resetEnvironment(env('WP_ENVIRONMENT_TYPE', $default_env));
+        if (empty($this->environment) && env('ENVIRONMENT_TYPE')) {
+            $this->resetEnvironment(env('ENVIRONMENT_TYPE', $default_env));
         }
 
         if (! EnvType::isValid($this->environment)) {

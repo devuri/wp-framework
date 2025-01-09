@@ -388,7 +388,7 @@ class Configs implements ConfigsInterface
      */
     public static function isInProdEnvironment(array $prodEnvironments = ['secure', 'sec', 'production', 'prod']): bool
     {
-        return self::isProd(env('WP_ENVIRONMENT_TYPE', null), $prodEnvironments);
+        return self::isProd(env('ENVIRONMENT_TYPE', null), $prodEnvironments);
     }
 
     public function json(?string $filePath = null)
