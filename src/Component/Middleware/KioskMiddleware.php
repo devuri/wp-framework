@@ -36,12 +36,12 @@ class KioskMiddleware extends AbstractMiddleware
 
         // Validate authentication
         if (!$isAuthenticated) {
-			// TODO implement `TinyAuth` or OAuth
+            // TODO implement `TinyAuth` or OAuth
             // throw new Exception("Authentication is required", 401);
         }
 
         $loader = new \Twig\Loader\FilesystemLoader(
-			//TODO allow template overrides in users config
+            // TODO allow template overrides in users config
             \dirname(__FILE__, 3) . DIRECTORY_SEPARATOR . 'inc/kiosk/templates'
         );
         $twig = new \Twig\Environment($loader);

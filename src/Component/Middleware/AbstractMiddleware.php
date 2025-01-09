@@ -152,6 +152,10 @@ abstract class AbstractMiddleware implements MiddlewareInterface
         $pattern = null;
         $allowedPaths = $this->getAllowedAccessPaths();
 
+        if (! $allowedPaths) {
+            return false;
+        }
+
         if (true === $allowedPaths['secure']) {
             $pattern = '/\/wp(?:\/.*)?\/wp-admin\/.*$/';
         } elseif (!empty($allowedPaths['allowed'])) {
