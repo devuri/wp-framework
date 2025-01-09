@@ -100,7 +100,7 @@ class Configs implements ConfigsInterface
         $this->loadConfigFile('composer');
         $this->configCache['whitelist'] = $this->setEnvWhitelist(self::$defaultWhitelist);
         $this->configCache['middlewares'] = $this->setMiddlewares(self::$defaultMiddlewares);
-        //$this->configCache['hybrid'] = new DotAccess(['enabled' => null]);
+        // $this->configCache['hybrid'] = new DotAccess(['enabled' => null]);
         $this->config = $this->configCache;
     }
 
@@ -256,6 +256,13 @@ class Configs implements ConfigsInterface
             'can_deactivate'   => env('CAN_DEACTIVATE', true),
 
             'security'         => [
+                'restrict_wpadmin' => [
+                    'enabled' => false,
+                    'secure' => false,
+                    'allowed' => [
+                        'admin-ajax.php',
+                    ],
+                ],
                 'sucuri_waf'          => false,
                 'encryption_key'     => null,
                 'brute-force'        => true,
@@ -625,9 +632,14 @@ class Configs implements ConfigsInterface
      *
      * @return string The hashed database URL.
      */
-    private static function dbUrl(string $hashAlgo): string
+    private static function dbUrl(string $hashAlgo): ?string
     {
-        return hash($hashAlgo, urlencode(env('SECURE_AUTH_SALT')));
+        if (env('SECURE_AUTH_SALT')) {
+            return hash($hashAlgo, urlencode(env('SECURE_AUTH_SALT')));
+        }
+
+        // TODO we need alternative when running in hibridx mode.
+        return null;
     }
 
     private static function getDefaultMiddlewares()
@@ -637,6 +649,7 @@ class Configs implements ConfigsInterface
             'https' => \WPframework\Middleware\HttpsOnlyMiddleware::class,
             'spam' => \WPframework\Middleware\SpamDetectionMiddleware::class,
             'tenant' => \WPframework\Middleware\TenantIdMiddleware::class,
+            'kiosk' => \WPframework\Middleware\KioskMiddleware::class,
             'ignit' => \WPframework\Middleware\IgnitionMiddleware::class,
             'status' => \WPframework\Middleware\StatusMiddleware::class,
             'config' => \WPframework\Middleware\ConstMiddleware::class,

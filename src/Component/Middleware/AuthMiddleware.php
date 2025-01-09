@@ -36,7 +36,7 @@ class AuthMiddleware extends AbstractMiddleware
         $this->auth->setCookies($cookies);
         $userAuth = $this->auth->check($request->getUri()->getScheme());
 
-        if ($this->isAdminRoute($request) && ! $userAuth) {
+        if ($this->isAdminRouteRestricted($request) && ! $userAuth) {
             if (! self::isInstallOrUpgrade()) {
                 throw new Exception("Route Authentication Is Required", 401);
             }
@@ -47,7 +47,7 @@ class AuthMiddleware extends AbstractMiddleware
         }
 
         // TODO we can block admin routes with authCheck.
-        $request = $request->withAttribute('authCheck', $userAuth)->withAttribute('isAdmin', $this->auth->isAdmin());
+        $request = $request->withAttribute('authCheck', $userAuth)->withAttribute('isSuperAdmin', $this->auth->isSuperAdmin());
 
         return $handler->handle($request);
     }

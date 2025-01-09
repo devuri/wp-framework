@@ -269,12 +269,17 @@ class App implements RequestHandlerInterface
             $this->terminateWithException($this->exception, $response);
         }
 
-        if (str_contains($contentType, 'application/json')) {
+        if (strContains($contentType, 'application/json')) {
             $this->emitter->emitBody($response);
             exit;
         }
 
-        if ($this->finalRequest->getAttribute('isRoute', false)) {
+        if (strContains($contentType, 'text/html')) {
+            $this->emitter->emitBody($response);
+            exit;
+        }
+
+        if ($this->finalRequest && $this->finalRequest->getAttribute('isRoute', false)) {
             $this->emitter->emitBody($response);
             exit;
         }

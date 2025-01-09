@@ -416,9 +416,8 @@ function twigit(): ?Twigit\Twigit
  * @see https://twig.symfony.com/doc/3.x/api.html#environment-options Official Twig Environment Documentation.
  * @see  https://github.com/twigphp/Twig/blob/3.x/src/Environment.php#L112 Twig Environment Source Code.
  *
- * @param string $dirPath     Base path to the application directory the instance will look for `$dirPath/templates` to use for the Twig templates.
- * @param array  $env_options Optional. An associative array of environment options for Twig. Default empty array.
- *                            Examples include 'cache' => '/path/to/cache' or 'debug' => true.
+ * @param array $options
+ * @param array $templates
  *
  * @throws Exception If the templates directory does not exist or if an error occurs while
  *                   initializing the Twig loader.
@@ -443,4 +442,21 @@ function twig(array $options = [], array $templates = []): Twigit\Twigit
     }
 
     return Twigit\Twigit::init(APP_DIR_PATH, $env_options, $templates);
+}
+
+/**
+ * Polyfill for str_contains for PHP 7.4, using the native function if available.
+ *
+ * @param string $haystack The string to search in.
+ * @param string $needle   The substring to search for.
+ *
+ * @return bool True if $haystack contains $needle, false otherwise.
+ */
+function strContains(string $haystack, string $needle): bool
+{
+    if (\function_exists('str_contains')) {
+        return str_contains($haystack, $needle);
+    }
+
+    return '' === $needle || false !== strpos($haystack, $needle);
 }

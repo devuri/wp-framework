@@ -118,7 +118,7 @@ class AuthManager
      *
      * @return bool Returns `true` if the user is an admin, `false` if not a kiosk user.
      */
-    public function isAdmin(): bool
+    public function isSuperAdmin(): bool
     {
         $kioskUser = $this->isKioskUser();
 
@@ -126,7 +126,7 @@ class AuthManager
             return false;
         }
 
-        return ($kioskUser['role'] ?? null) === 'admin';
+        return ($kioskUser['role'] ?? null) === 'superadmin';
     }
 
     public function userCan(string $capability = 'manage_kiosk'): bool
@@ -138,7 +138,7 @@ class AuthManager
         }
 
         $permissions = $this->configs->config['kiosk']->get(
-            "{$this->currentUser->user_login}.permissions",
+            "panel.users.{$this->currentUser->user_login}.permissions",
             null
         );
 
@@ -159,7 +159,7 @@ class AuthManager
 
     protected function getKioskUser(string $username): ?array
     {
-        return $this->configs->config['kiosk']->get($username, null);
+        return $this->configs->config['kiosk']->get("panel.users.{$username}", null);
     }
 
     /**

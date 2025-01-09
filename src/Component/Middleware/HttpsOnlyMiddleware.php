@@ -28,7 +28,7 @@ class HttpsOnlyMiddleware extends AbstractMiddleware
     {
         $uri = $request->getUri();
 
-        if ($this->isAdminRoute($request) && 'https' !== $uri->getScheme()) {
+        if ($this->isAdminRouteRestricted($request) && 'https' !== $uri->getScheme()) {
             throw new Exception('Access to this resource requires HTTPS.', 403);
         }
 

@@ -44,7 +44,9 @@ trait WhitelistTrait
         return [
             'framework' => [
                 'ADMIN_LOGIN_URL',
+                'KIOSK_DOMAIN_ID',
                 'ERROR_HANDLER',
+                'ADMINER_URI',
                 'WEB_ROOT_DIR',
                 'CONTENT_DIR',
                 'PLUGIN_DIR',

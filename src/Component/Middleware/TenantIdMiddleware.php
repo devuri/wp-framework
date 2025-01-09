@@ -30,18 +30,27 @@ class TenantIdMiddleware extends AbstractMiddleware
     {
         $this->constManager = $this->services->get('const_builder');
         $this->configs = $this->services->get('configs');
+        $host = $request->getUri()->getHost();
         $this->isMultitenant = self::isMultitenantApp($this->configs->config['composer']);
 
-		// set cpanel subdomain for the control panel.
+        // resolve kiosk setup.
+        $kioskConfig = $this->configs->config['kiosk'];
+        $kioskDomain = env('KIOSK_DOMAIN_ID', $kioskConfig->get('panel.id', 'kiosk'));
+        $resolveKiosk = $this->resolveKioskFromRequest($request);
+
+        if ($kioskDomain === $resolveKiosk[0] && $kioskConfig->get('panel.enabled', null)) {
+            $request = $request->withAttribute('isAdminKiosk', true);
+
+            return $handler->handle($request);
+        }
 
         if (! $this->isMultitenant) {
             return $handler->handle($request);
         }
 
         $dbTenants = [];
-        $this->tenantResolver = $this->tenantResolver($dbTenants);
-
         $tenantDomain = [];
+        $this->tenantResolver = $this->tenantResolver($dbTenants);
 
         try {
             $tenantDomain = $this->resolveTenantIdFromRequest($request);
@@ -96,6 +105,23 @@ class TenantIdMiddleware extends AbstractMiddleware
      * @psalm-return list{string, string}|null
      */
     private function resolveTenantIdFromRequest(ServerRequestInterface $request): ?array
+    {
+        $host = $request->getUri()->getHost();
+        $domainOrSubdomain = explode('.', $host)[0];
+
+        if ($this->isValidTenantId($domainOrSubdomain)) {
+            return [$domainOrSubdomain,$host];
+        }
+
+        return null;
+    }
+
+    /**
+     * @return null|string[]
+     *
+     * @psalm-return list{string, string}|null
+     */
+    private function resolveKioskFromRequest(ServerRequestInterface $request): ?array
     {
         $host = $request->getUri()->getHost();
         $domainOrSubdomain = explode('.', $host)[0];

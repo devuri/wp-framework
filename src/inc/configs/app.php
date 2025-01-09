@@ -359,6 +359,38 @@ return [
      * }
      */
     'security'         => [
+        /*
+         * Configuration for restricting access to the WordPress admin area.
+         *
+         * This array defines settings to control access to the wp-admin area, with options
+         * for enabling restrictions, securing access, and specifying allowed paths.
+         *
+         * @property array $restrict_wpadmin The settings for restricting wp-admin access.
+         * @property bool  $restrict_wpadmin['enabled'] Whether wp-admin restrictions are enabled. Default false.
+         * @property bool  $restrict_wpadmin['secure'] When true, all wp-admin access is disallowed,
+         *                                             ignoring any allowed paths. Use with caution. Default false.
+         * @property array $restrict_wpadmin['allowed'] A list of wp-admin paths that are allowed even when
+         *                                              restrictions are enabled. This is particularly useful for
+         *                                              paths like `admin-ajax.php` that may be needed for plugins
+         *                                              or unauthenticated data processing. Plugins may also have
+         *                                              created their own endpoints relative to `wp-admin`, for
+         *                                              those use case you can also add them to this array.
+         *                                              Example:
+         *                                              - `'admin-ajax.php'`: Typically used by plugins to process data
+         *                                                without authentication.
+         *
+         * Note: Paths in the 'allowed' array should not include the full URL. Instead, specify only the relative path,
+         * e.g., `'admin-ajax.php'`. The wp-admin URL is generally structured as:
+         * `example.com/wp/wp-admin/{path_to_allow}`.
+         */
+
+        'restrict_wpadmin' => [
+            'enabled' => false,
+            'secure' => false,
+            'allowed' => [
+                'admin-ajax.php',
+            ],
+        ],
         'sucuri_waf'         => false,
         'encryption_key'     => null,
         'brute-force'        => true,

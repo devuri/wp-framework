@@ -36,7 +36,9 @@ class StatusMiddleware extends AbstractMiddleware
         if ($enable_health_status && '/health-status' === $request->getUri()->getPath()) {
             $status = $this->checkSystemStatus();
 
-            $request = $request->withAttribute('healthStatus', $status)->withAttribute('isRoute', true);
+            $request = $request->withAttribute('healthStatus', $status)
+                ->withAttribute('isRoute', true)
+                ->withAttribute('responseHandled', true);
 
             return new JsonResponse($status, $status['healthy'] ? 200 : 503);
         }

@@ -38,7 +38,7 @@ final class HeadlessMode
         // Disable editor for post/page if constants are defined
         add_action('init', [$this, 'removeEditorFields']);
 
-        if (HEADLESS_MODE) {
+        if (true === constant('HEADLESS_MODE')) {
             add_action('template_redirect', [$this, 'redirectNonApiRequests']);
             add_action('wp_enqueue_scripts', [$this, 'removeScriptsAndStyles'], 100);
             add_filter('xmlrpc_enabled', '__return_false');
@@ -118,11 +118,11 @@ final class HeadlessMode
      */
     public function removeEditorFields(): void
     {
-        if (\defined('DISABLE_POST_EDITOR_FIELD') && DISABLE_POST_EDITOR_FIELD) {
+        if (\defined('DISABLE_POST_EDITOR_FIELD') && true === constant('DISABLE_POST_EDITOR_FIELD')) {
             remove_post_type_support('post', 'editor');
         }
 
-        if (\defined('DISABLE_PAGE_EDITOR_FIELD') && DISABLE_PAGE_EDITOR_FIELD) {
+        if (\defined('DISABLE_PAGE_EDITOR_FIELD') && true === constant('DISABLE_PAGE_EDITOR_FIELD')) {
             remove_post_type_support('page', 'editor');
         }
     }
