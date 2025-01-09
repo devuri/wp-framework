@@ -119,16 +119,22 @@ final class EnvType
      * @param string $appHttpHost
      * @param array  $availableFiles
      */
-    public function tryRegenerateFile(string $appPath, string $appHttpHost, array $availableFiles = [], string $dbPrefix = ''): void
+    public function tryRegenerateFile(string $appPath, string $appHttpHost, array $availableFiles = [], ?string $dbPrefix = null): void
     {
         $mainEnvFile = "{$appPath}/.env";
-        if (! $this->filesystem->exists($mainEnvFile)) {
+		if (! $this->filesystem->exists($mainEnvFile)) {
             $this->createFile($mainEnvFile, $appHttpHost, $dbPrefix);
         }
     }
 
     public function createFile(string $filePath, string $domain, ?string $prefix = null): void
     {
+		// handle kiosk file if framework is kiosk.
+		if('kiosk' === $prefix && ! $this->filesystem->exists($filePath)){
+			$this->filesystem->dumpFile($filePath, $this->generateKioskFile($domain));
+			return;
+		}
+
         if (! $this->filesystem->exists($filePath)) {
             $this->filesystem->dumpFile($filePath, $this->generateFileContent($domain, $prefix));
         }
@@ -171,8 +177,8 @@ final class EnvType
     protected function generateFileContent(?string $wpdomain = null, ?string $prefix = null): string
     {
         $salt              = null;
-        $auto_login_secret = bin2hex(random_bytes(32));
-        $app_tenant_secret = bin2hex(random_bytes(32));
+        $autoLoginSecret = bin2hex(random_bytes(32));
+        $appTenantSecret = bin2hex(random_bytes(32));
         $dbrootpass        = strtolower(self::randStr(16));
         $kioskpanelId      = strtolower(self::randStr(10));
 
@@ -183,16 +189,15 @@ final class EnvType
         }
 
         $homeUrl = "https://$wpdomain";
-        $siteUrl = '${WP_HOME}/wp';
+        $siteUrl = '${HOME_URL}/wp';
         $dbprefix = $prefix ? "wp_{$prefix}_" : strtolower('wp_' . self::randStr(8) . '_');
 
         return <<<END
-        WP_HOME='$homeUrl'
+        HOME_URL='$homeUrl'
         WP_SITEURL="{$siteUrl}"
         ADMIN_LOGIN_URL="{$siteUrl}/wp-login.php"
-        KIOSK_DOMAIN_ID={$kioskpanelId}
 
-        WP_ENVIRONMENT_TYPE='prod'
+        ENVIRONMENT_TYPE='prod'
         WP_DEVELOPMENT_MODE='theme'
         DISABLE_WP_APPLICATION_PASSWORDS=true
         SUDO_ADMIN='1'
@@ -249,8 +254,8 @@ final class EnvType
         LOGGED_IN_SALT='$salt->LOGGED_IN_SALT'
         NONCE_SALT='$salt->NONCE_SALT'
 
-        WPENV_AUTO_LOGIN_SECRET_KEY='$auto_login_secret'
-        APP_TENANT_SECRET='$app_tenant_secret'
+        AUTO_LOGIN_SECRET_KEY='$autoLoginSecret'
+        APP_TENANT_SECRET='$appTenantSecret'
 
         END;
     }
@@ -282,5 +287,63 @@ final class EnvType
         }
 
         return $result;
+    }
+
+	private function generateKioskFile(?string $wpdomain = null): string
+    {
+        $salt              = null;
+        $autoLoginSecret = bin2hex(random_bytes(32));
+        $appTenantSecret = bin2hex(random_bytes(32));
+        $dbrootpass        = strtolower(self::randStr(16));
+        $kioskpanelId      = strtolower(self::randStr(10));
+		$homeUrl = "https://$wpdomain";
+
+        try {
+            $salt = (object) self::wpSalts();
+        } catch (Exception $e) {
+            // Handle exception if needed
+        }
+
+        return <<<END
+        HOME_URL='$homeUrl'
+        ADMIN_LOGIN_URL="{$homeUrl}/login"
+        KIOSK_DOMAIN_ID={$kioskpanelId}
+        ENVIRONMENT_TYPE='prod'
+
+        # Email
+        SENDGRID_API_KEY=''
+
+        # s3backup
+        S3_BACKUP_KEY=null
+        S3_BACKUP_SECRET=null
+        S3_BACKUP_DIR=null
+        ENABLE_S3_BACKUP=false
+        S3ENCRYPTED_BACKUP=false
+        S3_BACKUP_BUCKET='wp-s3snaps'
+        S3_BACKUP_REGION='us-west-1'
+        DELETE_LOCAL_S3BACKUP=false
+
+        DB_NAME=local
+        DB_USER=root
+        DB_PASSWORD=password
+        DB_HOST=localhost
+        DB_CHARSET='utf8'
+
+        # optional (for docker environments)
+        DB_ROOT_PASS=$dbrootpass
+
+        AUTH_KEY='$salt->AUTH_KEY'
+        SECURE_AUTH_KEY='$salt->SECURE_AUTH_KEY'
+        LOGGED_IN_KEY='$salt->LOGGED_IN_KEY'
+        NONCE_KEY='$salt->NONCE_KEY'
+        AUTH_SALT='$salt->AUTH_SALT'
+        SECURE_AUTH_SALT='$salt->SECURE_AUTH_SALT'
+        LOGGED_IN_SALT='$salt->LOGGED_IN_SALT'
+        NONCE_SALT='$salt->NONCE_SALT'
+
+        AUTO_LOGIN_SECRET_KEY='$autoLoginSecret'
+        APP_TENANT_SECRET='$appTenantSecret'
+
+        END;
     }
 }
