@@ -36,7 +36,7 @@ class AuthMiddleware extends AbstractMiddleware
         $this->auth->setCookies($cookies);
         $userAuth = $this->auth->check($request->getUri()->getScheme());
 
-        if ($this->isAdminRoute($request) && ! $userAuth) {
+        if ($this->isAdminRouteRestricted($request) && ! $userAuth) {
             if (! self::isInstallOrUpgrade()) {
                 throw new Exception("Route Authentication Is Required", 401);
             }

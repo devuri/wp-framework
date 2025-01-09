@@ -256,6 +256,13 @@ class Configs implements ConfigsInterface
             'can_deactivate'   => env('CAN_DEACTIVATE', true),
 
             'security'         => [
+                'restrict_wpadmin' => [
+                    'enabled' => false,
+                    'secure' => false,
+                    'allowed' => [
+                        'admin-ajax.php',
+                    ],
+                ],
                 'sucuri_waf'          => false,
                 'encryption_key'     => null,
                 'brute-force'        => true,
