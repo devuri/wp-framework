@@ -16,27 +16,59 @@ function adminer_object()
 {
     class AdminerAuth extends Adminer
     {
+        protected $settings;
+
+        public function __construct(array $args = [])
+        {
+            $this->settings = array_merge(
+                [
+                    'autologin' => false,
+                    'db' => env('DB_NAME'),
+                    'host' => env('DB_HOST', 'localhost'),
+                    'username' => env('DB_USER', null),
+                    'password' => env('DB_PASSWORD', ''),
+                ],
+                $args
+            );
+        }
+
         public function login($login, $password)
         {
+            if (! $this->settings['autologin']) {
+                return false;
+            }
+
             return true;
         }
 
         public function credentials()
         {
+            if (! $this->settings['autologin']) {
+                return [SERVER, $_GET["username"], get_password()];
+            }
+
             return [
-                env('DB_HOST'),
-                env('DB_USER'),
-                env('DB_PASSWORD'),
+                $this->settings['host'] ?? 'localhost',
+                $this->settings['username'] ?? null,
+                $this->settings['password'] ?? "",
             ];
         }
 
         public function database()
         {
-            return env('DB_NAME');
+            return $this->settings['db'];
+        }
+
+        public function head(): void
+        {
+            parent::head();
+            echo '<script src="/asset/js/autologin.js"></script>';
         }
     }
 
-    return new AdminerAuth();
+    $cfgs = Configs::init()->app();
+
+    return new AdminerAuth($cfgs->config['app']->get('dbadmin'));
 }
 
 // load adminer.

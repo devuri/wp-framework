@@ -84,18 +84,22 @@ return [
          *
          * @var bool $validate Default false.
          */
-        'validate' => false,
+        'validate' => true,
 
         /*
          * Whether to enable autologin for the Adminer interface.
          *
          * When set to true, users can bypass the Adminer login screen.
-         * Use with caution, as this bypasses WordPress authentication,
+         * Use with caution, as this can bypasses WordPress authentication,
          * potentially allowing access to anyone with the URL.
+         *
+         * The default behavior is to use ADMINER_ALLOW_AUTOLOGIN constant.
+         * This constant is set by the framework but you can override it with
+         * your own value in the `wp-config.php` or other upstream file.
          *
          * @var bool $autologin Default true.
          */
-        'autologin' => true,
+        'autologin' => ADMINER_ALLOW_AUTOLOGIN,
 
         /*
          * Optional passkey for generating signed access URLs.

@@ -114,7 +114,7 @@ class Configs implements ConfigsInterface
      *
      * @return self Returns an instance of the class.
      */
-    public static function init(string $appPath): self
+    public static function init(?string $appPath = null): self
     {
         return new self(['tenancy', 'tenants', 'kiosk'], $appPath);
     }
@@ -186,6 +186,12 @@ class Configs implements ConfigsInterface
      */
     public static function dbAdminer(): void
     {
+        $cfgs = self::init()->app();
+        if ($cfgs->config['app']->get('dbadmin.autologin', null)) {
+            $_GET['username'] = env('DB_USER');
+            $_GET['db'] = env('DB_NAME');
+        }
+
         $defaultAdminer = self::$frameworkConfigsPath . DIRECTORY_SEPARATOR . 'dbadmin' . DIRECTORY_SEPARATOR . 'adminer.php';
         $customAdminer =  APP_DIR_PATH . DIRECTORY_SEPARATOR . 'configs/dbadmin' . DIRECTORY_SEPARATOR . 'adminer.php';
 
@@ -216,8 +222,8 @@ class Configs implements ConfigsInterface
             'dbadmin'     => [
                 'enabled'   => true,
                 'uri'       => self::dbUrl('fnv1a64'),
-                'validate'  => false,
-                'autologin' => true,
+                'validate'  => true,
+                'autologin' => ADMINER_ALLOW_AUTOLOGIN,
                 'secret'    => null,
             ],
             'health_status' => [

@@ -91,6 +91,11 @@ class AppFactory
             \define('USE_TWIGIT', false);
         }
 
+        // Adminer autologin
+        if (! \defined('ADMINER_ALLOW_AUTOLOGIN')) {
+            \define('ADMINER_ALLOW_AUTOLOGIN', true);
+        }
+
         // Mandatory application-wide constants
         \define('SITE_CONFIGS_DIR', 'configs');
         \define('APP_DIR_PATH', $appDirPath);
