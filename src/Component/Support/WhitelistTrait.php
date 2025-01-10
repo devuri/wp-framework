@@ -48,6 +48,7 @@ trait WhitelistTrait
                 'KIOSK_DOMAIN_ID',
                 'ERROR_HANDLER',
                 'ADMINER_URI',
+                'ADMINER_SECRET',
                 'HEALTH_STATUS_SECRET',
                 'ENVIRONMENT_TYPE',
                 'WEB_ROOT_DIR',

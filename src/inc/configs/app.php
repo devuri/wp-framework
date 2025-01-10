@@ -112,7 +112,10 @@ return [
          *
          * @var string|null $secret Default null.
          */
-        'secret' => null,
+        'secret' => [
+            'key' => env('ADMINER_SECRET', null),
+            'type' => 'jwt',
+        ],
     ],
 
     /*

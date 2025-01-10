@@ -177,11 +177,12 @@ final class EnvType
 
     protected function generateFileContent(?string $wpdomain = null, ?string $prefix = null): string
     {
-        $salt              = null;
+        $salt            = null;
         $autoLoginSecret = bin2hex(random_bytes(32));
         $appTenantSecret = bin2hex(random_bytes(32));
-        $dbrootpass        = strtolower(self::randStr(16));
-        $kioskpanelId      = strtolower(self::randStr(10));
+        $adminerSecret   = bin2hex(random_bytes(32));
+        $dbrootpass      = strtolower(self::randStr(16));
+        $kioskpanelId    = strtolower(self::randStr(10));
 
         try {
             $salt = (object) self::wpSalts();
@@ -255,6 +256,7 @@ final class EnvType
         LOGGED_IN_SALT='$salt->LOGGED_IN_SALT'
         NONCE_SALT='$salt->NONCE_SALT'
 
+        ADMINER_SECRET='$adminerSecret'
         AUTO_LOGIN_SECRET_KEY='$autoLoginSecret'
         APP_TENANT_SECRET='$appTenantSecret'
 
