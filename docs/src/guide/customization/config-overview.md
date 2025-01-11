@@ -45,6 +45,18 @@ Controls error-handling behavior. By default, the framework uses [Whoops](https:
 | quit  | `true`                                     | Determines if the handler should terminate script execution (`allowQuit(true)`).                             |
 | logs  | `true`                                     | Enables logging of errors for easier debugging.                                                              |
 
+
+> **class**: can use built-in or custom handlers, for example:
+  - `WPframework\Error\ErrorHandler::class` (default)
+  - `WPframework\Error\TextHandler::class`
+  - `Whoops\Handler\JsonResponseHandler::class`
+  - `Whoops\Handler\PlainTextHandler::class`
+  - `Whoops\Handler\PrettyPageHandler::class`
+
+> **Warning**: Certain handlers (like `PrettyPageHandler`) should not be used in production because they expose detailed debug information. If the framework detects `Whoops\Handler\PrettyPageHandler` in a production environment, it automatically overrides it to prevent sensitive data from being displayed.  
+>
+> Generally, you should only enable more verbose handlers (e.g., `PrettyPageHandler`) for **development** or **debug** environments.
+
 **Example:**
 ```php
 return [
