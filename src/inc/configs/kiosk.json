@@ -10,6 +10,15 @@
       "title": "Admin Panel Kiosk",
       "theme": "dark"
     },
+	"twig": {
+	  "debug": false,
+	  "charset": "utf-8",
+	  "cache": false,
+	  "auto_reload": null,
+	  "strict_variables": false,
+	  "autoescape": "html",
+	  "optimizations": -1
+	},
     "security": {
       "authentication": {
         "method": "OAuth2",

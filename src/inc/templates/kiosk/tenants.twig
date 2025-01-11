@@ -1,0 +1,10 @@
+{% extends 'base.twig' %}
+{% block content %}
+<h1>Logs</h1>
+<h1>Tenants</h1>
+<ul>
+    {% for tenant in tenants %}
+        <li>{{ tenants.username|e }}</li>
+    {% endfor %}
+</ul>
+{% endblock %}

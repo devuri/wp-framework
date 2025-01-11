@@ -15,15 +15,29 @@ use Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Twig\Loader\FilesystemLoader;
 use WPframework\Support\Services\Router;
+
+// use Twigit\Extensions\Filters;
+// use Twigit\Extensions\Functions;
 
 class KioskMiddleware extends AbstractMiddleware
 {
+    private \Twig\Environment $twig;
+    private $kioskConfig;
+    private $twigOptions;
+    private $appDirPath;
+
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
+        $this->appDirPath = APP_DIR_PATH;
         $cfgs = $this->services->get('configs')->app();
-        $kioskConfig = $cfgs->config['kiosk'];
+        $this->kioskConfig = $cfgs->config['kiosk'];
         $this->isAdminKiosk = $request->getAttribute('isAdminKiosk', false);
+        $this->twigOptions = array_merge(
+            self::defaultTwigOptions(),
+            $this->kioskConfig->get('panel.twig', [])
+        );
 
         // If database admin is disabled.
         if (!$this->isAdminKiosk) {
@@ -38,12 +52,7 @@ class KioskMiddleware extends AbstractMiddleware
             // throw new Exception("Authentication is required", 401);
         }
 
-        $loader = new \Twig\Loader\FilesystemLoader(
-            // TODO allow template overrides in users config
-            \dirname(__FILE__, 3) . DIRECTORY_SEPARATOR . 'inc/kiosk/templates'
-        );
-        $twig = new \Twig\Environment($loader);
-        $router = new Router($twig);
+        $router = new Router($this->twig());
 
         $router->get('/', 'home');
         $router->get('/settings', 'settings');
@@ -53,5 +62,85 @@ class KioskMiddleware extends AbstractMiddleware
         $router->get('/htmltest', 'htmltest');
 
         return $router->process($request, $handler);
+    }
+
+    /**
+     * Creates and returns a Twig environment instance.
+     *
+     * @throws Exception If the templates directory does not exist or if there is an error
+     *                   initializing the Twig loader.
+     *
+     * @return \Twig\Environment The initialized Twig environment instance.
+     */
+    public function twig(): \Twig\Environment
+    {
+        $this->templatesDir = $this->setTemplatesDir();
+        $this->coreTemplatesDir = \dirname(__FILE__, 3) . DIRECTORY_SEPARATOR . 'inc/templates/kiosk';
+        $cached = $this->debugMode() ? $this->appDirPath . '/templates/cache/kiosk' : false;
+
+        $this->validateTemplatesDirectory($this->templatesDir);
+        $loader = new FilesystemLoader([$this->templatesDir, $this->coreTemplatesDir]);
+        $this->twig = new \Twig\Environment($loader, array_merge(
+            $this->twigOptions,
+            ['cache' => $cached]
+        ));
+
+        // $this->registerExtensions();
+
+        return $this->twig;
+    }
+
+    /**
+     * Environment Options.
+     *
+     * @return array
+     *
+     * @see https://twig.symfony.com/doc/3.x/api.html#environment-options
+     */
+    protected static function defaultTwigOptions()
+    {
+        return [
+            'debug' => false,
+            'charset' => 'utf-8',
+            'cache' => false,
+            'auto_reload' => null,
+            'strict_variables' => false,
+            'autoescape' => 'html',
+            'optimizations' => -1,
+        ];
+    }
+
+    private function debugMode(): void
+    {
+        $this->kioskConfig->get('panel.twig.debug', false);
+    }
+
+    /**
+     * Validates that the templates directory exists.
+     *
+     * @throws Exception If the templates directory does not exist.
+     */
+    private function validateTemplatesDirectory(string $templatesDir, bool $withException = true): bool
+    {
+        $isValidDirectory = is_dir($templatesDir);
+
+        if (! $isValidDirectory && $withException) {
+            throw new Exception("Templates directory does not exist: {$templatesDir}");
+        }
+
+        return $isValidDirectory;
+    }
+
+    private function setTemplatesDir(): string
+    {
+        $templatesdir = "{$this->appDirPath}/templates/kiosk";
+
+        if (! $this->validateTemplatesDirectory($templatesdir, false)) {
+            if (! mkdir($templatesdir, 0777, true)) {
+                throw new Exception("Failed to create `templates/kiosk` directory");
+            }
+        }
+
+        return $templatesdir;
     }
 }

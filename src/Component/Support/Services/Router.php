@@ -136,10 +136,10 @@ class Router implements MiddlewareInterface
     {
         $page = $vars['page'] ?? 'index';
         $templateName = str_replace(['{page}'], $page, $handler);
+        // @phpstan-ignore-next-line
         $loaderPath = $this->twig->getLoader()->getPaths();
-        $templateFile = $loaderPath[0] . '/' . $templateName . '.twig';
 
-        return file_exists($templateFile) ? "$templateName.twig" : "404.twig";
+        return "{$templateName}.twig";
     }
 
     private function createResponse(int $status, string $body): ResponseInterface
