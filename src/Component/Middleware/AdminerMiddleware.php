@@ -43,7 +43,7 @@ class AdminerMiddleware extends AbstractMiddleware
             : '/wp-admin/dbadmin';
 
         // If database admin is disabled.
-        if (!$dbAdminConfig['enabled']) {
+        if (!$dbAdminConfig['enabled'] || self::isSecureMode()) {
             return $handler->handle($request);
         }
 
@@ -65,5 +65,15 @@ class AdminerMiddleware extends AbstractMiddleware
         }
 
         return $handler->handle($request);
+    }
+
+    private static function isSecureMode(): bool
+    {
+        $environment = defined('ENVIRONMENT_TYPE')? ENVIRONMENT_TYPE : null;
+        if (in_array(env('ENVIRONMENT_TYPE'), ['sec', 'secure'], true) || in_array($environment, ['sec', 'secure'], true)) {
+            return true;
+        }
+
+        return false;
     }
 }
