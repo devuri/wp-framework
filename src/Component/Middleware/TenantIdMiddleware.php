@@ -21,58 +21,75 @@ use WPframework\Support\Services\TenantResolver;
 
 class TenantIdMiddleware extends AbstractMiddleware
 {
+    private $tenant;
     private $configs;
     private $tenantResolver;
-    private $isMultitenant;
     private $constManager;
+    private $kioskConfig;
+    private array $dbTenants = [];
+    private ?array $tenantDomain;
 
+    /**
+     * Process the incoming request and manage multitenant or kiosk-specific logic.
+     *
+     * @param ServerRequestInterface  $request
+     * @param RequestHandlerInterface $handler
+     *
+     * @throws Exception If tenant is disabled or other issues arise.
+     *
+     * @return ResponseInterface
+     */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $this->constManager = $this->services->get('const_builder');
         $this->configs = $this->services->get('configs');
-        $host = $request->getUri()->getHost();
         $this->isMultitenant = self::isMultitenantApp($this->configs->config['composer']);
+        $this->kioskConfig = $this->configs->config['kiosk'];
+        $this->tenantDomain = $this->resolveTenantIdFromRequest($request);
+        $this->isAdminKiosk = $this->isKiosk($this->tenantDomain);
 
-        // resolve kiosk setup.
-        $kioskConfig = $this->configs->config['kiosk'];
-        $kioskDomain = env('KIOSK_DOMAIN_ID', $kioskConfig->get('panel.id', 'kiosk'));
-        $resolveKiosk = $this->resolveKioskFromRequest($request);
+        // If not a multitenant application or not an admin kiosk,
+        // handle the request normally
+        if (!$this->isMultitenant && false === $this->isAdminKiosk) {
+            return $handler->handle($request);
+        }
 
-        if ($kioskDomain === $resolveKiosk[0] && $kioskConfig->get('panel.enabled', null)) {
-            $request = $request->withAttribute('isAdminKiosk', true);
+        // Set the current tenant
+        $this->tenant = $this->setCurrentTenant();
+
+        // @phpstan-ignore-next-line
+        if ($this->isAdminKiosk && $this->kioskConfig->get('panel.enabled', null)) {
+            $request = $request
+                ->withAttribute('isAdminKiosk', $this->isAdminKiosk)
+                ->withAttribute('tenant', $this->tenant);
 
             return $handler->handle($request);
         }
 
-        if (! $this->isMultitenant) {
-            return $handler->handle($request);
+        // Check if the tenant is disabled
+        if ('disabled' === ($this->tenant['status'] ?? null)) {
+            $tenantStatus = ucfirst($this->tenant['status']);
+
+            throw new Exception("Tenant {$this->tenantDomain[0]}: {$tenantStatus}", 404);
         }
 
-        $dbTenants = [];
-        $tenantDomain = [];
-        $this->tenantResolver = $this->tenantResolver($dbTenants);
+        // Add attributes to the request for multitenant applications
+        $request = $request
+            ->withAttribute('tenant', $this->tenant)
+            ->withAttribute('isMultitenant', $this->isMultitenant);
 
-        try {
-            $tenantDomain = $this->resolveTenantIdFromRequest($request);
-            $tenant = $this->tenantResolver->getTenant($tenantDomain);
-            $request = $request->withAttribute('tenant', $tenant);
-        } catch (TenantNotFoundException $e) {
-            throw new Exception("Tenant not found: {$tenantDomain[0]}", 404);
-        }
-
-        // required.
-        \define('APP_TENANT_ID', $tenant['uuid']);
+        // Define required constants
+        \define('APP_TENANT_ID', $this->tenant['uuid']);
         \define('IS_MULTITENANT', true);
         \define('LANDLORD_UUID', $this->configs->config['composer']->get('extra.multitenant.uuid', null));
 
-        // allow overrides.
+        // Allow overrides via configuration
         $this->constManager->define('REQUIRE_TENANT_CONFIG', $this->configs->config['tenancy']->get('require-config', false));
         $this->constManager->define('TENANCY_WEB_ROOT', $this->configs->config['tenancy']->get('web-root', 'public'));
         $this->constManager->define('PUBLIC_WEB_DIR', $this->configs->getAppPath() . '/' . TENANCY_WEB_ROOT);
         $this->constManager->define('APP_CONTENT_DIR', 'wp-content');
 
-        $request = $request->withAttribute('isMultitenant', $this->isMultitenant);
-
+        // Handle the request and return the response
         return $handler->handle($request);
     }
 
@@ -82,6 +99,53 @@ class TenantIdMiddleware extends AbstractMiddleware
         $repository->addTenants($tenants);
 
         return new TenantResolver($repository);
+    }
+
+    /**
+     * Set the current tenant for the application.
+     *
+     * @param null|array $tenant Optional tenant data to directly set.
+     *
+     * @throws Exception If tenant cannot be resolved.
+     *
+     * @return null|array The resolved tenant.
+     */
+    protected function setCurrentTenant(?array $tenant = null): ?array
+    {
+        // If a tenant is provided, assign and return it directly.
+        if (null !== $tenant) {
+            $this->tenant = $tenant;
+
+            return $this->tenant;
+        }
+
+        // Check if the application is in Admin Kiosk mode.
+        if ($this->isAdminKiosk) {
+            $this->tenant = $this->kioskTenant();
+
+            return $this->tenant;
+        }
+
+        // Initialize the Tenant Resolver.
+        $this->tenantResolver = $this->tenantResolver($this->dbTenants);
+
+        try {
+            $this->tenant = $this->tenantResolver->getTenant($this->tenantDomain);
+        } catch (TenantNotFoundException $e) {
+            throw new Exception(\sprintf(
+                "Tenant not found for domain: %s",
+                $this->tenantDomain[0] ?? 'unknown'
+            ), 404, $e);
+        }
+
+        return $this->tenant;
+    }
+
+    protected function isKiosk(array $tenantDomain): bool
+    {
+        $kioskDomain = env('KIOSK_DOMAIN_ID', $this->kioskConfig->get('panel.id', 'kiosk'));
+
+        return $kioskDomain === ($tenantDomain[0] ?? null);
     }
 
     /**
@@ -99,6 +163,16 @@ class TenantIdMiddleware extends AbstractMiddleware
         return \defined('LANDLORD_UUID') && \constant('LANDLORD_UUID') === $tenantId;
     }
 
+    private function kioskTenant(): array
+    {
+        return [
+            'id' => $this->kioskConfig->get('panel.id', null),
+            'uuid' => $this->kioskConfig->get('panel.uuid', null),
+            'enabled' => $this->kioskConfig->get('panel.enabled', false),
+            'framework' => $this->kioskConfig->get('panel.framework', 'kiosk'),
+        ];
+    }
+
     /**
      * @return null|string[]
      *
@@ -114,33 +188,6 @@ class TenantIdMiddleware extends AbstractMiddleware
         }
 
         return null;
-    }
-
-    /**
-     * @return null|string[]
-     *
-     * @psalm-return list{string, string}|null
-     */
-    private function resolveKioskFromRequest(ServerRequestInterface $request): ?array
-    {
-        $host = $request->getUri()->getHost();
-        $domainOrSubdomain = explode('.', $host)[0];
-
-        if ($this->isValidTenantId($domainOrSubdomain)) {
-            return [$domainOrSubdomain,$host];
-        }
-
-        return null;
-    }
-
-    /**
-     * @return false|int
-     *
-     * @psalm-return 0|1|false
-     */
-    private function isValidTenantId(string $tenantId)
-    {
-        return preg_match('/^[a-zA-Z0-9_-]+$/', $tenantId);
     }
 
     /**

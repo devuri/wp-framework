@@ -89,6 +89,7 @@ function navBar(){
 			{ text: 'Environments', link: 'guide/customization/environments' },
 			{ text: 'Env File', link: 'guide/customization/environment-file' },
 			{ text: 'Constants', link: 'guide/customization/constants' },
+			{ text: 'Adminer', link: 'guide/customization/dbadmin' },
 			{ text: 'Compatibility', link: 'guide/customization/compatibility' },
 			{ text: 'GitHub Token', link: 'guide/customization/auth-json' },
 			{ text: 'Kiosk', link: 'guide/customization/kiosk' },
@@ -205,6 +206,7 @@ function sidebarGuide() {
 				{ text: 'Getting Started', link: 'getting-started' },
 				{ text: 'Installation', link: 'installation' },
 				{ text: 'Ignore Platform', link: 'ignore-platform' },
+				{ text: 'Specify PHP Version', link: 'php-versions' },
 				{ text: 'Migration', link: 'migration' },
 				{ text: 'Updates', link: 'updates' }
 			]

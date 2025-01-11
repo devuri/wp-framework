@@ -148,7 +148,7 @@ class Terminate
 
     protected function homeUrl(): string
     {
-        $linkedhomeUrl = env('WP_HOME', '#');
+        $linkedhomeUrl = env('HOME_URL', '#');
 
         return '<a class="btn btn-outline" href="' . $linkedhomeUrl . '">Go Home</a>';
     }

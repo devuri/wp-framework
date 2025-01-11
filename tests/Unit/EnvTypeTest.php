@@ -126,7 +126,7 @@ class EnvTypeTest extends TestCase
 
         $content = $method->invoke($this->envType, 'example.com', 'prefix');
 
-        $this->assertStringContainsString("WP_HOME='https://example.com'", $content);
+        $this->assertStringContainsString("HOME_URL='https://example.com'", $content);
         $this->assertStringContainsString("DB_PREFIX=wp_prefix_", $content);
     }
 

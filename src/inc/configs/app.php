@@ -84,18 +84,22 @@ return [
          *
          * @var bool $validate Default false.
          */
-        'validate' => false,
+        'validate' => true,
 
         /*
          * Whether to enable autologin for the Adminer interface.
          *
          * When set to true, users can bypass the Adminer login screen.
-         * Use with caution, as this bypasses WordPress authentication,
+         * Use with caution, as this can bypasses WordPress authentication,
          * potentially allowing access to anyone with the URL.
+         *
+         * The default behavior is to use ADMINER_ALLOW_AUTOLOGIN constant.
+         * This constant is set by the framework but you can override it with
+         * your own value in the `wp-config.php` or other upstream file.
          *
          * @var bool $autologin Default true.
          */
-        'autologin' => true,
+        'autologin' => ADMINER_ALLOW_AUTOLOGIN,
 
         /*
          * Optional passkey for generating signed access URLs.
@@ -108,7 +112,10 @@ return [
          *
          * @var string|null $secret Default null.
          */
-        'secret' => null,
+        'secret' => [
+            'key' => env('ADMINER_SECRET', null),
+            'type' => 'jwt',
+        ],
     ],
 
     /*
@@ -562,7 +569,7 @@ return [
      *     @type bool $disable-banners     Whether to disable Redis cache banners.
      *                                    Default: false if the environment variable 'WP_REDIS_DISABLE_BANNERS' is not set.
      *     @type string $prefix            The Redis cache key prefix.
-     *                                    Default: MD5 hash of 'WP_HOME' environment variable concatenated with 'redis-cache'
+     *                                    Default: MD5 hash of 'HOME_URL' environment variable concatenated with 'redis-cache'
      *                                    if the environment variable 'WP_REDIS_PREFIX' is not set.
      *     @type int $database             The Redis database index to use (0-15).
      *                                    Default: 0 if the environment variable 'WP_REDIS_DATABASE' is not set.
@@ -580,7 +587,7 @@ return [
         'adminbar'        => env('WP_REDIS_DISABLE_ADMINBAR', false),
         'disable-metrics' => env('WP_REDIS_DISABLE_METRICS', false),
         'disable-banners' => env('WP_REDIS_DISABLE_BANNERS', false),
-        'prefix'          => env('WP_REDIS_PREFIX', md5(env('WP_HOME')) . 'redis-cache'),
+        'prefix'          => env('WP_REDIS_PREFIX', md5(env('HOME_URL')) . 'redis-cache'),
         'database'        => env('WP_REDIS_DATABASE', 0),
         'timeout'         => env('WP_REDIS_TIMEOUT', 1),
         'read-timeout'    => env('WP_REDIS_READ_TIMEOUT', 1),

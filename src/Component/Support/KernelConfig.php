@@ -64,7 +64,7 @@ class KernelConfig
         // Directory PATH.
         $this->configManager->addConstant('APP_CONTENT_DIR', $configs->config['app']->get('directory.content_dir'));
         $this->configManager->addConstant('WP_CONTENT_DIR', PUBLIC_WEB_DIR . '/' . APP_CONTENT_DIR);
-        $this->configManager->addConstant('WP_CONTENT_URL', env('WP_HOME') . '/' . APP_CONTENT_DIR);
+        $this->configManager->addConstant('WP_CONTENT_URL', env('HOME_URL') . '/' . APP_CONTENT_DIR);
 
         /*
          * Themes, prefer '/templates'
@@ -81,11 +81,11 @@ class KernelConfig
 
         // Plugins.
         $this->configManager->addConstant('WP_PLUGIN_DIR', PUBLIC_WEB_DIR . '/' . $configs->config['app']->get('directory.plugin_dir'));
-        $this->configManager->addConstant('WP_PLUGIN_URL', env('WP_HOME') . '/' . $configs->config['app']->get('directory.plugin_dir'));
+        $this->configManager->addConstant('WP_PLUGIN_URL', env('HOME_URL') . '/' . $configs->config['app']->get('directory.plugin_dir'));
 
         // Must-Use Plugins.
         $this->configManager->addConstant('WPMU_PLUGIN_DIR', PUBLIC_WEB_DIR . '/' . $configs->config['app']->get('directory.mu_plugin_dir'));
-        $this->configManager->addConstant('WPMU_PLUGIN_URL', env('WP_HOME') . '/' . $configs->config['app']->get('directory.mu_plugin_dir'));
+        $this->configManager->addConstant('WPMU_PLUGIN_URL', env('HOME_URL') . '/' . $configs->config['app']->get('directory.mu_plugin_dir'));
 
         // Disable any kind of automatic upgrade.
         // this will be handled via composer.

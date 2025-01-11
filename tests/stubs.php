@@ -22,6 +22,14 @@ if (!defined('WP_HOME')) {
     define('WP_HOME', 'https://example.com');
 }
 
+if (!defined('ADMINER_ALLOW_AUTOLOGIN')) {
+    define('ADMINER_ALLOW_AUTOLOGIN', false);
+}
+
+if (!defined('HOME_URL')) {
+    define('HOME_URL', 'https://example.com');
+}
+
 if (!defined('ASSET_URL')) {
     define('ASSET_URL', 'https://example.com/assets');
 }

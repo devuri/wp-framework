@@ -114,7 +114,7 @@ class Configs implements ConfigsInterface
      *
      * @return self Returns an instance of the class.
      */
-    public static function init(string $appPath): self
+    public static function init(?string $appPath = null): self
     {
         return new self(['tenancy', 'tenants', 'kiosk'], $appPath);
     }
@@ -186,6 +186,12 @@ class Configs implements ConfigsInterface
      */
     public static function dbAdminer(): void
     {
+        $cfgs = self::init()->app();
+        if ($cfgs->config['app']->get('dbadmin.autologin', null)) {
+            $_GET['username'] = env('DB_USER');
+            $_GET['db'] = env('DB_NAME');
+        }
+
         $defaultAdminer = self::$frameworkConfigsPath . DIRECTORY_SEPARATOR . 'dbadmin' . DIRECTORY_SEPARATOR . 'adminer.php';
         $customAdminer =  APP_DIR_PATH . DIRECTORY_SEPARATOR . 'configs/dbadmin' . DIRECTORY_SEPARATOR . 'adminer.php';
 
@@ -216,8 +222,8 @@ class Configs implements ConfigsInterface
             'dbadmin'     => [
                 'enabled'   => true,
                 'uri'       => self::dbUrl('fnv1a64'),
-                'validate'  => false,
-                'autologin' => true,
+                'validate'  => true,
+                'autologin' => ADMINER_ALLOW_AUTOLOGIN,
                 'secret'    => null,
             ],
             'health_status' => [
@@ -326,7 +332,7 @@ class Configs implements ConfigsInterface
                 'adminbar'        => env('WP_REDIS_DISABLE_ADMINBAR', false),
                 'disable-metrics' => env('WP_REDIS_DISABLE_METRICS', false),
                 'disable-banners' => env('WP_REDIS_DISABLE_BANNERS', false),
-                'prefix'          => env('WP_REDIS_PREFIX', md5(env('WP_HOME', APP_HTTP_HOST)) . 'redis-cache'),
+                'prefix'          => env('WP_REDIS_PREFIX', md5(env('HOME_URL', APP_HTTP_HOST)) . 'redis-cache'),
                 'database'        => env('WP_REDIS_DATABASE', 0),
                 'timeout'         => env('WP_REDIS_TIMEOUT', 1),
                 'read-timeout'    => env('WP_REDIS_READ_TIMEOUT', 1),
@@ -388,7 +394,7 @@ class Configs implements ConfigsInterface
      */
     public static function isInProdEnvironment(array $prodEnvironments = ['secure', 'sec', 'production', 'prod']): bool
     {
-        return self::isProd(env('WP_ENVIRONMENT_TYPE', null), $prodEnvironments);
+        return self::isProd(env('ENVIRONMENT_TYPE', null), $prodEnvironments);
     }
 
     public function json(?string $filePath = null)
@@ -636,7 +642,7 @@ class Configs implements ConfigsInterface
      *
      * @return string The hashed database URL.
      */
-    private static function dbUrl(string $hashAlgo): ?string
+    private static function dbUrl(string $hashAlgo): string
     {
         if (env('SECURE_AUTH_SALT')) {
             return hash($hashAlgo, urlencode(env('SECURE_AUTH_SALT')));
@@ -653,8 +659,8 @@ class Configs implements ConfigsInterface
             'https' => \WPframework\Middleware\HttpsOnlyMiddleware::class,
             'spam' => \WPframework\Middleware\SpamDetectionMiddleware::class,
             'tenant' => \WPframework\Middleware\TenantIdMiddleware::class,
-            'kiosk' => \WPframework\Middleware\KioskMiddleware::class,
             'ignit' => \WPframework\Middleware\IgnitionMiddleware::class,
+            'kiosk' => \WPframework\Middleware\KioskMiddleware::class,
             'status' => \WPframework\Middleware\StatusMiddleware::class,
             'config' => \WPframework\Middleware\ConstMiddleware::class,
             'kernel' => \WPframework\Middleware\KernelMiddleware::class,

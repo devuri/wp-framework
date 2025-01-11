@@ -3,11 +3,22 @@
 	"id": "kiosk",
 	"enabled": true,
     "version": "1.0.0",
+    "framework": "kiosk",
+	"uuid": "ukiosk_ec1b25b5a836f174ea",
     "branding": {
       "logo": "asset/kiosk/logo.png",
       "title": "Admin Panel Kiosk",
       "theme": "dark"
     },
+	"twig": {
+	  "debug": false,
+	  "charset": "utf-8",
+	  "cache": false,
+	  "auto_reload": null,
+	  "strict_variables": false,
+	  "autoescape": "html",
+	  "optimizations": -1
+	},
     "security": {
       "authentication": {
         "method": "OAuth2",
