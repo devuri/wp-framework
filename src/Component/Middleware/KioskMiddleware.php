@@ -27,6 +27,8 @@ class KioskMiddleware extends AbstractMiddleware
     private $kioskConfig;
     private $twigOptions;
     private $appDirPath;
+    private $coreTemplatesDir;
+    private $templatesDir;
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
