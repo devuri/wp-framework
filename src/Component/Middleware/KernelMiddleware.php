@@ -43,7 +43,7 @@ class KernelMiddleware extends AbstractMiddleware
 
         if (! $this->isValidInstallerPath($isProd)) {
             throw new Exception(
-                'config file and composer `installer-paths` did not match ' . $this->pathError
+                'app configurations file and composer `installer-paths` did not match ' . $this->pathError
             );
         }
 

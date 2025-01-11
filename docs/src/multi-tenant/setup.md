@@ -197,7 +197,7 @@ configs/
 ├── {tenant_id}/       # Tenant-specific configurations
 │   ├── .env           # Tenant-specific environment variables
 │   ├── app.php        # Optional tenant-specific app settings
-│   ├── config.php     # Optional tenant-specific config settings
+│   ├── constants.php     # Optional tenant-specific constants
 ```
 
 

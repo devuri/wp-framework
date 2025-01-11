@@ -90,13 +90,13 @@ configs/
 ├── alpha/
 │   ├── .env
 │   ├── app.php
-│   ├── config.php
+│   ├── constants.php
 ```
 
 File descriptions:
 - **`.env`**: Stores environment-specific variables like database credentials and secrets.
 - **`app.php`**: Contains application-specific settings for the tenant.
-- **`config.php`**: Holds other tenant-specific configurations required by the application.
+- **`constants.php`**: Holds other tenant-specific constants required by the application.
 
 ---
 
