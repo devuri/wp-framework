@@ -89,6 +89,7 @@ function navBar(){
 			{ text: 'Environments', link: 'guide/customization/environments' },
 			{ text: 'Env File', link: 'guide/customization/environment-file' },
 			{ text: 'Constants', link: 'guide/customization/constants' },
+			{ text: 'Adminer', link: 'guide/customization/dbadmin' },
 			{ text: 'Compatibility', link: 'guide/customization/compatibility' },
 			{ text: 'GitHub Token', link: 'guide/customization/auth-json' },
 			{ text: 'Kiosk', link: 'guide/customization/kiosk' },
