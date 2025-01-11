@@ -21,11 +21,11 @@ To ensure a smooth deployment, thoroughly test your site in a local environment:
 
 ## Setting a Public Base Path
 
-For sites served from a subdirectory (e.g., `https://yourdomain.com/blog`), adjust the `WP_HOME` and `WP_SITEURL` in your `.env` file:
+For sites served from a subdirectory (e.g., `https://yourdomain.com/blog`), adjust the `HOME_URL` and `WP_SITEURL` in your `.env` file:
 
 ```shell
-WP_HOME='https://yourdomain.com/blog'
-WP_SITEURL="${WP_HOME}/wp"
+HOME_URL='https://yourdomain.com/blog'
+WP_SITEURL="${HOME_URL}/wp"
 ```
 
 This adjustment is needed for WordPress to generate accurate URLs for assets and pages.
