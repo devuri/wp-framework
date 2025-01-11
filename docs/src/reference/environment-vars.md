@@ -12,8 +12,8 @@ This [environment file](../customization/environment-file) contains the environm
 
 ```shell
 # Core WordPress Settings
-WP_HOME='http://yourwebsite.com'
-WP_SITEURL="${WP_HOME}/wp"
+HOME_URL='http://yourwebsite.com'
+WP_SITEURL="${HOME_URL}/wp"
 
 # Basic Authentication Credentials
 BASIC_AUTH_USER='yourUsername'
@@ -21,7 +21,7 @@ BASIC_AUTH_PASSWORD='yourStrongPassword'
 
 # Theme and Environment Configuration
 USE_APP_THEME=false
-WP_ENVIRONMENT_TYPE='production'  # Options: development, staging, production
+ENVIRONMENT_TYPE='production'  # Options: development, staging, production
 
 # Plugin and Backup Preferences
 BACKUP_PLUGINS=false
@@ -71,7 +71,7 @@ DB_PREFIX='wp_'
 
 ### WordPress Core Settings
 
-- `WP_HOME` & `WP_SITEURL`: Define your website's home URL and the location of WordPress core files, respectively.
+- `HOME_URL` & `WP_SITEURL`: Define your website's home URL and the location of WordPress core files, respectively.
 
 ### Authentication
 
@@ -80,7 +80,7 @@ DB_PREFIX='wp_'
 ### Site Appearance and Mode
 
 - `USE_APP_THEME`: Toggle to use a custom theme. `false` disables this feature.
-- `WP_ENVIRONMENT_TYPE`: Specify the environment, such as `production`, `development`, or `staging` etc.
+- `ENVIRONMENT_TYPE`: Specify the environment, such as `production`, `development`, or `staging` etc.
 
 ### Email Communication
 
@@ -135,7 +135,7 @@ Here's what typically happens during this automatic setup:
 
 3. **Auto-Population**: Raydium then populates the file with a set of predefined variables. These include environment-specific settings, database connection parameters (with placeholders), and crucially, the security keys and salts fetched from the WordPress API.
 
-4. **Customization**: While the auto-generated file includes sensible defaults and unique security keys, it's expected that you'll review and customize other settings like `WP_HOME`, `DB_NAME`, `DB_USER`, and `DB_PASSWORD` etc to match your specific project and environment.
+4. **Customization**: While the auto-generated file includes sensible defaults and unique security keys, it's expected that you'll review and customize other settings like `HOME_URL`, `DB_NAME`, `DB_USER`, and `DB_PASSWORD` etc to match your specific project and environment.
 
 This feature is particularly helpful in scenarios where quick deployment or testing is needed, and manual configuration of every detail could be time-consuming or prone to errors.
 

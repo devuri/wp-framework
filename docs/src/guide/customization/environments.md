@@ -22,16 +22,16 @@ Environments represent different **states** your application can be in, each tai
 
 ### Using the `.env` File
 
-The Raydium Framework uses a `.env` [environment file](../customization/environment-file) located at the root of your project to define environment variables. The key variable for setting the environment is `WP_ENVIRONMENT_TYPE`.
+The Raydium Framework uses a `.env` [environment file](../customization/environment-file) located at the root of your project to define environment variables. The key variable for setting the environment is `ENVIRONMENT_TYPE`.
 
 Example `.env` file configuration:
 
 ```plaintext
-WP_ENVIRONMENT_TYPE='prod'
+ENVIRONMENT_TYPE='prod'
 ```
 
 > [!IMPORTANT]
-> Optionally, You can override the `.env` setup of `WP_ENVIRONMENT_TYPE` by defining the `RAYDIUM_ENVIRONMENT_TYPE` constant in the bootstrap file or in `wp-config.php`. Note that the `.env` file takes precedence, so ensure `WP_ENVIRONMENT_TYPE='prod'` is removed from the file if you plan to override it.
+> Optionally, You can override the `.env` setup of `ENVIRONMENT_TYPE` by defining the `RAYDIUM_ENVIRONMENT_TYPE` constant in the bootstrap file or in `wp-config.php`. Note that the `.env` file takes precedence, so ensure `ENVIRONMENT_TYPE='prod'` is removed from the file if you plan to override it.
 
 Depending on this setting, the Raydium Framework adjusts its behavior for performance, security, or debugging.
 
@@ -45,11 +45,11 @@ Depending on this setting, the Raydium Framework adjusts its behavior for perfor
 
 ### Switching Environments
 
-To switch environments, simply modify the `WP_ENVIRONMENT_TYPE` value in your `.env` file. Afterward, redeploy your application if necessary. The Raydium Framework will automatically detect and apply the corresponding configuration settings.
+To switch environments, simply modify the `ENVIRONMENT_TYPE` value in your `.env` file. Afterward, redeploy your application if necessary. The Raydium Framework will automatically detect and apply the corresponding configuration settings.
 
 ## Environment-Specific Behaviors
 
-Depending on the `WP_ENVIRONMENT_TYPE` value, the Raydium Framework configures the application accordingly:
+Depending on the `ENVIRONMENT_TYPE` value, the Raydium Framework configures the application accordingly:
 
 - **Production**: Optimized for maximum performance and security. Disables debugging tools and hides errors.
 - **Staging**: Similar to production but with some logging enabled for testing purposes.

@@ -41,9 +41,9 @@ Raydium core is the WPFramework, a robust, secure, and modular framework designe
 1. **Create a `.env` File**: In your project's root, create a `.env` [environment file](../customization/environment-file) to define essential configuration constants, including database settings and other environment-specific variables.
 
     ```dotenv
-    WP_HOME='https://example.com'
-    WP_SITEURL="${WP_HOME}/wp"
-    WP_ENVIRONMENT_TYPE='production'
+   HOME_URL='https://example.com'
+    WP_SITEURL="${HOME_URL}/wp"
+    ENVIRONMENT_TYPE='production'
     DB_NAME='wp_database'
     DB_USER='your_db_user'
     DB_PASSWORD='your_db_password'
