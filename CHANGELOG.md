@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.1](https://github.com/devuri/wpframework/compare/v0.9.0...v0.9.1) (2025-01-11)
+
+
+### Features
+
+* add/updated defined constants docs ([cedf57c](https://github.com/devuri/wpframework/commit/cedf57c49e10666b4c63fa2d6aad85807ab89a26))
+
 ## [0.9.0](https://github.com/devuri/wpframework/compare/v0.8.0...v0.9.0) (2025-01-11)
 
 
