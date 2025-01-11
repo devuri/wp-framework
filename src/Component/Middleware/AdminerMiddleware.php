@@ -69,8 +69,8 @@ class AdminerMiddleware extends AbstractMiddleware
 
     private static function isSecureMode(): bool
     {
-        $environment = defined('ENVIRONMENT_TYPE')? ENVIRONMENT_TYPE : null;
-        if (in_array(env('ENVIRONMENT_TYPE'), ['sec', 'secure'], true) || in_array($environment, ['sec', 'secure'], true)) {
+        $environment = \defined('ENVIRONMENT_TYPE') ? ENVIRONMENT_TYPE : null;
+        if (\in_array(env('ENVIRONMENT_TYPE'), ['sec', 'secure'], true) || \in_array($environment, ['sec', 'secure'], true)) {
             return true;
         }
 
