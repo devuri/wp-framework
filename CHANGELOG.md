@@ -1,5 +1,39 @@
 # Changelog
 
+## [0.8.0](https://github.com/devuri/wpframework/compare/v0.7.3...v0.8.0) (2025-01-11)
+
+
+### ⚠ BREAKING CHANGES
+
+* changed env ref to `WP_ENVIRONMENT_TYPE` is now `ENVIRONMENT_TYPE`
+* changed env ref to `WP_HOME` is now `HOME_URL`
+
+### Features
+
+* adds better twig setup with environment-options ([a5b990a](https://github.com/devuri/wpframework/commit/a5b990a66998cfe757f703f9061ee6705e49364a))
+* better handling of `tenant` and `kiosk` ID setup ([86fe0ee](https://github.com/devuri/wpframework/commit/86fe0eed3ba0792bf07edd9636ca98060bacddb1))
+* changed env ref to `WP_ENVIRONMENT_TYPE` is now `ENVIRONMENT_TYPE` ([b78471a](https://github.com/devuri/wpframework/commit/b78471a014ec6ef8faa68378fdb89c8c9fbb2a03))
+* changed env ref to `WP_HOME` is now `HOME_URL` ([b4a3568](https://github.com/devuri/wpframework/commit/b4a356833bf998e23a5046fdc09e91bf1d647b98))
+* new `ADMINER_SECRET` env secret for jwt setups ([929c888](https://github.com/devuri/wpframework/commit/929c888d51987727468c27d792b6185c04664073))
+* the `kiosk` now runs just like any tenant with a `configs/{uuid}` directory ([0d0c8a2](https://github.com/devuri/wpframework/commit/0d0c8a2574e506f596775d5c78cd184cd46c6de5))
+
+
+### Bug Fixes
+
+* add `generateKioskFile` to generate kiosk env file ([7b58079](https://github.com/devuri/wpframework/commit/7b58079c0e96d2f29116c75450d62b63bd0e34a2))
+* always validate WP_HOME and WP_SITEURL with isValidHomeUrl() ([f99aed3](https://github.com/devuri/wpframework/commit/f99aed3c6ae7596acdcd265f7081e96238782472))
+* better handling for dbadmin `autologin` with cofigs and settings ([c664e4a](https://github.com/devuri/wpframework/commit/c664e4aef878c558208e5735a6cf12a897c9f919))
+* secure mode access for `Adminer` ([1a0bb1d](https://github.com/devuri/wpframework/commit/1a0bb1dd719acea6ce670ee0a0bacf7053041ac5))
+
+
+### Miscellaneous Chores
+
+* build ([11395ad](https://github.com/devuri/wpframework/commit/11395ad4481a4290337421104d0dacd69178c2be))
+* build ([a46d553](https://github.com/devuri/wpframework/commit/a46d5538eceabb5defebdfa5ea0172f39e29b08a))
+* build ([646a214](https://github.com/devuri/wpframework/commit/646a214a1f8b3c30758b237f95f19532411d4282))
+* build ([ff54cc7](https://github.com/devuri/wpframework/commit/ff54cc72aa4679f6ee4e72d437c920b050f2f309))
+* build ([214d972](https://github.com/devuri/wpframework/commit/214d972a93d77d41ddea2288dba033a754bef7aa))
+
 ## [0.7.3](https://github.com/devuri/wpframework/compare/v0.7.2...v0.7.3) (2025-01-09)
 
 
