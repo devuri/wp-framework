@@ -17,7 +17,7 @@ class KernelConfig
     private $appHttpHost;
     private $configManager;
     private $configsDir;
-    private $configFilename;
+    private $constantsFile;
     private $tenantId;
 
     public function __construct(ConstantBuilder $configManager)
@@ -29,12 +29,12 @@ class KernelConfig
         $this->tenantId = $this->envTenantId();
 
         /*
-         * Sets the name of the configuration `configs/config.php` file based on arguments.
+         * Sets the name of the configuration `configs/constants.php` file based on arguments.
          *
-         * This method defines the configuration file name within the framework. 'config' is the default name, leading to 'config.php'.
+         * This method defines the configuration file name within the framework. 'config' is the default name, leading to 'constants.php'.
          * This name can be customized via the 'config_file' argument, allowing for files like 'constant.php'.
          */
-        $this->configFilename = 'config';
+        $this->constantsFile = 'constants';
 
         // set config override file.
         $this->configurationOverrides();
@@ -190,7 +190,7 @@ class KernelConfig
     protected function getTenantConfigFile(): ?string
     {
         if (isMultitenantApp() && ! empty($this->tenantId)) {
-            $tenantConfigFile = "{$this->appPath}/{$this->configsDir}/{$this->tenantId}/{$this->configFilename}.php";
+            $tenantConfigFile = "{$this->appPath}/{$this->configsDir}/{$this->tenantId}/{$this->constantsFile}.php";
             if (file_exists($tenantConfigFile)) {
                 return $tenantConfigFile;
             }
@@ -206,8 +206,8 @@ class KernelConfig
      */
     protected function getDefaultConfigFile(): ?string
     {
-        $defaultConfigFile = "{$this->appPath}/{$this->configFilename}.php";
-        $userConfigFile = "{$this->appPath}/{$this->configsDir}/{$this->configFilename}.php";
+        $defaultConfigFile = "{$this->appPath}/{$this->constantsFile}.php";
+        $userConfigFile = "{$this->appPath}/{$this->configsDir}/{$this->constantsFile}.php";
 
         if (file_exists($userConfigFile)) {
             return $userConfigFile;

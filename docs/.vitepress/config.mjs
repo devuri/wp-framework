@@ -85,7 +85,7 @@ function navBar(){
 	{
 		text: 'Customization',
 		items: [
-			{ text: 'Configuration', link: 'guide/customization/config-overview' },
+			{ text: 'Configuration', link: 'guide/customization/configurations' },
 			{ text: 'Environments', link: 'guide/customization/environments' },
 			{ text: 'Constants', link: 'guide/customization/constants' },
 			{ text: 'Adminer', link: 'guide/customization/dbadmin' },
@@ -215,7 +215,7 @@ function sidebarGuide() {
 			collapsible: false,
 			collapsed: false,
 			items: [
-				{ text: 'Configuration', link: 'customization/config-overview' },
+				{ text: 'Configuration', link: 'customization/configurations' },
 				{ text: 'Environments', link: 'customization/environments' },
 				{ text: 'Constants', link: 'customization/constants' },
 				{ text: 'Compatibility', link: 'customization/compatibility' },

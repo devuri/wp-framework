@@ -17,7 +17,7 @@ class Asset
      * The Asset url.
      *
      * You can configure the asset URL by setting the ASSET_URL in your .env
-     * Or optionally in the main config file.
+     * Or optionally in the main constants file.
      *
      * @param string      $asset path to the asset like: "/images/thing.png"
      * @param null|string $path

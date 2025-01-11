@@ -7,7 +7,7 @@ Install protection within the Raydium Framework is critical security measure des
 ## Implementing Install Protection
 
 **Activate Install Protection:**
-- Define the `RAYDIUM_INSTALL_PROTECTION` constant in the framework configuration file (`configs/config.php`) or upstream in `wp-config.php` to enable install protection. Setting this constant to `true` enforces the protection mechanism.
+- Define the `RAYDIUM_INSTALL_PROTECTION` constant in the framework constants file (`configs/constants.php`) or upstream in `wp-config.php` to enable install protection. Setting this constant to `true` enforces the protection mechanism.
 
 ```php
 define('RAYDIUM_INSTALL_PROTECTION', true);
