@@ -87,7 +87,6 @@ function navBar(){
 		items: [
 			{ text: 'Configuration', link: 'guide/customization/config-overview' },
 			{ text: 'Environments', link: 'guide/customization/environments' },
-			{ text: 'Env File', link: 'guide/customization/environment-file' },
 			{ text: 'Constants', link: 'guide/customization/constants' },
 			{ text: 'Adminer', link: 'guide/customization/dbadmin' },
 			{ text: 'Compatibility', link: 'guide/customization/compatibility' },
@@ -218,7 +217,6 @@ function sidebarGuide() {
 			items: [
 				{ text: 'Configuration', link: 'customization/config-overview' },
 				{ text: 'Environments', link: 'customization/environments' },
-				{ text: 'Env File', link: 'customization/environment-file' },
 				{ text: 'Constants', link: 'customization/constants' },
 				{ text: 'Compatibility', link: 'customization/compatibility' },
 				{ text: 'GitHub Token', link: 'customization/auth-json' },
@@ -238,8 +236,8 @@ function sidebarReference() {
 				link: 'configuration'
 			},
 			{
-				text: 'Env Vars',
-				link: 'environment-vars'
+				text: 'Env',
+				link: 'environments'
 			},
 			{
 				text: 'Helpers',
