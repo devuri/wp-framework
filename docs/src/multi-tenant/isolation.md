@@ -8,7 +8,7 @@ Upon determining that it's operating in a multi-tenant mode, Raydium engages a s
 
 1. **Tenant Identification**: Raydium identifies the incoming request's associated tenant, typically through domain mapping or a path identifier.
 
-2. **Environment Configuration**: For each tenant, there's a corresponding `.env` [environment file](../customization/environment-file) within its configuration directory (e.g., `configs/<tenant_id>/.env`). This file contains environment-specific variables, including unique database credentials for the tenant.
+2. **Environment Configuration**: For each tenant, there's a corresponding `.env` [environment file](../guide/customization/environments) within its configuration directory (e.g., `configs/<tenant_id>/.env`). This file contains environment-specific variables, including unique database credentials for the tenant.
 
 3. **Dynamic Database Connection**: Before handing off to WordPress, Raydium reads the tenant's `.env` file and establishes a connection to the tenant's specific database. This ensures that all queries, operations, and data storage are performed within the tenant's database, completely isolated from other tenants.
 

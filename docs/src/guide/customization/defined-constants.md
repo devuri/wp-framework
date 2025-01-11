@@ -147,8 +147,12 @@ This environment is ideal for local development or debugging sessions where you 
 - **Flexible Defaults**: Many constants fallback to internal defaults if not set in `.env`, ensuring a safe baseline for memory limits, SSL usage, and script handling.  
 - **Debug Mode**: In debug environments (`debug`, `local`, etc.), WordPress and PHP error reporting become as verbose as possible, aiding rapid troubleshooting.
 
+
+
 > **Note:** You can also set the constant `RAYDIUM_ENVIRONMENT_TYPE` in wp-config.php
 > If the environment type is not provided, it defaults to `null` and will fallback to `.env` file setup.
 > This can be useful in scenarios where you dont have access to `.env` file.
+
+
 
 The environment switcher allows you to run WordPress in a locked-down production mode or a fully verbose debug mode—all by simply changing `ENVIRONMENT_TYPE` in your `.env` file.

@@ -23,7 +23,7 @@ export default defineConfig({
     base: '/wpframework/',
     outDir: '../docs/dist',
     cleanUrls: true,
-	ignoreDeadLinks: true,
+	ignoreDeadLinks: false,
     // sitemap: {
     //     hostname: 'https://devuri.github.io/wpframework'
     // },
@@ -85,15 +85,15 @@ function navBar(){
 	{
 		text: 'Customization',
 		items: [
-			{ text: 'Configuration', link: 'guide/customization/configurations' },
+			{ text: 'Configuration', link: 'guide/customization/config-overview' },
 			{ text: 'Environments', link: 'guide/customization/environments' },
 			{ text: 'Constants', link: 'guide/customization/constants-file' },
+			{ text: 'Defined Constants', link: 'guide/customization/defined-constants' },
 			{ text: 'Adminer', link: 'guide/customization/dbadmin' },
 			{ text: 'Compatibility', link: 'guide/customization/compatibility' },
 			{ text: 'GitHub Token', link: 'guide/customization/auth-json' },
 			{ text: 'Kiosk', link: 'guide/customization/kiosk' },
 			{ text: 'Install Protection', link: 'guide/customization/install-protection' }
-			{ text: 'Defined Constants', link: 'guide/customization/defined-constants' }
 		]
 	},
 	{
@@ -221,9 +221,9 @@ function sidebarGuide() {
 			collapsible: false,
 			collapsed: false,
 			items: [
-				{ text: 'Configuration', link: 'customization/configurations' },
+				{ text: 'Configuration', link: 'customization/config-overview' },
 				{ text: 'Environments', link: 'customization/environments' },
-				{ text: 'Constants', link: 'customization/constants' },
+				{ text: 'Constants', link: 'customization/constants-file' },
 				{ text: 'Compatibility', link: 'customization/compatibility' },
 				{ text: 'GitHub Token', link: 'customization/auth-json' },
 				{ text: 'Kiosk', link: 'customization/kiosk' },
