@@ -9,7 +9,7 @@ Most configuration values can be set using environment variables in your `.env` 
 **Using the `configs()` Helper**  
    Within your theme or plugins, call `configs()->config['app']->get('key.subkey')` to retrieve specific settings.
 
-## Merging Logic: Override Only What You Need
+## Override Only What You Need
 The framework merges your `configs/app.php` on top of its internal defaults at runtime:
 
 - If you **don’t** include a setting, the default persists.  
