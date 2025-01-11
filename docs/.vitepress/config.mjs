@@ -87,12 +87,13 @@ function navBar(){
 		items: [
 			{ text: 'Configuration', link: 'guide/customization/configurations' },
 			{ text: 'Environments', link: 'guide/customization/environments' },
-			{ text: 'Constants', link: 'guide/customization/constants' },
+			{ text: 'Constants', link: 'guide/customization/constants-file' },
 			{ text: 'Adminer', link: 'guide/customization/dbadmin' },
 			{ text: 'Compatibility', link: 'guide/customization/compatibility' },
 			{ text: 'GitHub Token', link: 'guide/customization/auth-json' },
 			{ text: 'Kiosk', link: 'guide/customization/kiosk' },
 			{ text: 'Install Protection', link: 'guide/customization/install-protection' }
+			{ text: 'Defined Constants', link: 'guide/customization/defined-constants' }
 		]
 	},
 	{
@@ -143,6 +144,11 @@ function navBar(){
 		  text: 'Functions',
 		  link: '/reference/functions',
 	  },
+	  {
+		  text: 'Constants',
+		  link: '/reference/constants-overview',
+	  },
+
 	]
   },
   ]

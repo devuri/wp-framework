@@ -93,7 +93,7 @@ It's important to exercise caution when defining constants in `configs/constants
 
 - Review the [WordPress Constants](https://gist.github.com/MikeNGarrett/e20d77ca8ba4ae62adf5) to understand the implications of changing constants.
 - Ensure that overrides do not conflict with Raydium's core functionalities.
-- You can also checkout list of [constants defined](../reference/defined-constants) by the framework.
+- You can also checkout list of [constants defined](/defined-constants) by the framework.
 
 ### Maintenance and Documentation
 
