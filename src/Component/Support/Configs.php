@@ -642,7 +642,7 @@ class Configs implements ConfigsInterface
      *
      * @return string The hashed database URL.
      */
-    private static function dbUrl(string $hashAlgo): ?string
+    private static function dbUrl(string $hashAlgo): string
     {
         if (env('SECURE_AUTH_SALT')) {
             return hash($hashAlgo, urlencode(env('SECURE_AUTH_SALT')));
