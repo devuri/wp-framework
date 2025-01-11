@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.9.0](https://github.com/devuri/wpframework/compare/v0.8.0...v0.9.0) (2025-01-11)
+
+
+### ⚠ BREAKING CHANGES
+
+* the constant file `config.php` is now `constants.php`
+
+### Features
+
+* the constant file `config.php` is now `constants.php` ([78001a6](https://github.com/devuri/wpframework/commit/78001a6650df907ca0587635e40d362e2c449757))
+
 ## [0.8.0](https://github.com/devuri/wpframework/compare/v0.7.3...v0.8.0) (2025-01-11)
 
 
