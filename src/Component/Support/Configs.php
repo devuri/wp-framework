@@ -224,7 +224,10 @@ class Configs implements ConfigsInterface
                 'uri'       => self::dbUrl('fnv1a64'),
                 'validate'  => true,
                 'autologin' => ADMINER_ALLOW_AUTOLOGIN,
-                'secret'    => null,
+                'secret' => [
+                    'key' => env('ADMINER_SECRET', null),
+                    'type' => 'jwt',
+                ],
             ],
             'health_status' => [
                 'enabled' => true,
