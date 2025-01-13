@@ -23,7 +23,7 @@ if (!defined('WP_HOME')) {
 }
 
 if (!defined('ADMINER_ALLOW_AUTOLOGIN')) {
-    define('ADMINER_ALLOW_AUTOLOGIN', false);
+    define('ADMINER_ALLOW_AUTOLOGIN', true);
 }
 
 if (!defined('HOME_URL')) {

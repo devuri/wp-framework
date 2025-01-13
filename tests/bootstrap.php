@@ -27,8 +27,16 @@ if (! \defined('APP_HTTP_HOST')) {
     \define('APP_HTTP_HOST', 'example.com');
 }
 
+if (!\defined('HOME_URL')) {
+    \define('HOME_URL', 'https://example.com');
+}
+
 if (! \defined('APP_DIR_PATH')) {
     \define('APP_DIR_PATH', __DIR__);
+}
+
+if (!\defined('ADMINER_ALLOW_AUTOLOGIN')) {
+    \define('ADMINER_ALLOW_AUTOLOGIN', true);
 }
 
 // true to run unit tests.
