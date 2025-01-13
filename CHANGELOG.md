@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.9.2](https://github.com/devuri/wpframework/compare/v0.9.1...v0.9.2) (2025-01-13)
+
+
+### Features
+
+* adds `SQLiteDatabase` A lightweight SQLite database wrapper ([de4b111](https://github.com/devuri/wpframework/commit/de4b111671540112b489a0dae4e8876ce2909319))
+
+
+### Miscellaneous Chores
+
+* update tests ([012a8cc](https://github.com/devuri/wpframework/commit/012a8cc7c36fbb05ca91f996527e9645344703d4))
+
 ## [0.9.1](https://github.com/devuri/wpframework/compare/v0.9.0...v0.9.1) (2025-01-11)
 
 
