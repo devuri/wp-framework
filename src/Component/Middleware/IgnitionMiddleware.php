@@ -23,7 +23,6 @@ class IgnitionMiddleware extends AbstractMiddleware
 {
     protected ?EnvType $envType;
     private $tenant;
-    private $configs;
 
     /**
      * Process an incoming server request.
@@ -43,7 +42,6 @@ class IgnitionMiddleware extends AbstractMiddleware
         }
 
         $this->envType = $this->services->get('env_type');
-        $this->configs = $this->services->get('configs');
         $tenantConfigPath = $this->configs->getConfigsDir() . '/' . $this->tenant['uuid'];
         $envFiles = $this->envType->filterFiles(
             EnvType::supportedFiles(),

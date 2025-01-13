@@ -19,9 +19,8 @@ use WPframework\Support\Configs;
 
 class KernelMiddleware extends AbstractMiddleware
 {
-    private $kernelConfig;
+    private $kernel;
     private $pathError;
-    private $configs;
 
     /**
      * Process an incoming server request.
@@ -33,13 +32,9 @@ class KernelMiddleware extends AbstractMiddleware
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $configs = $this->services->get('configs');
-        $this->kernelConfig = $this->services->get('kernel');
-        $this->configs = $configs->app();
-
-        $this->kernelConfig->setKernelConstants($this->configs);
-
+        $this->kernel = $this->services->get('kernel');
         $isProd = $request->getAttribute('isProd', false);
+        $this->kernel->setKernelConstants($this->configs->app());
 
         if (! $this->isValidInstallerPath($isProd)) {
             throw new Exception(
@@ -56,10 +51,10 @@ class KernelMiddleware extends AbstractMiddleware
 
     protected function isValidInstallerPath(bool $isProd): bool
     {
-        $publicWebRoot = $this->configs->config['app']->get('directory.web_root_dir');
-        $contentDir = $this->configs->config['app']->get('directory.content_dir');
-        $plugin = $this->configs->config['app']->get('directory.plugin_dir');
-        $muPlugins = $this->configs->config['app']->get('directory.mu_plugin_dir');
+        $publicWebRoot = $this->configs->app()->config['app']->get('directory.web_root_dir');
+        $contentDir = $this->configs->app()->config['app']->get('directory.content_dir');
+        $plugin = $this->configs->app()->config['app']->get('directory.plugin_dir');
+        $muPlugins = $this->configs->app()->config['app']->get('directory.mu_plugin_dir');
 
         // set by the framework.
         $installerPaths = [

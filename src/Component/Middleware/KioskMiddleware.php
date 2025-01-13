@@ -33,7 +33,7 @@ class KioskMiddleware extends AbstractMiddleware
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $this->appDirPath = APP_DIR_PATH;
-        $cfgs = $this->services->get('configs')->app();
+        $cfgs = $this->configs->app();
         $this->kioskConfig = $cfgs->config['kiosk'];
         $this->isAdminKiosk = $request->getAttribute('isAdminKiosk', false);
         $this->twigOptions = array_merge(

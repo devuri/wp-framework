@@ -30,8 +30,7 @@ class AuthMiddleware extends AbstractMiddleware
     {
         $this->auth = $this->services->get('auth');
         $cookies = $request->getCookieParams();
-        $configs = $this->services->get('configs');
-        $this->auth->setConfigs($configs);
+        $this->auth->setConfigs($this->configs);
         $this->auth->setValidator();
         $this->auth->setCookies($cookies);
         $userAuth = $this->auth->check($request->getUri()->getScheme());
