@@ -172,6 +172,30 @@ class DB
         }
     }
 
+    public function getUserMeta(int $userId, string $metaKey, $default = null)
+    {
+        $query = "SELECT meta_value FROM {$this->table} WHERE user_id = :user_id AND meta_key = :meta_key LIMIT 1";
+        $stmt = $this->wpdb->prepare($query);
+
+        $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->bindValue(':meta_key', $metaKey, PDO::PARAM_STR);
+
+        try {
+            $stmt->execute();
+            $result = $stmt->fetchColumn();
+
+            if (false === $result) {
+                return $default;
+            }
+
+            return $this->maybeUnserialize($result);
+        } catch (PDOException $e) {
+            error_log("Database error: " . $e->getMessage());
+
+            return $default;
+        }
+    }
+
     /**
      * @param string $table_name_no_prefix
      *
