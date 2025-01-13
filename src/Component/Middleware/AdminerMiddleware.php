@@ -33,8 +33,7 @@ class AdminerMiddleware extends AbstractMiddleware
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $configs = $this->services->get('configs');
-        $dbAdminConfig = $configs->config['app']->get('dbadmin');
+        $dbAdminConfig = $this->configs->app()->config['app']->get('dbadmin');
         $adminerUri = env('ADMINER_URI', $dbAdminConfig['uri']);
 
         // Determine the database admin URL path
@@ -65,15 +64,5 @@ class AdminerMiddleware extends AbstractMiddleware
         }
 
         return $handler->handle($request);
-    }
-
-    private static function isSecureMode(): bool
-    {
-        $environment = \defined('ENVIRONMENT_TYPE') ? ENVIRONMENT_TYPE : null;
-        if (\in_array(env('ENVIRONMENT_TYPE'), ['sec', 'secure'], true) || \in_array($environment, ['sec', 'secure'], true)) {
-            return true;
-        }
-
-        return false;
     }
 }

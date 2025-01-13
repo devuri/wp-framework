@@ -11,7 +11,8 @@
 
 use WPframework\SQLite\Repository;
 use WPframework\SQLite\SQLiteDatabase;
-//use WPframework\Logger\FileLogger;
+
+// use WPframework\Logger\FileLogger;
 
 if (!\defined('APP_TEST_PATH')) {
     exit;
@@ -19,7 +20,7 @@ if (!\defined('APP_TEST_PATH')) {
 
 // 1. Instantiate the SQLiteDatabase
 $dbPath = __DIR__ . '/data/my_database.db';
-//$db     = new SQLiteDatabase($dbPath, new FileLogger());
+// $db     = new SQLiteDatabase($dbPath, new FileLogger());
 $db     = new SQLiteDatabase($dbPath);
 
 // 2. Create a Repository for the "users" table

@@ -17,33 +17,43 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
+use WPframework\Support\Configs;
 
 abstract class AbstractMiddleware implements MiddlewareInterface
 {
     /**
      * @var PsrContainer
      */
-    protected $services;
+    protected PsrContainer $services;
 
     /**
      * @var bool
      */
-    protected $isMultitenant;
+    protected bool $isMultitenant;
 
     /**
      * @var bool
      */
-    protected $isAdminKiosk;
+    protected bool $isAdminKiosk;
+
+    /**
+     * @var Configs
+     */
+    protected Configs $configs;
 
     /**
      * @var LoggerInterface
      */
-    private $logger;
+    private LoggerInterface $logger;
 
+    /**
+     * @param PsrContainer $serviceContainer
+     */
     public function __construct(?PsrContainer $serviceContainer = null)
     {
         $this->services = $serviceContainer;
         $this->logger = $this->services->get('logger');
+        $this->configs = $this->services->get('configs');
     }
 
     /**
@@ -206,7 +216,7 @@ abstract class AbstractMiddleware implements MiddlewareInterface
      */
     protected function getAllowedAccessPaths(): ?array
     {
-        $cfgs = $this->services->get('configs')->app();
+        $cfgs = $this->configs->app();
 
         // Check if wp-admin restrictions are enabled
         $restrictWPadmin = $cfgs->config['app']->get('security.restrict_wpadmin.enabled', false);
@@ -251,5 +261,15 @@ abstract class AbstractMiddleware implements MiddlewareInterface
     protected function isValidTenantId(string $tenantId)
     {
         return preg_match('/^[a-zA-Z0-9_-]+$/', $tenantId);
+    }
+
+    protected static function isSecureMode(): bool
+    {
+        $environment = \defined('ENVIRONMENT_TYPE') ? ENVIRONMENT_TYPE : null;
+        if (\in_array(env('ENVIRONMENT_TYPE'), ['sec', 'secure'], true) || \in_array($environment, ['sec', 'secure'], true)) {
+            return true;
+        }
+
+        return false;
     }
 }
