@@ -1,11 +1,25 @@
 <?php
 
+/*
+ * This file is part of the WPframework package.
+ *
+ * (c) Uriel Wilson <uriel@wpframework.io>
+ *
+ * The full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace WPframework\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
-use WPframework\EnvType;
 use Symfony\Component\Filesystem\Filesystem;
+use WPframework\EnvType;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class EnvFileReaderTest extends TestCase
 {
     private string $testFilePath;
@@ -17,7 +31,7 @@ class EnvFileReaderTest extends TestCase
         $this->testFilePath = APP_TEST_PATH . '/test.env';
 
         // Write the test .env file
-        $this->filesystem->dumpFile($this->testFilePath, self::testenvContent());
+        $this->filesystem->dumpFile($this->testFilePath, self::envContent());
     }
 
     protected function tearDown(): void
@@ -27,11 +41,11 @@ class EnvFileReaderTest extends TestCase
         }
     }
 
-    public function testReadEnvFile(): void
+    public function test_read_env_file(): void
     {
         $reader = new EnvType($this->filesystem);
 
-		// Read without grouping by sections.
+        // Read without grouping by sections.
         $envData = $reader->read($this->testFilePath);
 
         $this->assertArrayHasKey('HOME_URL', $envData);
@@ -44,9 +58,9 @@ class EnvFileReaderTest extends TestCase
         $this->assertEquals('false', $envData['ENABLE_S3_BACKUP']);
     }
 
-	private static function testenvContent(): string
+    private static function envContent(): string
     {
-        $content = <<<EOD
+        return <<<EOD
 HOME_URL='https://example.com'
 WP_SITEURL="\${HOME_URL}/wp"
 ADMIN_LOGIN_URL="\${HOME_URL}/wp/wp-login.php"
@@ -123,6 +137,5 @@ SECURE_AUTH_SALT='Wjvt)Z1(n6qbAO|Y4IYEP)}{L5q?iR}pqWWHWSQrN,(pOu@-a|q%FlRY6PwWr:
 LOGGED_IN_SALT='MY5`,b(![#.Ni_P))zF*pOK3n7[F5k!Yr`DoDPyh@2]p#yS3`)SQq@xNR;!2KtVL'
 NONCE_SALT='2[]7?kLGY`e-,6B:EU,ul;w(:HJlo1v;>.5{pc)8vxknaVi|Q&luz|>pW3w*8lL0'
 EOD;
-return $content;
     }
 }

@@ -13,7 +13,6 @@ namespace WPframework;
 
 use Pimple\Container as PimpleContainer;
 use Pimple\Psr11\Container as PsrContainer;
-use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -84,7 +83,7 @@ class App implements RequestHandlerInterface
     protected $emitter;
 
     /**
-     * @var RequestInterface
+     * @var ServerRequestInterface
      */
     protected $finalRequest;
 

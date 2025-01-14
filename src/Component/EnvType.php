@@ -14,6 +14,7 @@ namespace WPframework;
 use Exception;
 use InvalidArgumentException;
 use stdClass;
+use Symfony\Component\Filesystem\FileNotFoundException;
 use Symfony\Component\Filesystem\Filesystem;
 
 final class EnvType
@@ -183,15 +184,49 @@ final class EnvType
             throw new InvalidArgumentException("The .env file does not exist at: {$envFilePath}");
         }
 
-        $content = file_get_contents($envFilePath);
-        $content = str_replace(["\r\n", "\r"], "\n", $content); // Normalize line endings
-        $lines = explode("\n", $content);
-
+        $lines = $this->readEnvFile($envFilePath);
         if ($groupBySections) {
             return $this->parseWithSections($lines);
         }
 
         return $this->parseWithoutSections($lines, $sanitized);
+    }
+
+    /**
+     * Reads the .env file and returns an array of environment variables.
+     *
+     * @throws FileNotFoundException    If the .env file does not exist.
+     * @throws InvalidArgumentException If the .env file contains invalid syntax.
+     *
+     * @return array
+     */
+    public function readOnly(string $envFilePath): array
+    {
+        if (!$this->filesystem->exists($envFilePath)) {
+            throw new FileNotFoundException(\sprintf('Env file "%s" not found.', $envFilePath));
+        }
+
+        $envData = [];
+        foreach ($this->readEnvFile($envFilePath) as $line) {
+            $line = trim($line);
+
+            if (empty($line) || strStartsWith($line, '#')) {
+                continue;
+            }
+
+            $parts = explode('=', $line, 2);
+            if (2 !== \count($parts)) {
+                throw new InvalidArgumentException(\sprintf('Invalid syntax in .env file: "%s"', $line));
+            }
+
+            $key = trim($parts[0]);
+            $value = trim($parts[1]);
+            $value = str_replace(['"', "'"], '', $value);
+
+            $envData[$key] = $value;
+        }
+
+        return $envData;
     }
 
     protected function generateFileContent(?string $wpdomain = null, ?string $prefix = null): string
@@ -401,7 +436,7 @@ final class EnvType
             $line = trim($line);
 
             // Skip comments and empty lines
-            if (empty($line) || str_starts_with($line, '#')) {
+            if (empty($line) || strStartsWith($line, '#')) {
                 if (!empty($currentSection)) {
                     $sections[] = $currentSection;
                     $currentSection = [];
@@ -429,7 +464,7 @@ final class EnvType
             $line = trim($line);
 
             // Skip comments and empty lines
-            if (empty($line) || str_starts_with($line, '#')) {
+            if (empty($line) || strStartsWith($line, '#')) {
                 continue;
             }
 
@@ -480,5 +515,34 @@ final class EnvType
         }
 
         return $value;
+    }
+
+    private function readEnvFile(string $envFilePath): array
+    {
+        $fileContent = $this->readFile($envFilePath);
+        $fileContent = str_replace(["\r\n", "\r"], "\n", $fileContent); // Normalize line endings
+
+        return explode("\n", $fileContent);
+    }
+
+    /**
+     * Lazy php7.4 pollyfill for Filesystem.
+     *
+     * @param string $envFilePath
+     *
+     * @return string
+     */
+    private function readFile(string $filePath): string
+    {
+        if (is_dir($filePath)) {
+            throw new Exception(\sprintf('Failed to read file "%s": File is a directory.', $filePath));
+        }
+
+        $content = file_get_contents($filePath);
+        if (false === $content) {
+            throw new Exception(\sprintf('Failed to read file "%s": ', $filePath));
+        }
+
+        return $content;
     }
 }
