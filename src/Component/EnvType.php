@@ -12,6 +12,8 @@
 namespace WPframework;
 
 use Exception;
+use InvalidArgumentException;
+use stdClass;
 use Symfony\Component\Filesystem\Filesystem;
 
 final class EnvType
@@ -173,6 +175,23 @@ final class EnvType
         }
 
         return $password;
+    }
+
+    public function read(string $envFilePath, bool $sanitized = true, $groupBySections = false): array
+    {
+        if (!$this->filesystem->exists($envFilePath)) {
+            throw new InvalidArgumentException("The .env file does not exist at: {$envFilePath}");
+        }
+
+        $content = file_get_contents($envFilePath);
+        $content = str_replace(["\r\n", "\r"], "\n", $content); // Normalize line endings
+        $lines = explode("\n", $content);
+
+        if ($groupBySections) {
+            return $this->parseWithSections($lines);
+        }
+
+        return $this->parseWithoutSections($lines, $sanitized);
     }
 
     protected function generateFileContent(?string $wpdomain = null, ?string $prefix = null): string
@@ -348,5 +367,118 @@ final class EnvType
         APP_TENANT_SECRET='$appTenantSecret'
 
         END;
+    }
+
+    private function parseLine(string $line): array
+    {
+        [$key, $value] = array_map('trim', explode('=', $line, 2));
+
+        if (preg_match('/^"(.*?)"$/', $value, $matches)) {
+            $value = $matches[1];
+        } elseif (preg_match("/^'(.*?)'$/", $value, $matches)) {
+            $value = $matches[1];
+        } else {
+            // Validate unquoted values
+            if (!preg_match('/^[a-zA-Z0-9_\.\-\/]*$/', $value)) {
+                throw new InvalidArgumentException("Invalid value detected in .env file: {$value}");
+            }
+        }
+
+        // Validate key
+        if (!preg_match('/^[a-zA-Z0-9_]+$/', $key)) {
+            throw new InvalidArgumentException("Invalid key detected in .env file: {$key}");
+        }
+
+        return [$key, $value];
+    }
+
+    private function parseWithSections(array $lines): array
+    {
+        $sections = [];
+        $currentSection = [];
+
+        foreach ($lines as $line) {
+            $line = trim($line);
+
+            // Skip comments and empty lines
+            if (empty($line) || str_starts_with($line, '#')) {
+                if (!empty($currentSection)) {
+                    $sections[] = $currentSection;
+                    $currentSection = [];
+                }
+
+                continue;
+            }
+
+            $currentSection[] = $this->parseLine($line);
+        }
+
+        // Add the last section if it exists
+        if (!empty($currentSection)) {
+            $sections[] = $currentSection;
+        }
+
+        return $this->convertSectionsToObjects($sections);
+    }
+
+    private function parseWithoutSections(array $lines, $sanitizeVal = true): array
+    {
+        $parsed = [];
+
+        foreach ($lines as $line) {
+            $line = trim($line);
+
+            // Skip comments and empty lines
+            if (empty($line) || str_starts_with($line, '#')) {
+                continue;
+            }
+
+            [$key, $value] = $this->parseLine($line);
+            $sanitizedKey = self::sanitizeKey($key);
+            $itemValue = $this->getValue($value, $sanitizeVal);
+
+            if (null !== $sanitizedKey && '' !== $sanitizedKey) {
+                $parsed[$sanitizedKey] = $itemValue;
+            }
+        }
+
+        return $parsed;
+    }
+
+    private static function sanitizeKey(string $key)
+    {
+        return preg_replace('/[^a-zA-Z0-9_]/', '', $key);
+    }
+
+    private function convertSectionsToObjects(array $sections, bool $sanitizeVal = true): array
+    {
+        $sectionObjects = [];
+
+        foreach ($sections as $section) {
+            $sectionObject = new stdClass();
+
+            foreach ($section as [$key, $value]) {
+                // Sanitize key and value
+                $sanitizedKey = self::sanitizeKey($key);
+                $itemValue = $this->getValue($value, $sanitizeVal);
+
+                if (null !== $sanitizedKey && '' !== $sanitizedKey) {
+                    $sectionObject->{$sanitizedKey} = $itemValue;
+                }
+            }
+
+            $sectionObjects[] = $sectionObject;
+        }
+
+        return $sectionObjects;
+    }
+
+    private function getValue($value, bool $sanitized = true)
+    {
+        if ($sanitized) {
+            return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+        }
+
+        return $value;
     }
 }
