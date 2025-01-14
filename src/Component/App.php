@@ -24,6 +24,7 @@ use WPframework\Middleware\Handlers\FinalHandler;
 use WPframework\Middleware\Handlers\MiddlewareDispatcher;
 use WPframework\Middleware\Handlers\MiddlewareRegistry;
 use WPframework\Support\Configs;
+use WPframework\Support\Str;
 
 class App implements RequestHandlerInterface
 {
@@ -269,12 +270,12 @@ class App implements RequestHandlerInterface
             $this->terminateWithException($this->exception, $response);
         }
 
-        if (strContains($contentType, 'application/json')) {
+        if (Str::contains($contentType, 'application/json')) {
             $this->emitter->emitBody($response);
             exit;
         }
 
-        if (strContains($contentType, 'text/html')) {
+        if (Str::contains($contentType, 'text/html')) {
             $this->emitter->emitBody($response);
             exit;
         }

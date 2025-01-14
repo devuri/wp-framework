@@ -9,7 +9,6 @@
  * file that was distributed with this source code.
  */
 
-use Defuse\Crypto\Key;
 use Psr\Http\Message\RequestInterface;
 use Psr\Log\InvalidArgumentException;
 use Psr\Log\LogLevel;
@@ -64,27 +63,34 @@ function assetUrl(?string $path = null): string
  */
 function env($name, $default = null, $encrypt = false, $strtolower = false)
 {
-    $encryption_path = \defined('APP_PATH') ? APP_PATH : APP_DIR_PATH;
-    $env_var = null;
+    $encryptionPath = \defined('APP_ENCRYPTION_PATH') ? APP_ENCRYPTION_PATH : null;
+    $envVal = null;
+
+    if (! is_dir($encryptionPath)) {
+        $encryptionPath = null;
+    }
+
+    if (\is_null($encryptionPath)) {
+        $encryptionPath = APP_DIR_PATH;
+    }
 
     if (empty($_ENV)) {
         return $default;
     }
 
-    static $env_instance;
-    static $whitelisted;
-    if (null === $env_instance) {
+    static $envInstance;
+    if (null === $envInstance) {
         $cfgs = configs();
-        $env_instance = new Env($cfgs->config['whitelist'], $encryption_path, false);
+        $envInstance = new Env($cfgs->config['whitelist'], $encryptionPath, false);
     }
 
     try {
-        $env_var = $env_instance->get($name, $default, $encrypt, $strtolower);
+        $envVal = $envInstance->get($name, $default, $encrypt, $strtolower);
     } catch (Exception $e) {
         throw new \InvalidArgumentException($e->getMessage());
     }
 
-    return $env_var;
+    return $envVal;
 }
 
 function appOptionsDir(): ?string
@@ -110,49 +116,6 @@ function configs()
     }
 
     return $siteConfig;
-}
-
-/**
- * Gets hash of given string.
- *
- * If no secret key is provided we will use the SECURE_AUTH_KEY wp key.
- *
- * @param string $data      Message to be hashed.
- * @param string $secretkey Secret key used for generating the HMAC variant.
- * @param string $algo      Name of selected hashing algorithm (i.e. "md5", "sha256", "haval160,4", etc..)
- *
- * @return false|string Returns a string containing the calculated hash value.
- *
- * @see https://www.php.net/manual/en/function.hash-hmac.php
- */
-function envHash($data, ?string $secretkey = null, string $algo = 'sha256')
-{
-    if (\is_null($secretkey)) {
-        return hash_hmac($algo, $data, env('SECURE_AUTH_KEY'));
-    }
-
-    return hash_hmac($algo, $data, $secretkey);
-}
-
-/**
- * Basic Sanitize and prepare for a string input for safe usage in the application.
- *
- * This function sanitizes the input by removing leading/trailing whitespace,
- * stripping HTML and PHP tags, converting special characters to HTML entities,
- * and removing potentially dangerous characters for security.
- *
- * @param string $input The input string to sanitize.
- *
- * @return string The sanitized input ready for safe usage within the application.
- */
-function wpSanitize(string $input): string
-{
-    $input = trim($input);
-    $input = strip_tags($input);
-    $input = htmlspecialchars($input, ENT_QUOTES, 'UTF-8');
-    $input = str_replace(["'", "\"", "--", ";"], "", $input);
-
-    return filter_var($input, FILTER_UNSAFE_RAW, FILTER_FLAG_NO_ENCODE_QUOTES);
 }
 
 /**
@@ -439,38 +402,4 @@ function twig(array $options = [], array $templates = []): Twigit\Twigit
     }
 
     return Twigit\Twigit::init(APP_DIR_PATH, $env_options, $templates);
-}
-
-/**
- * Polyfill for str_contains for PHP 7.4, using the native function if available.
- *
- * @param string $haystack The string to search in.
- * @param string $needle   The substring to search for.
- *
- * @return bool True if $haystack contains $needle, false otherwise.
- */
-function strContains(string $haystack, string $needle): bool
-{
-    if (\function_exists('str_contains')) {
-        return str_contains($haystack, $needle);
-    }
-
-    return '' === $needle || false !== strpos($haystack, $needle);
-}
-
-/**
- * Polyfill for str_starts_with for PHP versions before 8.0, using the native function if available.
- *
- * @param string $haystack The string to search in.
- * @param string $needle   The substring to search for.
- *
- * @return bool True if $haystack starts with $needle, false otherwise.
- */
-function strStartsWith(string $haystack, string $needle): bool
-{
-    if (\function_exists('str_starts_with')) {
-        return str_starts_with($haystack, $needle);
-    }
-
-    return '' === $needle || 0 === strpos($haystack, $needle);
 }
