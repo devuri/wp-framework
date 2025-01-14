@@ -457,3 +457,20 @@ function strContains(string $haystack, string $needle): bool
 
     return '' === $needle || false !== strpos($haystack, $needle);
 }
+
+/**
+ * Polyfill for str_starts_with for PHP versions before 8.0, using the native function if available.
+ *
+ * @param string $haystack The string to search in.
+ * @param string $needle   The substring to search for.
+ *
+ * @return bool True if $haystack starts with $needle, false otherwise.
+ */
+function strStartsWith(string $haystack, string $needle): bool
+{
+    if (\function_exists('str_starts_with')) {
+        return str_starts_with($haystack, $needle);
+    }
+
+    return '' === $needle || 0 === strpos($haystack, $needle);
+}
