@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.9.3](https://github.com/devuri/wpframework/compare/v0.9.2...v0.9.3) (2025-01-14)
+
+
+### Features
+
+* adds `config['path']` to get `appPath` and `configsPath` ([47fd16e](https://github.com/devuri/wpframework/commit/47fd16e027365881f12db3712998e63f1f69ea36))
+* adds env file reader ([3cda878](https://github.com/devuri/wpframework/commit/3cda878fb84066470abe3085956c77724676ee20))
+
+
+### Miscellaneous Chores
+
+* code comment fixes ([abf55a7](https://github.com/devuri/wpframework/commit/abf55a72e2b88a7b5ace5dd51a862afde9760273))
+
 ## [0.9.2](https://github.com/devuri/wpframework/compare/v0.9.1...v0.9.2) (2025-01-13)
 
 
