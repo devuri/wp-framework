@@ -48,8 +48,8 @@ class AdminerMiddleware extends AbstractMiddleware
          * is running in secure mode. If either condition is true, the request is passed to the next handler
          * without executing any additional logic.
          *
-		 * Secure mode is determined by the `ENVIRONMENT_TYPE`, which can be set in the `.env` file
-		 * or defined as a constant (e.g., in `wp-config.php` or `constants.php`).
+         * Secure mode is determined by the `ENVIRONMENT_TYPE`, which can be set in the `.env` file
+         * or defined as a constant (e.g., in `wp-config.php` or `constants.php`).
          */
         if (!$dbAdminConfig['enabled'] || self::isSecureMode()) {
             return $handler->handle($request);

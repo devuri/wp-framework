@@ -15,6 +15,7 @@ use Pimple\Container as PimpleContainer;
 use Pimple\Psr11\Container as PsrContainer;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Throwable;
@@ -68,7 +69,7 @@ class App implements RequestHandlerInterface
     protected $exception;
 
     /**
-     * @var RequestInterface
+     * @var ServerRequestInterface
      */
     protected $request;
 
@@ -90,7 +91,7 @@ class App implements RequestHandlerInterface
     /**
      * App constructor.
      */
-    public function __construct(RequestInterface $request, ?Bindings $containerBindings)
+    public function __construct(ServerRequestInterface $request, ?Bindings $containerBindings)
     {
         $this->container = $containerBindings->getContainer();
         $this->psrContainer = $containerBindings->getPsrContainer();
@@ -99,7 +100,7 @@ class App implements RequestHandlerInterface
 
         $this->defaultHandler = new FinalHandler();
 
-        $this->errorHandler = function (Throwable $e, RequestInterface $request, ResponseInterface $response) {
+        $this->errorHandler = function (Throwable $e, ServerRequestInterface $request, ResponseInterface $response) {
             $this->exception =  $e;
 
             $this->response = (new Response())->withStatus(
@@ -176,11 +177,11 @@ class App implements RequestHandlerInterface
     /**
      * The PSR-15 compliant method to handle a request.
      *
-     * @param RequestInterface $request
+     * @param ServerRequestInterface $request
      *
      * @return ResponseInterface
      */
-    public function handle(RequestInterface $request): ResponseInterface
+    public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $this->request = $request->withAttribute('isProd', Configs::isInProdEnvironment());
 
@@ -235,12 +236,12 @@ class App implements RequestHandlerInterface
     /**
      * Method to handle exceptions using the defined error handler.
      *
-     * @param Throwable        $except
-     * @param RequestInterface $request
+     * @param Throwable              $except
+     * @param ServerRequestInterface $request
      *
      * @return ResponseInterface
      */
-    protected function handleException(Throwable $except, RequestInterface $request): ResponseInterface
+    protected function handleException(Throwable $except, ServerRequestInterface $request): ResponseInterface
     {
         $this->exception = $except;
         $this->response = (new Response())->withStatus(

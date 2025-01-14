@@ -13,9 +13,10 @@ namespace WPframework;
 
 use Pimple\Container as PimpleContainer;
 use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Throwable;
 use WPframework\Http\HttpFactory;
-use WPframework\Http\Request;
+use WPframework\Http\Message\ServerRequest;
 use WPframework\Logger\FileLogger;
 use WPframework\Logger\Log;
 
@@ -32,7 +33,7 @@ class AppFactory
      *
      * @return App An initialized App instance.
      */
-    public static function create(string $appDirPath, ?string $environment = null): App
+    public static function create(string $appDirPath, ?string $environment = null, ?ServerRequestInterface $request = null): App
     {
         \define('FRAMEWORK_CONFIGS_DIR', \dirname(__DIR__) . '/inc/configs');
 
@@ -40,7 +41,7 @@ class AppFactory
         $httpHost = HttpFactory::init()->getHttpHost();
 
         // Create the initial request object
-        self::$request = Request::create();
+        self::$request = self::createRequest($request);
 
         // Mandatory application-wide constants
         self::defineMandatoryConstants($appDirPath, $httpHost);
@@ -109,6 +110,15 @@ class AppFactory
         }
 
         EnvLoader::init(APP_DIR_PATH, APP_HTTP_HOST)->load($envFiles, $envType);
+    }
+
+    private static function createRequest(?ServerRequestInterface $request = null)
+    {
+        if ($request) {
+            return $request;
+        }
+
+        return  ServerRequest::create();
     }
 
     /**
