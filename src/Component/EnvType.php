@@ -16,6 +16,7 @@ use InvalidArgumentException;
 use stdClass;
 use Symfony\Component\Filesystem\FileNotFoundException;
 use Symfony\Component\Filesystem\Filesystem;
+use WPframework\Support\Str;
 
 final class EnvType
 {
@@ -210,7 +211,7 @@ final class EnvType
         foreach ($this->readEnvFile($envFilePath) as $line) {
             $line = trim($line);
 
-            if (empty($line) || strStartsWith($line, '#')) {
+            if (empty($line) || Str::startsWith($line, '#')) {
                 continue;
             }
 
@@ -436,7 +437,7 @@ final class EnvType
             $line = trim($line);
 
             // Skip comments and empty lines
-            if (empty($line) || strStartsWith($line, '#')) {
+            if (empty($line) || Str::startsWith($line, '#')) {
                 if (!empty($currentSection)) {
                     $sections[] = $currentSection;
                     $currentSection = [];
@@ -464,12 +465,12 @@ final class EnvType
             $line = trim($line);
 
             // Skip comments and empty lines
-            if (empty($line) || strStartsWith($line, '#')) {
+            if (empty($line) || Str::startsWith($line, '#')) {
                 continue;
             }
 
             [$key, $value] = $this->parseLine($line);
-            $sanitizedKey = self::sanitizeKey($key);
+            $sanitizedKey = Str::sanitizeKey($key);
             $itemValue = $this->getValue($value, $sanitizeVal);
 
             if (null !== $sanitizedKey && '' !== $sanitizedKey) {
@@ -478,11 +479,6 @@ final class EnvType
         }
 
         return $parsed;
-    }
-
-    private static function sanitizeKey(string $key)
-    {
-        return preg_replace('/[^a-zA-Z0-9_]/', '', $key);
     }
 
     private function convertSectionsToObjects(array $sections, bool $sanitizeVal = true): array
@@ -494,7 +490,7 @@ final class EnvType
 
             foreach ($section as [$key, $value]) {
                 // Sanitize key and value
-                $sanitizedKey = self::sanitizeKey($key);
+                $sanitizedKey = Str::sanitizeKey($key);
                 $itemValue = $this->getValue($value, $sanitizeVal);
 
                 if (null !== $sanitizedKey && '' !== $sanitizedKey) {

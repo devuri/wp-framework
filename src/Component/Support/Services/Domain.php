@@ -63,7 +63,7 @@ class Domain
             return false;
         }
 
-        return $this->strContains($fullSubdomain, $this->targetSubdomain);
+        return WPframework\Support\Str::contains($fullSubdomain, $this->targetSubdomain);
     }
 
     /**
@@ -97,22 +97,5 @@ class Domain
         $needleLength = \strlen($needle);
 
         return 0 === $needleLength || (substr($haystack, -$needleLength) === $needle);
-    }
-
-    /**
-     * Polyfill for str_contains for PHP 7.4, using the native function if available.
-     *
-     * @param string $haystack The string to search in.
-     * @param string $needle   The substring to search for.
-     *
-     * @return bool True if $haystack contains $needle, false otherwise.
-     */
-    private function strContains(string $haystack, string $needle): bool
-    {
-        if (\function_exists('str_contains')) {
-            return str_contains($haystack, $needle);
-        }
-
-        return '' === $needle || false !== strpos($haystack, $needle);
     }
 }

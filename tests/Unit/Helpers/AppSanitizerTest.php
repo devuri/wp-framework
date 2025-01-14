@@ -12,11 +12,12 @@
 namespace WPframework\Tests\Unit\Helpers;
 
 use PHPUnit\Framework\TestCase;
+use WPframework\Support\Str;
 
 /**
  * @group WPframework
  *
- * @covers ::wpSanitize
+ * @covers ::Str::sanitize
  *
  * @internal
  */
@@ -26,7 +27,7 @@ class AppSanitizerTest extends TestCase
     {
         $input = "<script>alert('hello');</script>";
         $expected = "alert(&#039hello&#039)";
-        $sanitized = wpSanitize($input);
+        $sanitized = Str::sanitize($input);
         $this->assertEquals($expected, $sanitized);
     }
 
@@ -34,7 +35,7 @@ class AppSanitizerTest extends TestCase
     {
         $input = "&lt;script&gt;alert(&#39;hello&#39;);&lt;/script&gt;";
         $expected = "&ampltscript&ampgtalert(&amp#39hello&amp#39)&amplt/script&ampgt";
-        $sanitized = wpSanitize($input);
+        $sanitized = Str::sanitize($input);
         $this->assertEquals($expected, $sanitized);
     }
 
@@ -42,7 +43,7 @@ class AppSanitizerTest extends TestCase
     {
         $input = "   hello   ";
         $expected = "hello";
-        $sanitized = wpSanitize($input);
+        $sanitized = Str::sanitize($input);
         $this->assertEquals($expected, $sanitized);
     }
 
@@ -50,7 +51,7 @@ class AppSanitizerTest extends TestCase
     {
         $input = "";
         $expected = "";
-        $sanitized = wpSanitize($input);
+        $sanitized = Str::sanitize($input);
         $this->assertEquals($expected, $sanitized);
     }
 
@@ -58,7 +59,7 @@ class AppSanitizerTest extends TestCase
     {
         $input = "color: red; background-image: url('malicious.png');";
         $expected = "color: red background-image: url(&#039malicious.png&#039)";
-        $sanitized = wpSanitize($input);
+        $sanitized = Str::sanitize($input);
         $this->assertEquals($expected, $sanitized);
     }
 
@@ -66,7 +67,7 @@ class AppSanitizerTest extends TestCase
     {
         $input = "<p><a href='http://example.com'>Link</a></p>";
         $expected = "Link";
-        $sanitized = wpSanitize($input);
+        $sanitized = Str::sanitize($input);
         $this->assertEquals($expected, $sanitized);
     }
 }
