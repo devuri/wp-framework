@@ -98,6 +98,10 @@ class Configs implements ConfigsInterface
         }
 
         $this->loadConfigFile('composer');
+        $this->configCache['path'] = [
+            'app' => $this->appPath,
+            'configs' => $this->configsPath,
+        ];
         $this->configCache['whitelist'] = $this->setEnvWhitelist(self::$defaultWhitelist);
         $this->configCache['middlewares'] = $this->setMiddlewares(self::$defaultMiddlewares);
         // $this->configCache['hybrid'] = new DotAccess(['enabled' => null]);
