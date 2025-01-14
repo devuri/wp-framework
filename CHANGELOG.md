@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.9.4](https://github.com/devuri/wpframework/compare/v0.9.3...v0.9.4) (2025-01-14)
+
+
+### Bug Fixes
+
+* better `ServerRequest` separations ([0ee76f5](https://github.com/devuri/wpframework/commit/0ee76f5427be3f0f9f9daf0e036689fe17d6b5c0))
+* better file reader ([7b5e1c7](https://github.com/devuri/wpframework/commit/7b5e1c739cdb9193b74e993cdc13c1ff1c51c93a))
+
 ## [0.9.3](https://github.com/devuri/wpframework/compare/v0.9.2...v0.9.3) (2025-01-14)
 
 
