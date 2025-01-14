@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.5](https://github.com/devuri/wpframework/compare/v0.9.4...v0.9.5) (2025-01-14)
+
+
+### Features
+
+* new `Str::` class ([a1cd178](https://github.com/devuri/wpframework/commit/a1cd1788babdb719c7cb4c192b14ea53157043e2))
+
 ## [0.9.4](https://github.com/devuri/wpframework/compare/v0.9.3...v0.9.4) (2025-01-14)
 
 
