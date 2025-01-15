@@ -109,7 +109,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
       with:
-        ssh-key: ${{ secrets.SSH_KEY }}
+        ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
     - name: Set up PHP
       uses: shivammathur/setup-php@v2
@@ -121,12 +121,14 @@ jobs:
       run: |
         ssh -o StrictHostKeyChecking=no user@server 'bash -s' < ./deploy.sh
       env:
-        SSH_PRIVATE_KEY: ${{ secrets.SSH_KEY }}
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 ```
+
+> [GitHub Actions Documentation](https://github.com/webfactory/ssh-agent)
 
 **Key points**:
 - **`actions/checkout@v2`**: Checks out your repository code.
-- **`ssh-key: ${{ secrets.SSH_KEY }}`**: Automatically configures the deploy key for Git operations.
+- **`ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}`**: Automatically configures the deploy key for Git operations.
 - **`ssh -o StrictHostKeyChecking=no user@server 'bash -s' < ./deploy.sh`**: Connects to your server and runs the `deploy.sh` script.
 
 
@@ -136,7 +138,7 @@ To securely use your **private** key in GitHub Actions, add it as a repository s
 
 1. **Go to Settings** > **Secrets and variables** > **Actions** in your GitHub repository.
 2. Click **New repository secret**.
-3. Name the secret, for example, `SSH_KEY`.
+3. Name the secret, for example, `SSH_PRIVATE_KEY`.
 4. Open your private key (`id_ed25519` or `custom_key`) in a text editor; copy its contents.
 5. Paste it into the **Value** field.
 6. Click **Add secret**.
@@ -156,3 +158,5 @@ To securely use your **private** key in GitHub Actions, add it as a repository s
 - **Restrict Key Permissions** (e.g., `chmod 600`) so only authorized processes can read them.  
 - **Regular Key Rotation**: Periodically regenerate and update your keys.  
 - **Monitor Access**: Check repository logs and server logs for unusual activity.
+
+> **Security:** Always create a **new** SSH key with the appropriate access permissions, avoid using your personal SSH key and instead generate a dedicated key specifically for GitHub Actions.
