@@ -1,66 +1,72 @@
 # Deploying Projects with Deploy Keys
 
-Deploying Raydium-powered WordPress projects using deploy keys and GitHub, especially when set up to use Composer, enhances security and automates the deployment process. This guide provides a detailed, step-by-step approach.
+Deploy keys let you grant limited access to a single repository on GitHub without using personal credentials. This keeps your deployment process secure and automated.
 
 > [!DANGER]
 > It is crucial to keep your private keys secure at all times. Private keys provide access to your repositories and servers, and if compromised, can lead to significant security risks, including unauthorized access to your codebase and sensitive data.
 
-### What Are Deploy Keys?
+## What Are Deploy Keys?
 
-Deploy keys are SSH keys that provide access to a single repository on GitHub. They can be read-only or read-write, offering a secure way to manage repository access without using personal credentials.
+Deploy keys are SSH keys that provide read-only or read-write access to a single GitHub repository. They are:
+- **Secure**: Isolated to one repository, reducing broader credential exposure.
+- **Automated**: Used by CI/CD pipelines (e.g., GitHub Actions) without needing personal tokens.
+- **Simple**: Easy to set up and maintain for deployment workflows.
 
-### Why Use Deploy Keys?
+## Why Use Deploy Keys?
 
-1. **Security**: They limit access to a specific repository, reducing potential security risks.
-2. **Automation**: Facilitate automated deployments without needing user-specific credentials.
-3. **Simplicity**: Simplify the deployment process by avoiding complex authentication setups.
+1. **Security**: Restricts access to a specific repository.  
+2. **Automation**: Facilitates CI/CD deployments without human intervention.  
+3. **Simplicity**: Avoids managing user-level SSH keys or personal access tokens.
 
 ## Step-by-Step Deployment Process
 
-##### 1. Generating an SSH Key Pair
-First, we need to generate an SSH key pair. This key pair consists of a public key and a private key.
+### Step 1: Generating an SSH Key Pair
 
-1. Open your terminal or command prompt.
-2. Run the following command to generate an SSH key pair:
+1. **Open a Terminal** (Linux, macOS, or Windows using Git Bash/WSL).
+2. **Generate the SSH Key Pair**. Two common options:
 
-    ```bash
-    ssh-keygen -t ed25519 -C "your_email@example.com"
-    ```
+   **Option A (Ed25519 Key with Comment)**:
+   ```bash
+   ssh-keygen -t ed25519 -C "your_email@example.com"
+   ```
+   - **`-t ed25519`**: Creates a modern, secure Ed25519 key.
+   - **`-C "your_email@example.com"`**: Adds a comment (often an email).
 
-    - `-t ed25519` specifies the type of key to create (Ed25519 is a modern and secure choice).
-    - `-C "your_email@example.com"` adds a comment with your email to the key.
+   **Option B (Using a Custom Path/Filename)**:
+   ```bash
+   ssh-keygen -t ed25519 -C "your_email@example.com" -f /path/to/custom_key
+   ```
+   - **`-f /path/to/custom_key`**: Places the generated keys at a specified path.
 
-3. When prompted to "Enter a file in which to save the key," press Enter to accept the default location.
-4. When prompted to "Enter passphrase," press Enter twice to skip setting a passphrase (or set one for added security).
+3. **Follow the Prompts**:
+   - Press **Enter** to accept the default location (or use your custom path).
+   - Optionally set a passphrase for extra security (or press Enter twice to skip).
 
-This will create two files:
-- `id_ed25519` (your private key)
-- `id_ed25519.pub` (your public key)
+You now have two files:
+- **Private key** (e.g., `id_ed25519` or `custom_key`)
+- **Public key** (e.g., `id_ed25519.pub` or `custom_key.pub`)
 
-##### 2. Adding the Public Key to GitHub
 
-Next, we need to add the public key to your GitHub repository as a deploy key.
+### Step 2: Adding the Public Key to GitHub
 
-1. Go to your GitHub repository.
-2. Click on **Settings**.
-3. In the left sidebar, click on **Deploy keys**.
-4. Click on **Add deploy key**.
-5. Provide a title for the key (e.g., "Deploy Key for Server").
-6. Open the `id_ed25519.pub` file in a text editor and copy its contents.
-7. Paste the copied contents into the **Key** field on GitHub.
-8. Check **Allow write access** if you need the key to have write permissions (optional).
-9. Click **Add key**.
+1. **Go to Your Repository** on GitHub and select **Settings**.
+2. Click **Deploy keys** in the left sidebar.
+3. Click **Add deploy key**.
+4. Provide a **Title** (e.g., “Deploy Key for My Server”).
+5. Open your public key (e.g., `id_ed25519.pub`) in a text editor; copy its contents.
+6. Paste the public key into the **Key** field on GitHub.
+7. Check **Allow write access** if needed (optional).
+8. Click **Add key**.
 
-##### 3. Configuring Your Raydium-powered WordPress Project
+### Step 3: Configure Your Raydium-powered Project
 
-Ensure your Raydium-powered WordPress project is ready for deployment by setting up your environment variables and any deployment scripts.
+1. **Set Up Your Environment**: Create or update a `.env` file with production credentials or other relevant settings.
+2. **Deployment Script**: Ensure you have a script or process ready to handle tasks like pulling changes and installing dependencies (Composer, etc.).
 
-1. Create a `.env` file if it doesn't exist, and configure it with your production settings.
-2. Ensure your `deploy` script is ready. This script should handle tasks like installing dependencies etc.
 
-##### 4. Creating a Deployment Script
+### Step 4: Creating a Deployment Script on Your Server
 
-Create a deployment script on your server to automate common deployment tasks. For example, create a file named `deploy.sh` in your Raydium-powered project's root directory:
+Create a `deploy.sh` script on your server to automate the deployment steps:
 
 ```bash
 #!/bin/bash
@@ -74,24 +80,18 @@ git pull origin main
 # Install PHP dependencies
 composer install --no-dev --optimize-autoloader
 
-# Set correct permissions
+# Set correct permissions (example for a Linux server)
 chown -R www-data:www-data /path/to/your/project
 ```
 
-Make this script executable by running:
-
+Make your script executable:
 ```bash
 chmod +x deploy.sh
 ```
 
-##### 5. Automating Deployment with GitHub Actions
+### Step 5: Automating Deployment with GitHub Actions
 
-GitHub Actions can automate the deployment process. Create a workflow file in your repository:
-
-1. In your repository, create a directory named `.github/workflows`.
-2. Inside the `workflows` directory, create a file named `deploy.yml`.
-
-Add the following content to `deploy.yml`:
+Use GitHub Actions for continuous deployment. Create a file named `deploy.yml` in `.github/workflows/`:
 
 ```yaml
 name: Deploy Raydium-powered WordPress Application
@@ -109,64 +109,54 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
       with:
-        ssh-key: ${{ secrets.SSH_KEY }}
+        ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
     - name: Set up PHP
       uses: shivammathur/setup-php@v2
       with:
         php-version: '8.0'
 
-    - name: Install Dependencies
-      run: |
-        composer install --no-dev --optimize-autoloader
 
-    - name: Deploy to Server
+    - name: Deploy on Server
       run: |
         ssh -o StrictHostKeyChecking=no user@server 'bash -s' < ./deploy.sh
       env:
-        SSH_PRIVATE_KEY: ${{ secrets.SSH_KEY }}
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 ```
 
-This workflow does the following:
-- Triggers on pushes to the `main` branch.
-- Checks out the repository code.
-- Sets up PHP.
-- Installs dependencies using Composer.
-- Executes the `deploy.sh` script on the server.
+> [GitHub Actions Documentation](https://github.com/webfactory/ssh-agent)
 
-##### 6. Setting Secrets in GitHub
+**Key points**:
+- **`actions/checkout@v2`**: Checks out your repository code.
+- **`ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}`**: Automatically configures the deploy key for Git operations.
+- **`ssh -o StrictHostKeyChecking=no user@server 'bash -s' < ./deploy.sh`**: Connects to your server and runs the `deploy.sh` script.
 
-To securely use your private SSH key in the workflow, add it as a secret in GitHub:
 
-1. Go to your GitHub repository.
-2. Click on **Settings**.
-3. In the left sidebar, click on **Secrets and variables** > **Actions**.
-4. Click on **New repository secret**.
-5. Add a new secret with the name `SSH_KEY`.
-6. Open the `id_ed25519` file in a text editor and copy its contents.
-7. Paste the copied contents into the **Value** field on GitHub.
-8. Click **Add secret**.
+### Step 6: Setting Secrets in GitHub
 
-### Additional Resources
+To securely use your **private** key in GitHub Actions, add it as a repository secret:
 
-For more detailed information on using deploy keys and GitHub, refer to the following resources:
+1. **Go to Settings** > **Secrets and variables** > **Actions** in your GitHub repository.
+2. Click **New repository secret**.
+3. Name the secret, for example, `SSH_PRIVATE_KEY`.
+4. Open your private key (`id_ed25519` or `custom_key`) in a text editor; copy its contents.
+5. Paste it into the **Value** field.
+6. Click **Add secret**.
 
-- [GitHub Docs: Managing deploy keys](https://docs.github.com/en/developers/overview/managing-deploy-keys)
-- [GitHub Actions Documentation](https://docs.github.com/en/actions)
+
+## Additional Resources
+
+- [GitHub Docs: Managing deploy keys](https://docs.github.com/en/developers/overview/managing-deploy-keys)  
+- [GitHub Actions Documentation](https://docs.github.com/en/actions)  
 - [SSH Key Generation](https://www.ssh.com/academy/ssh/keygen)
 
-### Keep Your Private Keys Secure
 
-Here are some best practices to ensure the security of your private keys:
+## Best Practices for Keeping Private Keys Secure
 
-- **Never Share Your Private Keys**: Keep your private keys confidential and never share them with anyone.
-- **Use Strong Passphrases**: If possible, set a strong passphrase when generating your keys to add an extra layer of security.
-- **Store Keys Securely**: Store your private keys in a secure location, such as an encrypted file system or a dedicated key management service.
-- **Limit Key Permissions**: Restrict the permissions of your private keys to only what is necessary for your deployment process.
-- **Regularly Rotate Keys**: Periodically generate new key pairs and update your deploy keys to minimize the risk of key compromise.
-- **Monitor Access**: Regularly monitor your repositories and server access logs for any unusual or unauthorized activity.
+- **Never Share** your private keys; store them in a secure location.  
+- **Use Strong Passphrases** if possible, for added encryption.  
+- **Restrict Key Permissions** (e.g., `chmod 600`) so only authorized processes can read them.  
+- **Regular Key Rotation**: Periodically regenerate and update your keys.  
+- **Monitor Access**: Check repository logs and server logs for unusual activity.
 
-> By following these practices, you can significantly reduce the risk of unauthorized access and ensure the security of your WordPress project deployments.
-
-
-Deploying your Raydium-powered projects using deploy keys and GitHub is a best practice that combines security, simplicity, and automation. By following the steps outlined in this guide, you can ensure a seamless and secure deployment process for your applications.
+> **Security:** Always create a **new** SSH key with the appropriate access permissions, avoid using your personal SSH key and instead generate a dedicated key specifically for GitHub Actions.

@@ -98,6 +98,10 @@ class Configs implements ConfigsInterface
         }
 
         $this->loadConfigFile('composer');
+        $this->configCache['path'] = [
+            'app' => $this->appPath,
+            'configs' => $this->configsPath,
+        ];
         $this->configCache['whitelist'] = $this->setEnvWhitelist(self::$defaultWhitelist);
         $this->configCache['middlewares'] = $this->setMiddlewares(self::$defaultMiddlewares);
         // $this->configCache['hybrid'] = new DotAccess(['enabled' => null]);
@@ -224,7 +228,10 @@ class Configs implements ConfigsInterface
                 'uri'       => self::dbUrl('fnv1a64'),
                 'validate'  => true,
                 'autologin' => ADMINER_ALLOW_AUTOLOGIN,
-                'secret'    => null,
+                'secret' => [
+                    'key' => env('ADMINER_SECRET', null),
+                    'type' => 'jwt',
+                ],
             ],
             'health_status' => [
                 'enabled' => true,
@@ -656,7 +663,6 @@ class Configs implements ConfigsInterface
     {
         return [
             'security' => \WPframework\Middleware\SecurityHeadersMiddleware::class,
-            'https' => \WPframework\Middleware\HttpsOnlyMiddleware::class,
             'spam' => \WPframework\Middleware\SpamDetectionMiddleware::class,
             'tenant' => \WPframework\Middleware\TenantIdMiddleware::class,
             'ignit' => \WPframework\Middleware\IgnitionMiddleware::class,

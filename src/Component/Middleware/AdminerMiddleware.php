@@ -33,8 +33,7 @@ class AdminerMiddleware extends AbstractMiddleware
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $configs = $this->services->get('configs');
-        $dbAdminConfig = $configs->config['app']->get('dbadmin');
+        $dbAdminConfig = $this->configs->app()->config['app']->get('dbadmin');
         $adminerUri = env('ADMINER_URI', $dbAdminConfig['uri']);
 
         // Determine the database admin URL path
@@ -42,7 +41,16 @@ class AdminerMiddleware extends AbstractMiddleware
             ? '/wp/wp-admin/' . $adminerUri
             : '/wp-admin/dbadmin';
 
-        // If database admin is disabled.
+        /*
+         * The database admin (adminer access) configuration.
+         *
+         * This checks if the database administration is disabled or if the application
+         * is running in secure mode. If either condition is true, the request is passed to the next handler
+         * without executing any additional logic.
+         *
+         * Secure mode is determined by the `ENVIRONMENT_TYPE`, which can be set in the `.env` file
+         * or defined as a constant (e.g., in `wp-config.php` or `constants.php`).
+         */
         if (!$dbAdminConfig['enabled'] || self::isSecureMode()) {
             return $handler->handle($request);
         }
@@ -65,15 +73,5 @@ class AdminerMiddleware extends AbstractMiddleware
         }
 
         return $handler->handle($request);
-    }
-
-    private static function isSecureMode(): bool
-    {
-        $environment = \defined('ENVIRONMENT_TYPE') ? ENVIRONMENT_TYPE : null;
-        if (\in_array(env('ENVIRONMENT_TYPE'), ['sec', 'secure'], true) || \in_array($environment, ['sec', 'secure'], true)) {
-            return true;
-        }
-
-        return false;
     }
 }

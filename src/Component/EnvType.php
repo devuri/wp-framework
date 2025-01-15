@@ -12,7 +12,11 @@
 namespace WPframework;
 
 use Exception;
+use InvalidArgumentException;
+use stdClass;
+use Symfony\Component\Filesystem\FileNotFoundException;
 use Symfony\Component\Filesystem\Filesystem;
+use WPframework\Support\Str;
 
 final class EnvType
 {
@@ -173,6 +177,57 @@ final class EnvType
         }
 
         return $password;
+    }
+
+    public function read(string $envFilePath, bool $sanitized = true, $groupBySections = false): array
+    {
+        if (!$this->filesystem->exists($envFilePath)) {
+            throw new InvalidArgumentException("The .env file does not exist at: {$envFilePath}");
+        }
+
+        $lines = $this->readEnvFile($envFilePath);
+        if ($groupBySections) {
+            return $this->parseWithSections($lines);
+        }
+
+        return $this->parseWithoutSections($lines, $sanitized);
+    }
+
+    /**
+     * Reads the .env file and returns an array of environment variables.
+     *
+     * @throws FileNotFoundException    If the .env file does not exist.
+     * @throws InvalidArgumentException If the .env file contains invalid syntax.
+     *
+     * @return array
+     */
+    public function readOnly(string $envFilePath): array
+    {
+        if (!$this->filesystem->exists($envFilePath)) {
+            throw new FileNotFoundException(\sprintf('Env file "%s" not found.', $envFilePath));
+        }
+
+        $envData = [];
+        foreach ($this->readEnvFile($envFilePath) as $line) {
+            $line = trim($line);
+
+            if (empty($line) || Str::startsWith($line, '#')) {
+                continue;
+            }
+
+            $parts = explode('=', $line, 2);
+            if (2 !== \count($parts)) {
+                throw new InvalidArgumentException(\sprintf('Invalid syntax in .env file: "%s"', $line));
+            }
+
+            $key = trim($parts[0]);
+            $value = trim($parts[1]);
+            $value = str_replace(['"', "'"], '', $value);
+
+            $envData[$key] = $value;
+        }
+
+        return $envData;
     }
 
     protected function generateFileContent(?string $wpdomain = null, ?string $prefix = null): string
@@ -348,5 +403,142 @@ final class EnvType
         APP_TENANT_SECRET='$appTenantSecret'
 
         END;
+    }
+
+    private function parseLine(string $line): array
+    {
+        [$key, $value] = array_map('trim', explode('=', $line, 2));
+
+        if (preg_match('/^"(.*?)"$/', $value, $matches)) {
+            $value = $matches[1];
+        } elseif (preg_match("/^'(.*?)'$/", $value, $matches)) {
+            $value = $matches[1];
+        } else {
+            // Validate unquoted values
+            if (!preg_match('/^[a-zA-Z0-9_\.\-\/]*$/', $value)) {
+                throw new InvalidArgumentException("Invalid value detected in .env file: {$value}");
+            }
+        }
+
+        // Validate key
+        if (!preg_match('/^[a-zA-Z0-9_]+$/', $key)) {
+            throw new InvalidArgumentException("Invalid key detected in .env file: {$key}");
+        }
+
+        return [$key, $value];
+    }
+
+    private function parseWithSections(array $lines): array
+    {
+        $sections = [];
+        $currentSection = [];
+
+        foreach ($lines as $line) {
+            $line = trim($line);
+
+            // Skip comments and empty lines
+            if (empty($line) || Str::startsWith($line, '#')) {
+                if (!empty($currentSection)) {
+                    $sections[] = $currentSection;
+                    $currentSection = [];
+                }
+
+                continue;
+            }
+
+            $currentSection[] = $this->parseLine($line);
+        }
+
+        // Add the last section if it exists
+        if (!empty($currentSection)) {
+            $sections[] = $currentSection;
+        }
+
+        return $this->convertSectionsToObjects($sections);
+    }
+
+    private function parseWithoutSections(array $lines, $sanitizeVal = true): array
+    {
+        $parsed = [];
+
+        foreach ($lines as $line) {
+            $line = trim($line);
+
+            // Skip comments and empty lines
+            if (empty($line) || Str::startsWith($line, '#')) {
+                continue;
+            }
+
+            [$key, $value] = $this->parseLine($line);
+            $sanitizedKey = Str::sanitizeKey($key);
+            $itemValue = $this->getValue($value, $sanitizeVal);
+
+            if (null !== $sanitizedKey && '' !== $sanitizedKey) {
+                $parsed[$sanitizedKey] = $itemValue;
+            }
+        }
+
+        return $parsed;
+    }
+
+    private function convertSectionsToObjects(array $sections, bool $sanitizeVal = true): array
+    {
+        $sectionObjects = [];
+
+        foreach ($sections as $section) {
+            $sectionObject = new stdClass();
+
+            foreach ($section as [$key, $value]) {
+                // Sanitize key and value
+                $sanitizedKey = Str::sanitizeKey($key);
+                $itemValue = $this->getValue($value, $sanitizeVal);
+
+                if (null !== $sanitizedKey && '' !== $sanitizedKey) {
+                    $sectionObject->{$sanitizedKey} = $itemValue;
+                }
+            }
+
+            $sectionObjects[] = $sectionObject;
+        }
+
+        return $sectionObjects;
+    }
+
+    private function getValue($value, bool $sanitized = true)
+    {
+        if ($sanitized) {
+            return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+        }
+
+        return $value;
+    }
+
+    private function readEnvFile(string $envFilePath): array
+    {
+        $fileContent = $this->readFile($envFilePath);
+        $fileContent = str_replace(["\r\n", "\r"], "\n", $fileContent); // Normalize line endings
+
+        return explode("\n", $fileContent);
+    }
+
+    /**
+     * Lazy php7.4 pollyfill for Filesystem.
+     *
+     * @param string $envFilePath
+     *
+     * @return string
+     */
+    private function readFile(string $filePath): string
+    {
+        if (is_dir($filePath)) {
+            throw new Exception(\sprintf('Failed to read file "%s": File is a directory.', $filePath));
+        }
+
+        $content = file_get_contents($filePath);
+        if (false === $content) {
+            throw new Exception(\sprintf('Failed to read file "%s": ', $filePath));
+        }
+
+        return $content;
     }
 }

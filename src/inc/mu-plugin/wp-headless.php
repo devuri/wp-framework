@@ -74,7 +74,7 @@ final class HeadlessMode
     public function redirectNonApiRequests(): void
     {
         // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-        if (! is_admin() && ! $this->strStartsWith($_SERVER['REQUEST_URI'] ?? '', '/wp-json/')) {
+        if (! is_admin() && ! Str::startsWith($_SERVER['REQUEST_URI'] ?? '', '/wp-json/')) {
             // Uncomment if you want a real 404 response:
             // wp_die('Headless mode active. Frontend is disabled.', 'Headless Mode', ['response' => 404]);
         }
@@ -139,20 +139,6 @@ final class HeadlessMode
                 return substr($haystack, 0, \strlen($needle)) === $needle;
             }
         }
-    }
-
-    /**
-     * Safe wrapper for str_starts_with call (handles the polyfill name conflict).
-     *
-     * @param string $haystack The string to search in.
-     * @param string $needle   The substring to search for.
-     *
-     * @return bool
-     */
-    private function strStartsWith($haystack, $needle)
-    {
-        // If running PHP 8+, this calls the native function; otherwise, calls the polyfill.
-        return str_starts_with($haystack, $needle);
     }
 }
 

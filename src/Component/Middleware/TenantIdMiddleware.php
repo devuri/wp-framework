@@ -22,7 +22,6 @@ use WPframework\Support\Services\TenantResolver;
 class TenantIdMiddleware extends AbstractMiddleware
 {
     private $tenant;
-    private $configs;
     private $tenantResolver;
     private $constManager;
     private $kioskConfig;
@@ -42,11 +41,15 @@ class TenantIdMiddleware extends AbstractMiddleware
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $this->constManager = $this->services->get('const_builder');
-        $this->configs = $this->services->get('configs');
         $this->isMultitenant = self::isMultitenantApp($this->configs->config['composer']);
         $this->kioskConfig = $this->configs->config['kiosk'];
         $this->tenantDomain = $this->resolveTenantIdFromRequest($request);
         $this->isAdminKiosk = $this->isKiosk($this->tenantDomain);
+
+        // check secure modes.
+        if (self::isSecureMode() && 'https' !== $request->getUri()->getScheme()) {
+            throw new Exception('Access to this resource requires HTTPS.', 403);
+        }
 
         // If not a multitenant application or not an admin kiosk,
         // handle the request normally
@@ -161,6 +164,18 @@ class TenantIdMiddleware extends AbstractMiddleware
     protected static function isLandlord(?string $tenantId = null): bool
     {
         return \defined('LANDLORD_UUID') && \constant('LANDLORD_UUID') === $tenantId;
+    }
+
+    /**
+     * Process the incoming request and enforce HTTPS for specific routes.
+     *
+     * @param ServerRequestInterface $request
+     */
+    protected function httpsOnlyRoute(ServerRequestInterface $request): void
+    {
+        if ($this->isAdminRouteRestricted($request) && 'https' !== $request->getUri()->getScheme()) {
+            throw new Exception('Access to this resource requires HTTPS.', 403);
+        }
     }
 
     private function kioskTenant(): array

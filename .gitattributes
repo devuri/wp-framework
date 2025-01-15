@@ -13,6 +13,7 @@
 /docs                          export-ignore
 /documentation                 export-ignore
 /example                       export-ignore
+VERSION                        export-ignore
 phpunit.xml                    export-ignore
 CHANGELOG.md                   export-ignore
 phpdoc.xml                     export-ignore

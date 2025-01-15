@@ -1,4 +1,4 @@
-## Enable and Use Adminer
+# Use Adminer
 
 **Adminer** is a lightweight database management tool seamlessly integrated into **Raydium**. It allows **superadmin** users to access and manage the database from a web interface. However, for security reasons, Adminer must be properly enabled and configured in several places:
 

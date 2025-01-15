@@ -15,7 +15,6 @@ use Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use WPframework\Support\Configs;
 
 class ConstMiddleware extends AbstractMiddleware
 {
@@ -50,7 +49,7 @@ class ConstMiddleware extends AbstractMiddleware
 
     private function isProd(): bool
     {
-        return Configs::isProd($this->siteManager->getEnvironment());
+        return $this->configs::isProd($this->siteManager->getEnvironment());
     }
 
     /**

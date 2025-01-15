@@ -36,7 +36,7 @@ Navigate to your project directory:
 cd your-project-name
 ```
 
-Within this directory, you'll find an `.env` [environment file](../customization/environment-file). Open this file in your text editor and configure the following settings:
+Within this directory, you'll find an `.env` [environment file](./customization/environments). Open this file in your text editor and configure the following settings:
 
 - `HOME_URL`: Set this to your site's URL.
 - `WP_SITEURL`: This will be your WordPress core directory URL, typically `HOME_URL` appended with `/wp`.
@@ -121,7 +121,7 @@ Changing the public directory in Raydium involves several clear steps:
       }
       ```
 
-4. **Adjust Application Configuration**: Update  [configurations](../reference/configuration) in your `app.php` or any relevant configuration files to reflect the new directory structure. For instance, change the `web_root` path:
+4. **Adjust Application Configuration**: Update  [configurations](./customization/config-overview) in your `app.php` or any relevant configuration files to reflect the new directory structure. For instance, change the `web_root` path:
     ```php
     'directory' => [
         'web_root_dir' => 'webroot', // previously 'public'

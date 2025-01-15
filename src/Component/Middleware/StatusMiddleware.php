@@ -29,7 +29,7 @@ class StatusMiddleware extends AbstractMiddleware
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $configs = $this->services->get('configs')->app();
+        $configs = $this->configs->app();
 
         $isEnable = $configs->config['app']->get('health_status.enabled', false);
         $statusRoute = $configs->config['app']->get('health_status.route', 'up');

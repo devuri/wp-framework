@@ -44,7 +44,7 @@ For traditional web hosting platforms:
    composer install --no-dev --optimize-autoloader
    ```
 
-3. Migrate your database if moving from a different environment. Update the `.env` [environment file](../customization/environment-file) with production environment settings.
+3. Migrate your database if moving from a different environment. Update the `.env` [environment file](../guide/customization/environments) with production environment settings.
 
 ### Managed WordPress Hosting
 

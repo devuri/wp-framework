@@ -62,7 +62,7 @@ After installing Raydium, proceed by navigating to your project directory to con
 cd your-project-name
 ```
 
-You'll need to adjust the `.env` [environment file](../customization/environment-file) to align with your database settings and site URL. Ensure the `HOME_URL` variable accurately reflects your site's URL.
+You'll need to adjust the `.env` [environment file](./customization/environments) to align with your database settings and site URL. Ensure the `HOME_URL` variable accurately reflects your site's URL.
 
 ## File Structure
 
@@ -114,7 +114,7 @@ DB_PASSWORD='your_db_password'
 DB_HOST='localhost'
 ```
 > [!IMPORTANT]
-> The `ENVIRONMENT_TYPE` setting is a crucial setting that defines different [states of the application](../customization/environments) such as development, staging, or production. Each state has its own specific configurations and behaviors. You can find more details [here](../customization/environments).
+> The `ENVIRONMENT_TYPE` setting is a crucial setting that defines different [states of the application](./customization/environments) such as development, staging, or production. Each state has its own specific configurations and behaviors. You can find more details [here](./customization/environments).
 >
 > You can also override the `ENVIRONMENT_TYPE` setting by using the `RAYDIUM_ENVIRONMENT_TYPE` constant. To do this, set the `RAYDIUM_ENVIRONMENT_TYPE` in the `wp-config.php` file.
 

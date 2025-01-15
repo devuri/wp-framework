@@ -36,11 +36,10 @@ class WhoopsMiddleware extends AbstractMiddleware
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $this->whoops = $this->services->get('whoops');
-        $cfgs         = $this->services->get('configs');
         $defaults     = self::defaults();
 
         // Merge default and user-defined error handler settings.
-        $errorHandlerConfig = self::setErrorHandler($cfgs);
+        $errorHandlerConfig = self::setErrorHandler($this->configs->app());
 
         // Extract config options.
         $errorHandlerClass = $errorHandlerConfig['class'] ?? ErrorHandler::class;
@@ -54,7 +53,7 @@ class WhoopsMiddleware extends AbstractMiddleware
         }
 
         // Never use PrettyPageHandler in production.
-        if ($cfgs::isInProdEnvironment() && $whoopsHandler instanceof \Whoops\Handler\PrettyPageHandler) {
+        if ($this->configs::isInProdEnvironment() && $whoopsHandler instanceof \Whoops\Handler\PrettyPageHandler) {
             $whoopsHandler = new ErrorHandler();
         }
 

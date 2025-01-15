@@ -1,5 +1,52 @@
 # Changelog
 
+## [0.9.5](https://github.com/devuri/wpframework/compare/v0.9.4...v0.9.5) (2025-01-14)
+
+
+### Features
+
+* new `Str::` class ([a1cd178](https://github.com/devuri/wpframework/commit/a1cd1788babdb719c7cb4c192b14ea53157043e2))
+
+## [0.9.4](https://github.com/devuri/wpframework/compare/v0.9.3...v0.9.4) (2025-01-14)
+
+
+### Bug Fixes
+
+* better `ServerRequest` separations ([0ee76f5](https://github.com/devuri/wpframework/commit/0ee76f5427be3f0f9f9daf0e036689fe17d6b5c0))
+* better file reader ([7b5e1c7](https://github.com/devuri/wpframework/commit/7b5e1c739cdb9193b74e993cdc13c1ff1c51c93a))
+
+## [0.9.3](https://github.com/devuri/wpframework/compare/v0.9.2...v0.9.3) (2025-01-14)
+
+
+### Features
+
+* adds `config['path']` to get `appPath` and `configsPath` ([47fd16e](https://github.com/devuri/wpframework/commit/47fd16e027365881f12db3712998e63f1f69ea36))
+* adds env file reader ([3cda878](https://github.com/devuri/wpframework/commit/3cda878fb84066470abe3085956c77724676ee20))
+
+
+### Miscellaneous Chores
+
+* code comment fixes ([abf55a7](https://github.com/devuri/wpframework/commit/abf55a72e2b88a7b5ace5dd51a862afde9760273))
+
+## [0.9.2](https://github.com/devuri/wpframework/compare/v0.9.1...v0.9.2) (2025-01-13)
+
+
+### Features
+
+* adds `SQLiteDatabase` A lightweight SQLite database wrapper ([de4b111](https://github.com/devuri/wpframework/commit/de4b111671540112b489a0dae4e8876ce2909319))
+
+
+### Miscellaneous Chores
+
+* update tests ([012a8cc](https://github.com/devuri/wpframework/commit/012a8cc7c36fbb05ca91f996527e9645344703d4))
+
+## [0.9.1](https://github.com/devuri/wpframework/compare/v0.9.0...v0.9.1) (2025-01-11)
+
+
+### Features
+
+* add/updated defined constants docs ([cedf57c](https://github.com/devuri/wpframework/commit/cedf57c49e10666b4c63fa2d6aad85807ab89a26))
+
 ## [0.9.0](https://github.com/devuri/wpframework/compare/v0.8.0...v0.9.0) (2025-01-11)
 
 
