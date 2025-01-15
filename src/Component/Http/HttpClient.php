@@ -14,6 +14,7 @@ namespace WPframework\Http;
 use Exception;
 use Urisoft\DotAccess;
 
+// https://github.com/devuri/http
 class HttpClient
 {
     private string $base_url;
@@ -84,8 +85,10 @@ class HttpClient
 
     /**
      * @psalm-return array<never, never>
+     *
+     * @param null|mixed $responseBody
      */
-    protected function setHttpResponse(array $http_response_header): array
+    protected function setHttpResponse(array $http_response_header, $responseBody = null): array
     {
         if (! empty($http_response_header)) {
             $this->http_response['referrer'] = $this->referrer;
@@ -94,6 +97,7 @@ class HttpClient
             $this->http_response['code']     = (int) $this->http_response['http'][1];
             $this->http_response['message']  = $this->http_response['http'][2];
             $this->http_response['status']   = $this->http_response['code'];
+            $this->http_response['body']   = $responseBody;
         }
 
         return [];
@@ -156,8 +160,8 @@ class HttpClient
         $context = stream_context_create($opts);
 
         try {
-            $response = @file_get_contents($url, false, $context);
-            if (false === $response) {
+            $responseBody = @file_get_contents($url, false, $context);
+            if (false === $responseBody) {
                 $error = error_get_last();
 
                 throw new Exception('HTTP request failed: ' . $error['message']);
@@ -181,7 +185,7 @@ class HttpClient
         }// end try
 
         // https://www.php.net/manual/en/reserved.variables.httpresponseheader.php
-        $this->setHttpResponse($http_response_header);
+        $this->setHttpResponse($http_response_header, $responseBody);
 
         return $this->http_response;
     }

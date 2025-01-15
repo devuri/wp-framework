@@ -11,6 +11,8 @@
 
 namespace WPframework\Support;
 
+use Exception;
+
 class Str
 {
     /**
@@ -105,5 +107,52 @@ class Str
     public static function hmac(string $data, string $secretkey, string $algo = 'sha256')
     {
         return hash_hmac($algo, $data, $secretkey);
+    }
+
+    /**
+     * Retrieves the system's current external IP address.
+     *
+     * This method attempts to fetch the external IP address of the system
+     * by sending a GET request to the "https://icanhazip.com/" service.
+     *
+     * @param string      $userAgent Optional. The User-Agent string to use for the HTTP request.
+     *                               Defaults to 'Mozilla/5.0 (compatible; CustomBot/1.0)'.
+     * @param null|string $referrer  Optional. The referrer URL to include in the HTTP request.
+     *                               Defaults to the value of the `HOME_URL` environment variable, if available.
+     *
+     * @return null|string The external IP address if successfully retrieved and valid,
+     *                     or null if the address could not be fetched or is invalid.
+     */
+    public static function getExternalIP(string $userAgent = 'Mozilla/5.0 (compatible; CustomBot/1.0)', ?string $referrer = null): ?string
+    {
+        $ipAddress = null;
+        $referrerUrl = $referrer ? $referrer : env('HOME_URL');
+
+        try {
+            $httpClient = new \WPframework\Http\HttpClient('https://icanhazip.com/');
+            $httpClient->setUserAgent($userAgent);
+
+            // Set referrer if available from environment.
+            if ($referrerUrl) {
+                $httpClient->setReferrer($referrerUrl);
+            }
+
+            // Make a GET request to fetch the IP.
+            $response = $httpClient->get('/');
+
+            // Ensure the response status is successful.
+            if (200 === $response['status']) {
+                $ipAddress = trim($response['body'] ?? '');
+            }
+
+            // Validate that the result is a valid IP address.
+            if (!filter_var($ipAddress, FILTER_VALIDATE_IP)) {
+                $ipAddress = null;
+            }
+        } catch (Exception $e) {
+            error_log('Error fetching external IP: ' . $e->getMessage());
+        }
+
+        return $ipAddress;
     }
 }
