@@ -6,9 +6,7 @@ The **Raydium Framework** offers a robust, secure, and scalable foundation for W
 
 If you're interested in implementing Multisite on Raydium, follow this guide while keeping its unique architecture in mind.  
 
----
-
-### Use Subdomains
+## Use Subdomains
 
 Raydium's **directory structure** organizes files differently from the default setup, making **subdomains** the optimal choice for your Multisite configuration. Here’s why:  
 
@@ -24,7 +22,7 @@ Raydium's **directory structure** organizes files differently from the default s
 To use subdomains, ensure your **DNS** is configured to handle **wildcard** subdomains (e.g., `*.example.com`).  
 
 
-### Configuring Multisite with Subdomains  
+## Configuring Multisite with Subdomains  
 
 #### 1. **Prepare Your Environment**  
    Ensure your hosting meets the requirements for WordPress Multisite and wildcard subdomains:  
@@ -58,7 +56,7 @@ To use subdomains, ensure your **DNS** is configured to handle **wildcard** subd
    Log back in to access the **Network Admin** menu, where you can manage your Multisite network and configure additional sites.  
 
 
-### Additional Tips for Using Multisite with Raydium  
+## Additional Tips for Using Multisite with Raydium  
 
 1. **Compatibility with Subdomains**  
    Subdomains work harmoniously with Raydium’s directory structure, eliminating conflicts and ensuring smooth operation.  
@@ -73,6 +71,65 @@ To use subdomains, ensure your **DNS** is configured to handle **wildcard** subd
    Always test your Multisite setup in a staging environment before deploying it live to ensure compatibility with your chosen subdomain configuration.  
 
 
-### Looking Ahead  
+## About URLs
+
+WordPress multisite expects the subdirectory (`/wp/`) to remain in the URLs (as setup by the framework) unless additional rewrite rules are added to strip it out for multisite. Here’s how you can adjust your `.htaccess` file to fix it and ensure the URLs resolve to `example.com/some-url` without the `/wp/` prefix for your multisite setup.
+
+### Adjusted `.htaccess` Rules
+Replace your current `.htaccess` file with the following code:
+
+```apache
+RewriteEngine On
+RewriteBase /
+
+# Preserve authorization headers
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+# Add a trailing slash to /wp-admin
+RewriteRule ^wp-admin$ wp-admin/ [R=301,L]
+
+# Handle existing files and directories
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Rewrite multisite paths to remove /wp
+RewriteRule ^(wp-(content|admin|includes).*) wp/$1 [L]
+RewriteRule ^(.*\.php)$ wp/$1 [L]
+RewriteCond %{REQUEST_URI} !^/wp/
+RewriteRule ^(.*)$ wp/$1 [L,QSA]
+
+# Route all other requests to index.php
+RewriteRule . index.php [L]
+```
+
+### Changes
+1. **Preserve `/wp/` for internal requests:**  
+   The rules for `wp-(content|admin|includes)` and PHP files remain intact to ensure WordPress can locate the necessary files inside the `/wp/` directory.
+
+2. **Rewrite non-existing paths without `/wp/`:**  
+   The line `RewriteCond %{REQUEST_URI} !^/wp/` ensures we don't apply the rule for requests already pointing to `/wp/`. The rule `RewriteRule ^(.*)$ wp/$1 [L,QSA]` rewrites requests like `/some-url` to `/wp/some-url` internally.
+
+
+### Additional Steps
+- **Update WordPress Site URL:**  
+   In your WordPress dashboard, update the `Site URL` and `Home` URL settings to `https://example.com`.
+
+   Alternatively, update `.env` file values `${HOME_URL}/wp` can be set to  `${HOME_URL}/` in the `.env` file:
+   ```plaintext
+   HOME_URL=https://example.com
+   WP_SITEURL="${HOME_URL}/"
+   ```
+   > The new htaccess rules will now handle the routing for `wp`
+
+- **Flush Permalinks:**  
+   After updating the `.htaccess` file, go to **Settings > Permalinks** in the WordPress admin and click **Save Changes** to regenerate the permalinks.
+
+This should resolve the issue and ensure that your URLs resolve to `example.com/some-url` without the `/wp/` prefix in a multisite setup.
+
+> If you are using Nginx server, the configuration should be updated in a similar way. Check the docs for more information.
+
+
+## Looking Ahead  
 
 Raydium is actively working to enhance compatibility with WordPress Multisite. Your feedback and experiences will help shape the framework's future support for advanced use cases, including Multisite. For now, subdomains offer the most reliable and efficient path to leverage Multisite with Raydium.   
