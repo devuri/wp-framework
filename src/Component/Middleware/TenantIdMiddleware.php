@@ -147,7 +147,7 @@ class TenantIdMiddleware extends AbstractMiddleware
     protected function isKiosk(array $tenantDomain): ?bool
     {
         if (empty($tenantDomain)) {
-            return null;
+            return false;
         }
 
         $kioskDomain = env('KIOSK_DOMAIN_ID', $this->kioskConfig->get('panel.id', 'kiosk'));
