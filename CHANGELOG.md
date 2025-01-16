@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.8](https://github.com/devuri/wpframework/compare/v0.9.7...v0.9.8) (2025-01-16)
+
+
+### Bug Fixes
+
+* strictly return false always ([47b24f3](https://github.com/devuri/wpframework/commit/47b24f33db3a00c321421f0d681c6b6ab4ee21ab))
+
 ## [0.9.7](https://github.com/devuri/wpframework/compare/v0.9.6...v0.9.7) (2025-01-16)
 
 
