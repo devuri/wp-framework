@@ -144,8 +144,12 @@ class TenantIdMiddleware extends AbstractMiddleware
         return $this->tenant;
     }
 
-    protected function isKiosk(array $tenantDomain): bool
+    protected function isKiosk(array $tenantDomain): ?bool
     {
+        if (empty($tenantDomain)) {
+            return null;
+        }
+
         $kioskDomain = env('KIOSK_DOMAIN_ID', $this->kioskConfig->get('panel.id', 'kiosk'));
 
         return $kioskDomain === ($tenantDomain[0] ?? null);
@@ -193,7 +197,7 @@ class TenantIdMiddleware extends AbstractMiddleware
      *
      * @psalm-return list{string, string}|null
      */
-    private function resolveTenantIdFromRequest(ServerRequestInterface $request): ?array
+    private function resolveTenantIdFromRequest(ServerRequestInterface $request): array
     {
         $host = $request->getUri()->getHost();
         $domainOrSubdomain = explode('.', $host)[0];
@@ -202,7 +206,7 @@ class TenantIdMiddleware extends AbstractMiddleware
             return [$domainOrSubdomain,$host];
         }
 
-        return null;
+        return [];
     }
 
     /**
