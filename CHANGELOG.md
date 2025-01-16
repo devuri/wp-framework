@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.7](https://github.com/devuri/wpframework/compare/v0.9.6...v0.9.7) (2025-01-16)
+
+
+### Bug Fixes
+
+* chore codefix ([ded4d41](https://github.com/devuri/wpframework/commit/ded4d4170b895b736c1c3685d661de991189e46b))
+
 ## [0.9.6](https://github.com/devuri/wpframework/compare/v0.9.5...v0.9.6) (2025-01-16)
 
 
