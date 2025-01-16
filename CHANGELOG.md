@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.9.9](https://github.com/devuri/wpframework/compare/v0.9.8...v0.9.9) (2025-01-16)
+
+
+### Bug Fixes
+
+* minor fix for `$encryptionPath` ([9585ebd](https://github.com/devuri/wpframework/commit/9585ebddb9e29a8669ca8abac62a6133492fa7b1))
+* update `multisite` urls guide for `.htaccess` ([ce7452a](https://github.com/devuri/wpframework/commit/ce7452a2e93b04d43d6be0ad5686ce019f05306b))
+
 ## [0.9.8](https://github.com/devuri/wpframework/compare/v0.9.7...v0.9.8) (2025-01-16)
 
 
