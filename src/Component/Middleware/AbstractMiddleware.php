@@ -27,14 +27,14 @@ abstract class AbstractMiddleware implements MiddlewareInterface
     protected PsrContainer $services;
 
     /**
-     * @var bool
+     * @var null|bool
      */
-    protected bool $isMultitenant;
+    protected ?bool $isMultitenant;
 
     /**
-     * @var bool
+     * @var null|bool
      */
-    protected bool $isAdminKiosk;
+    protected ?bool $isAdminKiosk;
 
     /**
      * @var Configs
