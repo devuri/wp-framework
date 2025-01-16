@@ -66,11 +66,7 @@ function env($name, $default = null, $encrypt = false, $strtolower = false)
     $encryptionPath = \defined('APP_ENCRYPTION_PATH') ? APP_ENCRYPTION_PATH : null;
     $envVal = null;
 
-    if (! is_dir($encryptionPath)) {
-        $encryptionPath = null;
-    }
-
-    if (\is_null($encryptionPath)) {
+    if (\is_null($encryptionPath) || ! is_dir($encryptionPath)) {
         $encryptionPath = APP_DIR_PATH;
     }
 
