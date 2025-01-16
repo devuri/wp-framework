@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.9.6](https://github.com/devuri/wpframework/compare/v0.9.5...v0.9.6) (2025-01-16)
+
+
+### Features
+
+* add `Str::getExternalIP()` fetch the external IP address ([acf3516](https://github.com/devuri/wpframework/commit/acf351682b40f2f3c8039192c099841f1bbc9510))
+
+
+### Bug Fixes
+
+* include body in `response` ([dd2a6c6](https://github.com/devuri/wpframework/commit/dd2a6c63e24e1abb2dfe7953ff99a84f157cdc48))
+* update for empty `resolveTenantIdFromRequest` ([a5100c8](https://github.com/devuri/wpframework/commit/a5100c80029f33b99898d318e2e9b4bdf9dab1bb))
+
 ## [0.9.5](https://github.com/devuri/wpframework/compare/v0.9.4...v0.9.5) (2025-01-14)
 
 
