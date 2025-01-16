@@ -224,6 +224,7 @@ function sidebarGuide() {
 				{ text: 'Configuration', link: 'customization/config-overview' },
 				{ text: 'Environments', link: 'customization/environments' },
 				{ text: 'Constants', link: 'customization/constants-file' },
+				{ text: 'Multisite', link: 'customization/multisite' },
 				{ text: 'Compatibility', link: 'customization/compatibility' },
 				{ text: 'GitHub Token', link: 'customization/auth-json' },
 				{ text: 'Kiosk', link: 'customization/kiosk' },
