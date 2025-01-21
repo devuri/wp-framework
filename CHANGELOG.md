@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.11](https://github.com/devuri/wpframework/compare/v0.9.10...v0.9.11) (2025-01-21)
+
+
+### Bug Fixes
+
+* verify that `app.php` is a php file ([cec6501](https://github.com/devuri/wpframework/commit/cec650113c06696412b9328e5031a04d8e72797c))
+
 ## [0.9.10](https://github.com/devuri/wpframework/compare/v0.9.9...v0.9.10) (2025-01-21)
 
 
