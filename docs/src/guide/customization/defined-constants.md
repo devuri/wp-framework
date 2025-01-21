@@ -100,6 +100,7 @@ Each environment (`production`, `secure`, `staging`, `debug`, `development`) set
 - **`WP_DEBUG`**: `true`
 - **`SAVEQUERIES`**: `true`
 - **`WP_DISABLE_FATAL_ERROR_HANDLER`**: `true`
+- **`WP_DISABLE_FATAL_ERROR_HANDLER`**: `true`
 - **`SCRIPT_DEBUG`**: `true` (unminified scripts)
 - **`ini_set('display_errors', '1')`** (show errors in the browser)
 
@@ -110,6 +111,7 @@ Each environment (`production`, `secure`, `staging`, `debug`, `development`) set
 - **`SAVEQUERIES`**: `true`
 - **`error_reporting(E_ALL)`**, **`ini_set('display_errors','1')`**, etc.
 - **`EMPTY_TRASH_DAYS`**: `50` (retain trash for a longer period)
+- **`WP_SANDBOX_SCRAPING`**: `true` (Disables fatal error handling)
 
 **Note:**  
 For `debug` or `deb` environment, the framework sets extremely verbose PHP error reporting and ensures WP logs most queries, making it easier to diagnose problems.
