@@ -519,19 +519,82 @@ class Configs implements ConfigsInterface
 
     public function appOptions(): array
     {
-        $optionsFile = $this->configsPath . '/app.php';
-
-        if (file_exists($optionsFile) && \is_array(@require $optionsFile)) {
-            $appOptions = require $optionsFile;
-        } else {
-            $appOptions = [];
-        }
+        $appOptions = $this->appSettingsFileArray();
 
         if (! \is_array($appOptions)) {
             throw new InvalidArgumentException('Error: Config::siteConfig must be of type array', 1);
         }
 
         return self::multiMerge(self::getDefault(), $appOptions);
+    }
+
+    /**
+     * Determines if a given file is a PHP file by checking its extension and searching
+     * for valid PHP opening tags in its content.
+     *
+     * @param string $filePath  The file path or filename.
+     * @param int    $readBytes Maximum number of bytes to read from the start of the file (default: 1024).
+     *
+     * @return bool True if the file is recognized as a PHP file, False otherwise.
+     */
+    public static function isPhpFile($filePath, $readBytes = 1024)
+    {
+        if (!\is_string($filePath) || '' === trim($filePath)) {
+            return false;
+        }
+
+        if (!file_exists($filePath) || is_dir($filePath)) {
+            return false;
+        }
+
+        if (!is_readable($filePath)) {
+            return false;
+        }
+
+        $extension = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
+        if ('php' !== $extension) {
+            return false;
+        }
+
+        if (0 === filesize($filePath)) {
+            return false;
+        }
+
+        $fileContent = @file_get_contents($filePath, false, null, 0, $readBytes);
+        if (false === $fileContent) {
+            return false;
+        }
+
+        $possibleTags = ['<?php', '<?=', '<? '];
+
+        foreach ($possibleTags as $tag) {
+            if (false !== strpos($fileContent, $tag)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    protected function appSettingsFileArray(): array
+    {
+        $optionsFile = $this->configsPath . '/app.php';
+
+        if (! file_exists($optionsFile)) {
+            return [];
+        }
+
+        if (! self::isPhpFile($optionsFile)) {
+            return [];
+        }
+
+        if (\is_array(@require $optionsFile)) {
+            $appOptions = require $optionsFile;
+        } else {
+            $appOptions = [];
+        }
+
+        return $appOptions;
     }
 
     protected function setMiddlewares(array $defaultMiddlewares): array
