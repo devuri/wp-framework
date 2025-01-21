@@ -1,5 +1,40 @@
 # Changelog
 
+## [0.9.9](https://github.com/devuri/wpframework/compare/v0.9.8...v0.9.9) (2025-01-16)
+
+
+### Bug Fixes
+
+* minor fix for `$encryptionPath` ([9585ebd](https://github.com/devuri/wpframework/commit/9585ebddb9e29a8669ca8abac62a6133492fa7b1))
+* update `multisite` urls guide for `.htaccess` ([ce7452a](https://github.com/devuri/wpframework/commit/ce7452a2e93b04d43d6be0ad5686ce019f05306b))
+
+## [0.9.8](https://github.com/devuri/wpframework/compare/v0.9.7...v0.9.8) (2025-01-16)
+
+
+### Bug Fixes
+
+* strictly return false always ([47b24f3](https://github.com/devuri/wpframework/commit/47b24f33db3a00c321421f0d681c6b6ab4ee21ab))
+
+## [0.9.7](https://github.com/devuri/wpframework/compare/v0.9.6...v0.9.7) (2025-01-16)
+
+
+### Bug Fixes
+
+* chore codefix ([ded4d41](https://github.com/devuri/wpframework/commit/ded4d4170b895b736c1c3685d661de991189e46b))
+
+## [0.9.6](https://github.com/devuri/wpframework/compare/v0.9.5...v0.9.6) (2025-01-16)
+
+
+### Features
+
+* add `Str::getExternalIP()` fetch the external IP address ([acf3516](https://github.com/devuri/wpframework/commit/acf351682b40f2f3c8039192c099841f1bbc9510))
+
+
+### Bug Fixes
+
+* include body in `response` ([dd2a6c6](https://github.com/devuri/wpframework/commit/dd2a6c63e24e1abb2dfe7953ff99a84f157cdc48))
+* update for empty `resolveTenantIdFromRequest` ([a5100c8](https://github.com/devuri/wpframework/commit/a5100c80029f33b99898d318e2e9b4bdf9dab1bb))
+
 ## [0.9.5](https://github.com/devuri/wpframework/compare/v0.9.4...v0.9.5) (2025-01-14)
 
 
