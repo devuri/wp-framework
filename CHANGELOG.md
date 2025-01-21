@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.9.10](https://github.com/devuri/wpframework/compare/v0.9.9...v0.9.10) (2025-01-21)
+
+
+### Features
+
+* adds `WP_SANDBOX_SCRAPING` ([d649b67](https://github.com/devuri/wpframework/commit/d649b677a85ff21029e992fc7fc645ce333ee745))
+
+
+### Bug Fixes
+
+* minor fix for `$encryptionPath` ([505e95c](https://github.com/devuri/wpframework/commit/505e95cbbce087c224494821d0474562b93574d7))
+
+
+### Miscellaneous Chores
+
+* delete sqlite ([b8c8abd](https://github.com/devuri/wpframework/commit/b8c8abd9e8a90ae0daac46792fd4b407bb46a537))
+
 ## [0.9.9](https://github.com/devuri/wpframework/compare/v0.9.8...v0.9.9) (2025-01-16)
 
 
