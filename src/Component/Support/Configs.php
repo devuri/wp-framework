@@ -85,7 +85,7 @@ class Configs implements ConfigsInterface
      * @param null|string $appPath        Optional. Custom application directory path.
      *                                    If not provided, defaults to the `APP_DIR_PATH` constant.
      */
-    public function __construct(array $preloadConfigs = ['tenancy', 'tenants', 'kiosk'], ?string $appPath = null)
+    public function __construct(array $preloadConfigs = ['tenancy', 'tenants', 'kiosk', 'shortinit'], ?string $appPath = null)
     {
         $this->appPath     = $appPath ?? APP_DIR_PATH;
         self::$frameworkConfigsPath = FRAMEWORK_CONFIGS_DIR;
@@ -120,7 +120,7 @@ class Configs implements ConfigsInterface
      */
     public static function init(?string $appPath = null): self
     {
-        return new self(['tenancy', 'tenants', 'kiosk'], $appPath);
+        return new self(['tenancy', 'tenants', 'kiosk', 'shortinit'], $appPath);
     }
 
     /**
@@ -348,6 +348,8 @@ class Configs implements ConfigsInterface
             'publickey'        => [
                 'app-key' => env('WEB_APP_PUBLIC_KEY', null),
             ],
+
+            'headless'        => [],
         ];
     }
 
@@ -735,6 +737,7 @@ class Configs implements ConfigsInterface
             'kernel' => \WPframework\Middleware\KernelMiddleware::class,
             'auth' => \WPframework\Middleware\AuthMiddleware::class,
             'logger' => \WPframework\Middleware\LoggingMiddleware::class,
+            'shortinit' => \WPframework\Middleware\ShortInitMiddleware::class,
             'adminer' => \WPframework\Middleware\AdminerMiddleware::class,
             'whoops' => \WPframework\Middleware\WhoopsMiddleware::class,
         ];

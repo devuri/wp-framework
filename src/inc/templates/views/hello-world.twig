@@ -1,0 +1,10 @@
+{% extends 'base.twig' %}
+{% block content %}
+<h1>{{ _context.post_title }}</h1>
+<ol>
+    {% for key, value in _context  %}
+      <li>{{ value }}</li>
+    {% endfor %}
+</ol>
+<p>Manage your settings here.</p>
+{% endblock %}
