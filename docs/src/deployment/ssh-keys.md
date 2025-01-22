@@ -1,4 +1,4 @@
-# SSH Deployment Keys 
+# SSH Deployment Keys
 
 #### Generating and Adding SSH Keys for Deployment with GitHub Actions
 
@@ -126,7 +126,7 @@ jobs:
 ```
 
 1. **`webfactory/ssh-agent@v0.5.3`**: Sets up an SSH agent in the GitHub Actions environment.  
-2. **`ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}`**: Loads the private key you added as a repository secret.  
+2. **`ssh-private-key:`**: Loads the private key (`secrets.SSH_PRIVATE_KEY`) you added as a repository secret.  
 3. **`ssh user@yourserver.com`**: Uses SSH to connect and run deployment commands on the remote server.
 
 This configuration ensures that your deployment process is both secure and automated. By combining SSH keys with GitHub Actions, you can deploy to your server with minimal manual intervention.
