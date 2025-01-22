@@ -52,6 +52,12 @@ class Router implements MiddlewareInterface
         $this->addRoute('DELETE', $path, $handler);
     }
 
+    public function setPostItem(?object $postObject = null): void
+    {
+        $this->postItem = $postObject;
+    }
+
+
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $this->initDispatcher();
@@ -82,7 +88,9 @@ class Router implements MiddlewareInterface
         if (\is_string($callback) && $this->twig) {
             $template = $this->resolveTemplate($callback, $vars);
 
-            return $this->createResponse(200, $this->twig->render($template, $vars));
+            // dd($this->postItem);
+
+            return $this->createResponse(200, $this->twig->render($template, (array) $this->postItem));
         }
 
         $handler = self::resolve($callback);

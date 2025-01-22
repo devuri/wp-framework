@@ -178,8 +178,8 @@ class Switcher implements EnvSwitcherInterface
         $this->constants->addConst('WP_CRON_LOCK_TIMEOUT', 120);
         $this->constants->addConst('EMPTY_TRASH_DAYS', 50);
 
-		// Disables fatal error handling.
-		$this->constants->addConst('WP_SANDBOX_SCRAPING', true);
+        // Disables fatal error handling.
+        $this->constants->addConst('WP_SANDBOX_SCRAPING', true);
 
         self::setDebugLog();
 

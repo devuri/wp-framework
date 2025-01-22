@@ -22,6 +22,7 @@ use WPframework\Support\Configs;
 use WPframework\Support\ConstantBuilder;
 use WPframework\Support\KernelConfig;
 use WPframework\Support\Services\AuthManager;
+use WPframework\Support\Services\TinyQuery;
 use WPframework\Support\SiteManager;
 use WPframework\Support\Switcher;
 
@@ -141,6 +142,9 @@ class Bindings
             },
             'logger' => function ($c) {
                 return new FileLogger();
+            },
+            'tiny' => function ($c) {
+                return new TinyQuery();
             },
             'middlewares' => function ($c) {
                 return new CoreMiddleware($c);
