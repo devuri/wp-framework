@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.12](https://github.com/devuri/wpframework/compare/v0.9.11...v0.9.12) (2025-01-22)
+
+
+### Features
+
+* adds `shortinit` with `twig` support and `TinyQuery::class` ([#306](https://github.com/devuri/wpframework/issues/306)) ([39eec58](https://github.com/devuri/wpframework/commit/39eec58b8f62b81e29729162b8230f66c24c993a))
+
 ## [0.9.11](https://github.com/devuri/wpframework/compare/v0.9.10...v0.9.11) (2025-01-21)
 
 
