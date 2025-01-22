@@ -348,6 +348,8 @@ class Configs implements ConfigsInterface
             'publickey'        => [
                 'app-key' => env('WEB_APP_PUBLIC_KEY', null),
             ],
+
+			'headless'        => [],
         ];
     }
 

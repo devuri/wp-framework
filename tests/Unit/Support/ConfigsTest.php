@@ -28,7 +28,7 @@ class ConfigsTest extends TestCase
     public function test_initialization_only(): void
     {
         $configs = new Configs();
-        $this->assertSame(['tenancy','tenants','kiosk','composer', 'path', 'whitelist', 'middlewares'], array_keys($configs->config));
+        $this->assertSame(['tenancy','tenants','kiosk','shortinit','composer', 'path', 'whitelist', 'middlewares'], array_keys($configs->config));
     }
 
     public function test_app_config_keys(): void
