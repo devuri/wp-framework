@@ -143,7 +143,7 @@ class Bindings
             'logger' => function ($c) {
                 return new FileLogger();
             },
-            'tiny' => function ($c) {
+            'query' => function ($c) {
                 return new TinyQuery();
             },
             'middlewares' => function ($c) {

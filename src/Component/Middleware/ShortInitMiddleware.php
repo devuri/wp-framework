@@ -29,66 +29,52 @@ class ShortInitMiddleware extends AbstractMiddleware
     private $tinyQuery;
     private $passThroughOn404;
 
-
+    /**
+     * @param ServerRequestInterface  $request
+     * @param RequestHandlerInterface $handler
+     *
+     * @return ResponseInterface
+     */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $this->appDirPath = APP_DIR_PATH;
-        $this->tinyQuery = $this->services->get('tiny');
+        $this->tinyQuery = $this->services->get('query');
         $cfgs = $this->configs->app();
         $this->initConfig = $cfgs->config['shortinit'];
         $uriSlug = $request->getUri()->getPath();
         $uriPaths = explode('/', $uriSlug);
         $uriHandler = array_filter($uriPaths);
         $defineHandler = end($uriHandler);
+        $this->isShortInit = $request->getAttribute('isShortInit', false);
 
-        if ($this->isAdminRoute($request)) {
+        // admin bypass.
+        if (!$this->isShortInit || $this->isAdminRoute($request)) {
             return $handler->handle($request);
         }
 
+        // bootloader and query
         $this->tinyQuery->boot();
-        $post = $this->tinyQuery->query(['name' => $defineHandler], OBJECT_K);
-        $postObject = $post[1];
+        $post = $this->tinyQuery->query(['name' => $defineHandler]);
 
-        // dump($request);
-        // dump($postObject->post_type);
-
-        // dump($post);
-        // global $wpdb;
-        // dump($GLOBALS);
-        // dump($wpdb);
-        // dd($this->tinyQuery);
-
-        // $this->isShortInit = $request->getAttribute('isShortInit', false);
         $this->twigOptions = array_merge(
             self::defaultTwigOptions(),
             $this->initConfig->get('views.twig', [])
         );
 
         // If SHORTINIT is disabled.
-        // if (!$this->isShortInit) {
-        if (!\defined('SHORTINIT') || false === \constant('SHORTINIT')) {
+        if (!$this->isShortInit) {
             return $handler->handle($request);
         }
 
         $router = new Router($this->twig());
 
-        // get static routes first
-        // $router->get('/', 'home');
-        // $router->get('/sample-page', 'sample-page');
-        // $router->get('/demo', 'demo');
-        // $router->get('/users', 'users');
-        // $router->get('/analytics', 'analytics');
-        // $router->get('/logs', 'logs');
-        // $router->get('/htmltest', 'htmltest');
-
-        // then try dynamic routes.
         if ('/' === $uriSlug) {
             $router->get($uriSlug, 'home');
         } else {
             $router->get($uriSlug, $defineHandler);
         }
 
-        $router->setPostItem($postObject);
+        $router->setPostItem(($post[0] ?? null));
 
         return $router->process($request, $handler);
     }

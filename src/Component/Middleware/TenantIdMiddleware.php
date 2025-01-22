@@ -40,11 +40,19 @@ class TenantIdMiddleware extends AbstractMiddleware
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $this->constManager = $this->services->get('const_builder');
+        $this->constManager  = $this->services->get('const_builder');
         $this->isMultitenant = self::isMultitenantApp($this->configs->config['composer']);
-        $this->kioskConfig = $this->configs->config['kiosk'];
-        $this->tenantDomain = $this->resolveTenantIdFromRequest($request);
-        $this->isAdminKiosk = $this->isKiosk($this->tenantDomain);
+        $this->kioskConfig   = $this->configs->config['kiosk'];
+        $this->tenantDomain  = $this->resolveTenantIdFromRequest($request);
+        $this->isAdminKiosk  = $this->isKiosk($this->tenantDomain);
+        $this->isShortInit   = $this->isShortInit();
+
+        // Add attributes to the request
+        $request = $request
+            ->withAttribute('isAdminKiosk', $this->isAdminKiosk)
+            ->withAttribute('isMultitenant', $this->isMultitenant)
+            ->withAttribute('isShortInit', $this->isShortInit)
+            ->withAttribute('tenant', $this->tenant);
 
         // check secure modes.
         if (self::isSecureMode() && 'https' !== $request->getUri()->getScheme()) {
@@ -59,13 +67,10 @@ class TenantIdMiddleware extends AbstractMiddleware
 
         // Set the current tenant
         $this->tenant = $this->setCurrentTenant();
+        $request = $request->withAttribute('tenant', $this->tenant);
 
         // @phpstan-ignore-next-line
         if ($this->isAdminKiosk && $this->kioskConfig->get('panel.enabled', null)) {
-            $request = $request
-                ->withAttribute('isAdminKiosk', $this->isAdminKiosk)
-                ->withAttribute('tenant', $this->tenant);
-
             return $handler->handle($request);
         }
 
@@ -75,11 +80,6 @@ class TenantIdMiddleware extends AbstractMiddleware
 
             throw new Exception("Tenant {$this->tenantDomain[0]}: {$tenantStatus}", 404);
         }
-
-        // Add attributes to the request for multitenant applications
-        $request = $request
-            ->withAttribute('tenant', $this->tenant)
-            ->withAttribute('isMultitenant', $this->isMultitenant);
 
         // Define required constants
         \define('APP_TENANT_ID', $this->tenant['uuid']);
@@ -207,6 +207,11 @@ class TenantIdMiddleware extends AbstractMiddleware
         }
 
         return [];
+    }
+
+    private function isShortInit(): bool
+    {
+        return \defined('SHORTINIT') && true === \constant('SHORTINIT');
     }
 
     /**

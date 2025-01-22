@@ -135,7 +135,7 @@ class TinyQuery
      *                       of each row's first column's value. Duplicate keys are discarded.
      *                       Default OBJECT.
      */
-    public function query(array $args = [], $output = OBJECT): array
+    public function query(array $args = [], $output = ARRAY_A): array
     {
         global $wpdb;
 

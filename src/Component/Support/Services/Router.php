@@ -24,6 +24,7 @@ use WPframework\Http\Message\HtmlResponse;
 class Router implements MiddlewareInterface
 {
     private array $routes = [];
+    private array $postItem = [];
     private ?Dispatcher $dispatcher = null;
     private ?\Twig\Environment $twig;
 
@@ -52,9 +53,11 @@ class Router implements MiddlewareInterface
         $this->addRoute('DELETE', $path, $handler);
     }
 
-    public function setPostItem(?object $postObject = null): void
+    public function setPostItem(?array $postItem = null): void
     {
-        $this->postItem = $postObject;
+        if ($postItem && \is_array($postItem)) {
+            $this->postItem = $postItem;
+        }
     }
 
 
@@ -69,7 +72,6 @@ class Router implements MiddlewareInterface
         switch ($routeInfo[0]) {
             case Dispatcher::NOT_FOUND:
                 return $this->handle404($request);
-                // return $this->createResponse(404, "404 Not Found");
 
             case Dispatcher::METHOD_NOT_ALLOWED:
                 return $this->createResponse(405, "405 Method Not Allowed");
@@ -79,7 +81,6 @@ class Router implements MiddlewareInterface
 
             default:
                 throw new Exception("Error Processing Route", 1);
-                // return $handler->handle($request);
         }
     }
 
@@ -88,19 +89,11 @@ class Router implements MiddlewareInterface
         if (\is_string($callback) && $this->twig) {
             $template = $this->resolveTemplate($callback, $vars);
 
-            // dd($this->postItem);
-
-            return $this->createResponse(200, $this->twig->render($template, (array) $this->postItem));
+            return $this->createResponse(200, $this->twig->render($template, $this->postItem));
         }
 
         $handler = self::resolve($callback);
         $response = $handler($request, ...array_values($vars));
-
-        // if (is_string($response) && $this->twig) {
-        //     $template = $this->resolveTemplate($response, $vars);
-        //
-        //     return $this->createResponse(200, $this->twig->render($template, $vars));
-        // }
 
         if (!$response instanceof ResponseInterface) {
             throw new Exception("Error: Internal Server Error: Handler did not return a valid ResponseInterface", 1);
