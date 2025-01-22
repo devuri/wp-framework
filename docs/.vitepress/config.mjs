@@ -148,7 +148,10 @@ function navBar(){
 		  text: 'Constants',
 		  link: '/reference/constants-overview',
 	  },
-
+	  {
+		  text: 'Shortinit',
+		  link: '/reference/shortinit',
+	  },
 	]
   },
   ]
