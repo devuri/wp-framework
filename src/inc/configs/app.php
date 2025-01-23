@@ -614,5 +614,125 @@ return [
         'app-key' => env('WEB_APP_PUBLIC_KEY', null),
     ],
 
-    'headless'        => [],
+    /*
+     * Configuration array for enabling and customizing headless mode in the application.
+     *
+     * This configuration allows developers to enable or disable headless mode, manage
+     * REST API and GraphQL settings, control plugin loading, handle localization,
+     * enable debugging, customize error handling, and configure security features
+     * such as CORS.
+     *
+     * Array structure:
+     * - 'enabled' (bool): Toggles the entire headless mode functionality.
+     *
+     * - 'rest_api' (array): Configures the REST API settings.
+     *   - 'enabled' (bool): Enables or disables the REST API.
+     *   - 'cache' (bool): Determines whether API responses should be cached. Optional.
+     *
+     * - 'graphql' (array): Configures the GraphQL API settings.
+     *   - 'enabled' (bool): Enables or disables the GraphQL API, if available.
+     *
+     * - 'themes' (bool): When `false`, theme loading is skipped, which can improve
+     *   performance in headless setups.
+     *
+     * - 'plugins' (array): Configures plugin loading behavior.
+     *   - 'load' (array): An explicit list of plugins to load. Leave empty to prevent
+     *     any plugins from loading.
+     *
+     * - 'debug' (bool): Toggles debug mode for API requests and responses. Useful
+     *   for troubleshooting.
+     *
+     * - 'error_handling' (string): Specifies how errors should be handled in the
+     *   application. Possible values:
+     *   - 'log': Logs errors to a file or system logger.
+     *   - 'throw': Throws exceptions for errors.
+     *   - 'silent': Suppresses errors without any output or logging.
+     *
+     * - 'security' (array): Configures security-related settings.
+     *   - 'cors' (bool): Enables or disables CORS (Cross-Origin Resource Sharing) headers
+     *     for API requests.
+     *   - 'allowed_origins' (array): Defines a list of allowed origins for cross-domain
+     *     requests. Use `['*']` to allow requests from any origin.
+     */
+    'headless' => [
+        'enabled' => false,
+        'rest_api' => [
+            'enabled' => true,
+            'cache' => false,
+        ],
+        'graphql' => [
+            'enabled' => false,
+        ],
+        'themes' => false,
+        'plugins' => [
+            'load' => [],
+        ],
+        'debug' => false,
+        'error_handling' => 'log',
+        'security' => [
+            'cors' => true,
+            'allowed_origins' => ['*'],
+        ],
+    ],
+
+    /*
+     * Configuration for the `SHORTINIT` mode in WordPress.
+     *
+     * This array defines the behavior of the `SHORTINIT` constant, which is used to initialize WordPress
+     * with minimal functionality. When `SHORTINIT` is set to `true`, WordPress loads only core components,
+     * bypassing themes, plugins, and other optional features. This can be useful for performance-critical
+     * tasks, such as custom scripts or lightweight integrations.
+     *
+     * **Retained Features:**
+     * - Core settings and configuration
+     * - Database operations via the `$wpdb` object
+     * - Minimal bootstrap functionality
+     *
+     * **Skipped Features:**
+     * - Themes, plugins, and widgets
+     * - REST API (disabled by default unless explicitly enabled)
+     * - Localization and translation
+     *
+     * @see https://github.com/WordPress/wordpress-develop/blob/bcb3299a37712b61eb9b2a92c0b2fcc81e5d3d9d/src/wp-settings.php#L149
+     *
+     * @var array $shortinit {
+     *     Configuration options for the `SHORTINIT` mode.
+     *
+     *     @type bool   $enabled         Whether the `SHORTINIT` mode is enabled. Default true.
+     *     @type bool   $cache           Toggle basic caching for minimal initialization. Default true.
+     *     @type bool   $debug           Enable debug mode for additional error reporting. Default false.
+     *     @type array  $components      Components to retain or skip during initialization.
+     *
+     *     @type bool   $components['database']
+     *           Whether to retain the `$wpdb` object for database operations. Default true.
+     *
+     *     @type bool   $components['user']
+     *           Whether to include user-related functionality. Default false.
+     *
+     *     @type string $error_handling  Specifies the error-handling mode. Options include:
+     *                                   'log' (default), 'throw', or 'silent'.
+     *
+     *     @type array  $api             REST API-related configuration.
+     *
+     *     @type bool   $api['enabled']
+     *           Enable or disable limited REST API functionality. Default false.
+     *
+     *     @type array  $api['routes']
+     *           Specify allowed REST API routes. Provide an array of route strings, if any. Default empty array.
+     * }
+     */
+    'shortinit' => [
+        'enabled' => false,
+        'cache' => true,
+        'debug' => false,
+        'components' => [
+            'database' => true,
+            'user' => false,
+        ],
+        'error_handling' => 'log',
+        'api' => [
+            'enabled' => false,
+            'routes' => [],
+        ],
+    ],
 ];
