@@ -90,7 +90,7 @@ class ShortInitMiddleware extends AbstractMiddleware
     public function twig(): \Twig\Environment
     {
         $this->templatesDir = $this->setTemplatesDir();
-        $this->coreTemplatesDir = \dirname(__FILE__, 3) . DIRECTORY_SEPARATOR . 'inc/templates/views';
+        $this->coreTemplatesDir = SRC_PATH_DIR . DIRECTORY_SEPARATOR . 'inc/templates/views';
         $cached = $this->debugMode() ? $this->appDirPath . '/templates/cache/views' : false;
 
         $this->validateTemplatesDirectory($this->templatesDir);

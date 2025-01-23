@@ -11,6 +11,8 @@
 
 namespace WPframework\Support;
 
+use Symfony\Component\Filesystem\Filesystem;
+
 class KernelConfig
 {
     private $appPath;
@@ -147,6 +149,21 @@ class KernelConfig
 
         // web app security key
         $this->configManager->addConstant('WEBAPP_ENCRYPTION_KEY', $configs->config['app']->get('security.encryption_key'));
+    }
+
+    public function setupCorePlugins(Filesystem $filesystem): void
+    {
+        $muPlugins = [
+            'twigit.php',
+            'wpframework.php',
+        ];
+
+        $originFilePath = SRC_PATH_DIR . '/inc/mu-plugin/';
+        $targetFilePath = WPMU_PLUGIN_DIR . '/';
+
+        foreach ($muPlugins as $key => $plugin) {
+            $filesystem->copy($originFilePath . $plugin, $targetFilePath . $plugin);
+        }
     }
 
     protected static function envTenantId(): ?string

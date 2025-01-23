@@ -4,7 +4,7 @@
  * Plugin Name:       Headless CMS Mode
  * Plugin URI:        https://github.com/devuri/wpframework
  * Description:       Runs WordPress as a headless CMS when HEADLESS_MODE is set to true.
- * Version:           0.7
+ * Version:           0.9
  * Requires at least: 5.3.0
  * Requires PHP:      7.3.5
  * Author:            uriel

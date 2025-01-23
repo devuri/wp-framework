@@ -4,7 +4,7 @@
  * Plugin Name:       WP-Framework Core
  * Plugin URI:        https://github.com/devuri/wpframework
  * Description:       Framework Core with `wpframework_init` hook.
- * Version:           0.7
+ * Version:           0.9
  * Requires at least: 5.3.0
  * Requires PHP:      7.3.5
  * Author:            uriel

@@ -9,6 +9,11 @@
  * file that was distributed with this source code.
  */
 
+/*
+ * Manage the framework’s application configuration settings.
+ *
+ * @see https://devuri.github.io/wpframework/guide/customization/config-overview
+ */
 return [
 
     /*

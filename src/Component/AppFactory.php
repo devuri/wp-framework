@@ -35,7 +35,8 @@ class AppFactory
      */
     public static function create(string $appDirPath, ?string $environment = null, ?ServerRequestInterface $request = null): App
     {
-        \define('FRAMEWORK_CONFIGS_DIR', \dirname(__DIR__) . '/inc/configs');
+        \define('SRC_PATH_DIR', \dirname(__DIR__));
+        \define('SRC_CONFIGS_DIR', SRC_PATH_DIR . '/inc/configs');
 
         // Retrieve the HTTP host using HttpFactory
         $httpHost = HttpFactory::init()->getHttpHost();
@@ -58,6 +59,7 @@ class AppFactory
         );
 
         self::loadDotEnv($envFiles, $envType);
+        self::copySourceConfigFile($psrContainer);
 
         self::$request = self::$request->withAttribute('envFiles', $envFiles);
 
@@ -110,6 +112,22 @@ class AppFactory
         }
 
         EnvLoader::init(APP_DIR_PATH, APP_HTTP_HOST)->load($envFiles, $envType);
+    }
+
+    private static function copySourceConfigFile($psrContainer): void
+    {
+        $filesystem = $psrContainer->get('filesystem');
+        $configs = $psrContainer->get('configs');
+        $userConfigFile = $configs->getConfigsDir() . '/app.php';
+
+        if (file_exists($userConfigFile)) {
+            return;
+        }
+
+        // create file.
+        $originFilePath = SRC_CONFIGS_DIR . '/app.php';
+        $targetFilePath = $configs->getConfigsDir() . '/app.sample.php';
+        $filesystem->copy($originFilePath, $targetFilePath);
     }
 
     private static function createRequest(?ServerRequestInterface $request = null)
