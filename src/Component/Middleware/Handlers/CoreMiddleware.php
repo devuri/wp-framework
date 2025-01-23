@@ -74,6 +74,7 @@ class CoreMiddleware
             'kernel',
             'auth',
             'logger',
+            'shortinit',
             'adminer',
             'whoops',
         ];

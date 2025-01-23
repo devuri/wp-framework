@@ -1,6 +1,7 @@
 # Configuring Multi-Tenancy
 
-> **⚠ Warning:** Some configurations in this guide are experimental and may not be fully supported in all environments. Use caution when enabling or modifying these settings and thoroughly test in a staging environment before deploying to production.
+
+> [!WARNING] ⚠ Some configurations in this guide are experimental and may not be fully supported in all environments. Use caution when enabling or modifying these settings and thoroughly test in a staging environment before deploying to production.
 
 The `tenancy.json` file is the central configuration file for managing multi-tenancy in your application. This guide explains the purpose of each configuration and how to use it effectively.
 Ensure you're in your application's root directory. Look for the `configs` directory. If it doesn't exist, you'll need to create it to store `tenancy.json` configuration file.

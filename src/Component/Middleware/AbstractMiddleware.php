@@ -27,14 +27,19 @@ abstract class AbstractMiddleware implements MiddlewareInterface
     protected PsrContainer $services;
 
     /**
-     * @var bool
+     * @var null|bool
      */
-    protected bool $isMultitenant;
+    protected ?bool $isMultitenant;
 
     /**
-     * @var bool
+     * @var null|bool
      */
-    protected bool $isAdminKiosk;
+    protected ?bool $isAdminKiosk;
+
+    /**
+     * @var null|bool
+     */
+    protected ?bool $isShortInit;
 
     /**
      * @var Configs
@@ -182,6 +187,13 @@ abstract class AbstractMiddleware implements MiddlewareInterface
             // pattern to allow specified paths
             $pattern = '/^\/wp(?:\/.*)?\/wp-admin\/((?!' . implode('|', array_map('preg_quote', $allowedPaths['allowed'])) . ').*)$/';
         }
+
+        return 1 === preg_match($pattern, $request->getUri()->getPath());
+    }
+
+    protected function isAdminRoute(ServerRequestInterface $request)
+    {
+        $pattern = '/\/wp(?:\/.*)?\/wp-admin\/.*$/';
 
         return 1 === preg_match($pattern, $request->getUri()->getPath());
     }

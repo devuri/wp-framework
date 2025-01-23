@@ -128,7 +128,7 @@ jobs:
 
 **Key points**:
 - **`actions/checkout@v2`**: Checks out your repository code.
-- **`ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}`**: Automatically configures the deploy key for Git operations.
+- **`yaml ssh-key:`**: Automatically configures the deploy key (`secrets.SSH_PRIVATE_KEY`) for Git operations.
 - **`ssh -o StrictHostKeyChecking=no user@server 'bash -s' < ./deploy.sh`**: Connects to your server and runs the `deploy.sh` script.
 
 

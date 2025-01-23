@@ -12,6 +12,8 @@
 namespace WPframework\Middleware;
 
 use DateTime;
+use PDO;
+use PDOException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -89,7 +91,27 @@ class StatusMiddleware extends AbstractMiddleware
      */
     private function checkDatabaseConnection(): bool
     {
-        return true;
+        $host = (string) env('DB_HOST');
+        $databaseName = (string) env('DB_NAME');
+        $username = (string) env('DB_USER');
+        $password = (string) env('DB_PASSWORD');
+
+        $dsn = "mysql:host={$host};dbname={$databaseName};charset=utf8mb4";
+
+        try {
+            $databaseConnection = new PDO($dsn, $username, $password, [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            ]);
+        } catch (PDOException $e) {
+            $databaseConnection = null;
+        }
+
+        if ($databaseConnection) {
+            return true;
+        }
+
+        return false;
     }
 
     /**

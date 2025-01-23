@@ -85,7 +85,7 @@ class Configs implements ConfigsInterface
      * @param null|string $appPath        Optional. Custom application directory path.
      *                                    If not provided, defaults to the `APP_DIR_PATH` constant.
      */
-    public function __construct(array $preloadConfigs = ['tenancy', 'tenants', 'kiosk'], ?string $appPath = null)
+    public function __construct(array $preloadConfigs = ['tenancy', 'tenants', 'kiosk', 'shortinit'], ?string $appPath = null)
     {
         $this->appPath     = $appPath ?? APP_DIR_PATH;
         self::$frameworkConfigsPath = FRAMEWORK_CONFIGS_DIR;
@@ -120,7 +120,7 @@ class Configs implements ConfigsInterface
      */
     public static function init(?string $appPath = null): self
     {
-        return new self(['tenancy', 'tenants', 'kiosk'], $appPath);
+        return new self(['tenancy', 'tenants', 'kiosk', 'shortinit'], $appPath);
     }
 
     /**
@@ -348,6 +348,42 @@ class Configs implements ConfigsInterface
             'publickey'        => [
                 'app-key' => env('WEB_APP_PUBLIC_KEY', null),
             ],
+
+            'headless' => [
+                'enabled' => false,
+                'rest_api' => [
+                    'enabled' => true,
+                    'cache' => false,
+                ],
+                'graphql' => [
+                    'enabled' => false,
+                ],
+                'themes' => false,
+                'plugins' => [
+                    'load' => [],
+                ],
+                'debug' => false,
+                'error_handling' => 'log',
+                'security' => [
+                    'cors' => true,
+                    'allowed_origins' => ['*'],
+                ],
+            ],
+
+            'shortinit' => [
+                'enabled' => false,
+                'cache' => true,
+                'debug' => false,
+                'components' => [
+                    'database' => true,
+                    'user' => false,
+                ],
+                'error_handling' => 'log',
+                'api' => [
+                    'enabled' => false,
+                    'routes' => [],
+                ],
+            ],
         ];
     }
 
@@ -519,19 +555,82 @@ class Configs implements ConfigsInterface
 
     public function appOptions(): array
     {
-        $optionsFile = $this->configsPath . '/app.php';
-
-        if (file_exists($optionsFile) && \is_array(@require $optionsFile)) {
-            $appOptions = require $optionsFile;
-        } else {
-            $appOptions = [];
-        }
+        $appOptions = $this->appSettingsFileArray();
 
         if (! \is_array($appOptions)) {
             throw new InvalidArgumentException('Error: Config::siteConfig must be of type array', 1);
         }
 
         return self::multiMerge(self::getDefault(), $appOptions);
+    }
+
+    /**
+     * Determines if a given file is a PHP file by checking its extension and searching
+     * for valid PHP opening tags in its content.
+     *
+     * @param string $filePath  The file path or filename.
+     * @param int    $readBytes Maximum number of bytes to read from the start of the file (default: 1024).
+     *
+     * @return bool True if the file is recognized as a PHP file, False otherwise.
+     */
+    public static function isPhpFile($filePath, $readBytes = 1024)
+    {
+        if (!\is_string($filePath) || '' === trim($filePath)) {
+            return false;
+        }
+
+        if (!file_exists($filePath) || is_dir($filePath)) {
+            return false;
+        }
+
+        if (!is_readable($filePath)) {
+            return false;
+        }
+
+        $extension = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
+        if ('php' !== $extension) {
+            return false;
+        }
+
+        if (0 === filesize($filePath)) {
+            return false;
+        }
+
+        $fileContent = @file_get_contents($filePath, false, null, 0, $readBytes);
+        if (false === $fileContent) {
+            return false;
+        }
+
+        $possibleTags = ['<?php', '<?=', '<? '];
+
+        foreach ($possibleTags as $tag) {
+            if (false !== strpos($fileContent, $tag)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    protected function appSettingsFileArray(): array
+    {
+        $optionsFile = $this->configsPath . '/app.php';
+
+        if (! file_exists($optionsFile)) {
+            return [];
+        }
+
+        if (! self::isPhpFile($optionsFile)) {
+            return [];
+        }
+
+        if (\is_array(@require $optionsFile)) {
+            $appOptions = require $optionsFile;
+        } else {
+            $appOptions = [];
+        }
+
+        return $appOptions;
     }
 
     protected function setMiddlewares(array $defaultMiddlewares): array
@@ -672,6 +771,7 @@ class Configs implements ConfigsInterface
             'kernel' => \WPframework\Middleware\KernelMiddleware::class,
             'auth' => \WPframework\Middleware\AuthMiddleware::class,
             'logger' => \WPframework\Middleware\LoggingMiddleware::class,
+            'shortinit' => \WPframework\Middleware\ShortInitMiddleware::class,
             'adminer' => \WPframework\Middleware\AdminerMiddleware::class,
             'whoops' => \WPframework\Middleware\WhoopsMiddleware::class,
         ];

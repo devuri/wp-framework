@@ -20,6 +20,7 @@ return [
     'kernel' => WPframework\Middleware\KernelMiddleware::class,
     'auth' => WPframework\Middleware\AuthMiddleware::class,
     'logger' => WPframework\Middleware\LoggingMiddleware::class,
+    'shortinit' => WPframework\Middleware\ShortInitMiddleware::class,
     'adminer' => WPframework\Middleware\AdminerMiddleware::class,
     'whoops' => WPframework\Middleware\WhoopsMiddleware::class,
 ];

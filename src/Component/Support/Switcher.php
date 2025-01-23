@@ -178,6 +178,9 @@ class Switcher implements EnvSwitcherInterface
         $this->constants->addConst('WP_CRON_LOCK_TIMEOUT', 120);
         $this->constants->addConst('EMPTY_TRASH_DAYS', 50);
 
+        // Disables fatal error handling.
+        $this->constants->addConst('WP_SANDBOX_SCRAPING', true);
+
         self::setDebugLog();
 
         error_reporting(E_ALL);
@@ -219,3 +222,14 @@ class Switcher implements EnvSwitcherInterface
         $this->constants->addConst('COMPRESS_CSS', true);
     }
 }
+
+// //TODO
+// AUTOMATIC_UPDATER_DISABLED	Auto-update engine, introduced in version 3.7
+// DEFAULT: false
+// EXPECTED VALUES: true | false
+//
+// CORE_UPGRADE_SKIP_NEW_BUNDLED Affect new file groups (plugins or themes) when updating
+// EXPECTED true | false
+//
+// WP_AUTO_UPDATE_CORE	Manages core auto-updates
+// EXPECTED: true false
