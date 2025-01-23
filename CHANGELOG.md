@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.13](https://github.com/devuri/wpframework/compare/v0.9.12...v0.9.13) (2025-01-23)
+
+
+### Features
+
+* add `headless` and `shortinit` with documentation ([a70fb0c](https://github.com/devuri/wpframework/commit/a70fb0c7c1ac07212a886f042bcee33b50c60714))
+
 ## [0.9.12](https://github.com/devuri/wpframework/compare/v0.9.11...v0.9.12) (2025-01-22)
 
 
