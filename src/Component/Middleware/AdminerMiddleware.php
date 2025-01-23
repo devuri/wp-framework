@@ -68,7 +68,7 @@ class AdminerMiddleware extends AbstractMiddleware
 
         // Serve the database admin page
         if ($isDbAdminRequest && $isSuperAdmin) {
-            require \dirname(__FILE__, 3) . DIRECTORY_SEPARATOR . 'inc/configs/dbadmin/index.php';
+            require SRC_PATH_DIR . DIRECTORY_SEPARATOR . 'inc/configs/dbadmin/index.php';
             exit;
         }
 

@@ -88,7 +88,7 @@ class Configs implements ConfigsInterface
     public function __construct(array $preloadConfigs = ['tenancy', 'tenants', 'kiosk', 'shortinit'], ?string $appPath = null)
     {
         $this->appPath     = $appPath ?? APP_DIR_PATH;
-        self::$frameworkConfigsPath = FRAMEWORK_CONFIGS_DIR;
+        self::$frameworkConfigsPath = SRC_CONFIGS_DIR;
         $this->configsPath = $this->getConfigsPath($this->appPath);
         self::$defaultWhitelist = self::getDefaultWhitelist();
         self::$defaultMiddlewares = self::getDefaultMiddlewares();

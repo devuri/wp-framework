@@ -4,7 +4,7 @@
  * Plugin Name:       Twigit
  * Plugin URI:        https://github.com/devuri/wpframework
  * Description:       Framework Twig templates.
- * Version:           0.1
+ * Version:           0.2
  * Requires at least: 5.3.0
  * Requires PHP:      7.3.5
  * Author:            uriel

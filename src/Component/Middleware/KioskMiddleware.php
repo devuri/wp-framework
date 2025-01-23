@@ -77,7 +77,7 @@ class KioskMiddleware extends AbstractMiddleware
     public function twig(): \Twig\Environment
     {
         $this->templatesDir = $this->setTemplatesDir();
-        $this->coreTemplatesDir = \dirname(__FILE__, 3) . DIRECTORY_SEPARATOR . 'inc/templates/kiosk';
+        $this->coreTemplatesDir = SRC_PATH_DIR . DIRECTORY_SEPARATOR . 'inc/templates/kiosk';
         $cached = $this->debugMode() ? $this->appDirPath . '/templates/cache/kiosk' : false;
 
         $this->validateTemplatesDirectory($this->templatesDir);

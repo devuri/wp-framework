@@ -35,6 +35,7 @@ class KernelMiddleware extends AbstractMiddleware
         $this->kernel = $this->services->get('kernel');
         $isProd = $request->getAttribute('isProd', false);
         $this->kernel->setKernelConstants($this->configs->app());
+        $this->kernel->setupCorePlugins($this->services->get('filesystem'));
 
         if (! $this->isValidInstallerPath($isProd)) {
             throw new Exception(
