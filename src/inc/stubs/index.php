@@ -21,26 +21,6 @@
 \define('HYBRIDX', false);
 
 /*
- * Defines the `SHORTINIT` constant for minimal initialization.
- *
- * When `SHORTINIT` is set to `true`, the framework loads only core functionality, bypassing themes, plugins,
- * widgets, shortcodes, and other optional features.
- *
- * **Retained Features:**
- * - Core settings
- * - `$wpdb` object for database operations
- * - Basic minimal bootstrap functionality
- *
- * **Skipped Features:**
- * - Themes and plugins
- * - REST API
- * - Localization and translation
- *
- * @see https://github.com/WordPress/wordpress-develop/blob/bcb3299a37712b61eb9b2a92c0b2fcc81e5d3d9d/src/wp-settings.php#L149
- */
-\define('SHORTINIT', false);
-
-/*
  * Bootstrap the application.
  *
  * This logic determines the initialization process:

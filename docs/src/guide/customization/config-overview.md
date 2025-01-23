@@ -13,7 +13,7 @@ Most configuration parameters accept environment variables defined in your `.env
 **Using the `configs()` Helper**  
 Within your plugins or theme, you can retrieve specific configuration values by calling:
 ```php
-configs()->config['app']->get('key.subkey');
+configs()->app()->config['app']->get('key.subkey');
 ```
 This ensures your code references the correct settings from `app.php` (or the defaults if an entry is not overridden).
 
@@ -48,6 +48,11 @@ In this example, only the error handler configuration and certain directory path
 ## Configuration Options Overview
 
 Below is a closer look at some of the primary configuration sections. Each section outlines a table of keys, their default values, and a description of their purpose. You only need to copy and override the keys you truly want to modify.
+
+> [!IMPORTANT]
+> Not all application-level settings are directly used by the framework. Many exist to provide a centralized location for managing configurations, making them easily accessible for third-party plugins or internal integrations as needed. This flexibility allows you to define and organize settings in one place, even if they are specific to your custom requirements.
+
+> The application-level settings are an ideal place to store custom configurations, as the framework automatically loads the configuration array at runtime. You can conveniently retrieve these values using the global `configs()->app()` function, example: `configs()->app()->config['app']->get('key.subkey');`
 
 
 ## 1. Error Handler
@@ -321,6 +326,108 @@ return [
         'bucket'     => 'my-s3-bucket',
         'region'     => 'us-west-2',
         'bucket-url' => 'https://bucket.example.com',
+    ],
+];
+```
+
+## 12. Headless Mode
+
+Headless mode optimizes WordPress for use as a backend API by disabling unnecessary features and customizing API-related behaviors.
+
+| **Key**              | **Default**              | **Description**                                                                                   |
+|----------------------|--------------------------|---------------------------------------------------------------------------------------------------|
+| `enabled`            | `false`                 | Enables or disables the headless mode entirely.                                                  |
+| `rest_api.enabled`   | `true`                  | Activates or deactivates the REST API.                                                           |
+| `rest_api.cache`     | `false`                 | Enables caching for REST API responses.                                                          |
+| `graphql.enabled`    | `false`                 | Activates or deactivates the GraphQL API, if available.                                          |
+| `themes`             | `false`                 | Disables theme loading for improved performance in headless environments.                        |
+| `plugins.load`       | `[]`                    | Specifies a list of plugins to load. Leave empty to skip loading any plugins.                    |
+| `debug`              | `false`                 | Activates debug mode for API-related logs, useful for development and troubleshooting.            |
+| `error_handling`     | `'log'`                 | Determines how errors are handled: `'log'`, `'throw'`, or `'silent'`.                            |
+| `security.cors`      | `true`                  | Enables or disables Cross-Origin Resource Sharing (CORS) headers.                                |
+| `security.allowed_origins` | `['*']`           | Specifies allowed origins for cross-domain requests. Use `['*']` to allow requests from any origin. |
+
+**Example:**
+```php
+return [
+    'headless' => [
+        'enabled' => true,
+        'rest_api' => [
+            'enabled' => true,
+            'cache' => true,
+        ],
+        'graphql' => [
+            'enabled' => true,
+        ],
+        'themes' => false,
+        'plugins' => [
+            'load' => ['plugin-name'],
+        ],
+        'debug' => true,
+        'error_handling' => 'log',
+        'security' => [
+            'cors' => true,
+            'allowed_origins' => ['https://example.com'],
+        ],
+    ],
+];
+```
+
+
+## 13. SHORTINIT Mode
+
+`SHORTINIT` mode initializes WordPress with minimal features, bypassing unnecessary components for performance-critical tasks.
+
+| **Key**              | **Default**              | **Description**                                                                                   |
+|----------------------|--------------------------|---------------------------------------------------------------------------------------------------|
+| `enabled`            | `false`                 | Enables the `SHORTINIT` mode.                                                                    |
+| `cache`              | `true`                  | Enables basic caching for lightweight initialization.                                            |
+| `debug`              | `false`                 | Activates debug mode for additional error reporting.                                             |
+| `components.database`| `true`                  | Retains the `$wpdb` object for database operations.                                              |
+| `components.user`    | `false`                 | Enables user-related functionalities, such as authentication.                                    |
+| `error_handling`     | `'log'`                 | Determines how errors are handled: `'log'`, `'throw'`, or `'silent'`.                            |
+| `api.enabled`        | `false`                 | Enables limited REST API functionality in `SHORTINIT` mode.                                      |
+| `api.routes`         | `[]`                    | Specifies allowed REST API routes, if any.                                                       |
+
+**Example:**
+```php
+return [
+    'shortinit' => [
+        'enabled' => true,
+        'cache' => true,
+        'debug' => true,
+        'components' => [
+            'database' => true,
+            'user' => false,
+        ],
+        'error_handling' => 'throw',
+        'api' => [
+            'enabled' => true,
+            'routes' => ['wp/v2/posts'],
+        ],
+    ],
+];
+```
+
+#### Using Environment Variables
+
+Configuration parameters can also accept environment variables defined in your `.env` file.
+
+**Example:**
+In `.env`:
+```env
+HEADLESS_ENABLED=true
+REST_API_ENABLED=true
+```
+
+In `app.php`:
+```php
+return [
+    'headless' => [
+        'enabled' => env('HEADLESS_ENABLED', false),
+        'rest_api' => [
+            'enabled' => env('REST_API_ENABLED', true),
+        ],
     ],
 ];
 ```

@@ -349,7 +349,41 @@ class Configs implements ConfigsInterface
                 'app-key' => env('WEB_APP_PUBLIC_KEY', null),
             ],
 
-            'headless'        => [],
+            'headless' => [
+                'enabled' => false,
+                'rest_api' => [
+                    'enabled' => true,
+                    'cache' => false,
+                ],
+                'graphql' => [
+                    'enabled' => false,
+                ],
+                'themes' => false,
+                'plugins' => [
+                    'load' => [],
+                ],
+                'debug' => false,
+                'error_handling' => 'log',
+                'security' => [
+                    'cors' => true,
+                    'allowed_origins' => ['*'],
+                ],
+            ],
+
+            'shortinit' => [
+                'enabled' => false,
+                'cache' => true,
+                'debug' => false,
+                'components' => [
+                    'database' => true,
+                    'user' => false,
+                ],
+                'error_handling' => 'log',
+                'api' => [
+                    'enabled' => false,
+                    'routes' => [],
+                ],
+            ],
         ];
     }
 
