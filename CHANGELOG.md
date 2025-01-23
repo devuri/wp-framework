@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.14](https://github.com/devuri/wpframework/compare/v0.9.13...v0.9.14) (2025-01-23)
+
+
+### Bug Fixes
+
+* add status check for database fix ([dace1ae](https://github.com/devuri/wpframework/commit/dace1aed6017eaacaffaa4b847916e1480cb8b66))
+
 ## [0.9.13](https://github.com/devuri/wpframework/compare/v0.9.12...v0.9.13) (2025-01-23)
 
 
