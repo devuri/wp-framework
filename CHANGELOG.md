@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.15](https://github.com/devuri/wpframework/compare/v0.9.14...v0.9.15) (2025-01-23)
+
+
+### Bug Fixes
+
+* copy `mu-plugins` and `app.sample.php` files as needed ([0cc4e50](https://github.com/devuri/wpframework/commit/0cc4e502e0a1d761c794379595897faee6c07df3))
+
 ## [0.9.14](https://github.com/devuri/wpframework/compare/v0.9.13...v0.9.14) (2025-01-23)
 
 
