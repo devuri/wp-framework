@@ -53,13 +53,16 @@ class StatusMiddleware extends AbstractMiddleware
         return $handler->handle($request);
     }
 
-    private static function isHealthStatusCheck($isEnable, $statusRoute, ServerRequestInterface $request): bool
+    private static function isHealthStatusCheck($isEnabled, $statusRoute, ServerRequestInterface $request): bool
     {
-        if ($isEnable && "/{$statusRoute}" === $request->getUri()->getPath()) {
-            return true;
+        if (!$isEnabled) {
+            return false;
         }
 
-        return false;
+        $requestPath = rtrim($request->getUri()->getPath(), '/');
+        $expectedPath = rtrim("/{$statusRoute}", '/');
+
+        return $requestPath === $expectedPath;
     }
 
     /**
