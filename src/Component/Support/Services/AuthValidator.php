@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the WPframework package.
  *
@@ -84,7 +86,7 @@ class AuthValidator
         }
 
         $user = $this->getUser($username);
-        $this->sessionTokens = $this->userMeta->getUserMeta($user->ID, 'session_tokens');
+        $this->sessionTokens = $this->userMeta->getUserMeta((int) $user->ID, 'session_tokens');
 
         if (empty($this->sessionTokens)) {
             return [

@@ -192,7 +192,7 @@ return (new PhpCsFixer\Config())
 		'space_after_semicolon' => true,
 
 		// Strict.
-		//'declare_strict_types' => true,
+		'declare_strict_types' => true,
 		//'strict_comparison' => true,
 		'strict_param' => true,
 
