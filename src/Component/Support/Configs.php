@@ -775,6 +775,7 @@ class Configs implements ConfigsInterface
             'logger' => \WPframework\Middleware\LoggingMiddleware::class,
             'shortinit' => \WPframework\Middleware\ShortInitMiddleware::class,
             'adminer' => \WPframework\Middleware\AdminerMiddleware::class,
+			'webhook' => \WPframework\Middleware\GitHubWebhookMiddleware::class,
             'whoops' => \WPframework\Middleware\WhoopsMiddleware::class,
         ];
     }

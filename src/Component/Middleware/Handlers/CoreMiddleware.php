@@ -78,6 +78,7 @@ class CoreMiddleware
             'logger',
             'shortinit',
             'adminer',
+            'webhook',
             'whoops',
         ];
     }

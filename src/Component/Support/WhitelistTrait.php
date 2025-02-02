@@ -141,6 +141,7 @@ trait WhitelistTrait
                 'WP_REDIS_DISABLED',
                 'WP_SUDO_ADMIN',
                 'USE_STRICT_ENV_VARS',
+                'GITHUB_SECRET',
             ],
             'wp'        => [
                 'WP_DEVELOPMENT_MODE',

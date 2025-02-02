@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace WPframework\Support\Services\AdminKiosk;
 
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use WPframework\Http\Message\HtmlResponse;
 
