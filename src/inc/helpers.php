@@ -202,17 +202,20 @@ function frameworkFooterLabel(): string
 
     $httpEnvConfig = \defined('HTTP_ENV_CONFIG') ? HTTP_ENV_CONFIG : null;
     $tenantId = \defined('APP_TENANT_ID') ? APP_TENANT_ID : null;
+    $dbAdminConfig = configs()->app()->config['app']->get('dbadmin');
 
     // admin only info.
     if (current_user_can('manage_options')) {
         $tenant_id = $tenantId;
         $http_env  = strtolower(esc_html($httpEnvConfig));
+        $dbadminId = $dbAdminConfig['uri'];
     } else {
         $tenant_id = null;
-        $http_env  =  null;
+        $http_env  = null;
+        $dbadminId = null;
     }
 
-    return wp_kses_post("&copy; $date_year <a href=\"$home_url\" target=\"_blank\">$site_name</a> " . __('All Rights Reserved.', 'wp-framework') . " $tenant_id $http_env");
+    return wp_kses_post("&copy; $date_year <a href=\"$home_url\" target=\"_blank\">$site_name</a> " . __('All Rights Reserved.', 'wp-framework') . " $tenant_id $http_env $dbadminId");
 }
 
 /**

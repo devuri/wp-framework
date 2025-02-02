@@ -36,7 +36,7 @@ class AdminerMiddleware extends AbstractMiddleware
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $dbAdminConfig = $this->configs->app()->config['app']->get('dbadmin');
-        $adminerUri = env('ADMINER_URI', $dbAdminConfig['uri']);
+        $adminerUri = $dbAdminConfig['uri'];
 
         // Determine the database admin URL path
         $dbAdminUrlPath = $adminerUri
