@@ -19,7 +19,7 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 /**
- * GitHubWebhookValidationMiddleware.
+ * GitHubWebhookMiddleware.
  *
  * This middleware validates that an incoming request has a valid GitHub HMAC signature.
  * If valid, sets isValidGitHubSignature = true, otherwise false.
