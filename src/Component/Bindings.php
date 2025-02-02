@@ -113,7 +113,7 @@ class Bindings
      *
      * @return (Closure)[]
      *
-     * @psalm-return array{filesystem: Closure():Filesystem, configs: Closure(mixed):Configs, const_builder: Closure(mixed):ConstantBuilder, kernel: Closure(mixed):KernelConfig, site_manager: Closure(mixed):SiteManager, switcher: Closure(mixed):Switcher, auth: Closure(mixed):AuthManager, logger: Closure(mixed):FileLogger, middlewares: Closure(mixed):CoreMiddleware, whoops: Closure(mixed):WhoopRunner}
+     * @psalm-return array{filesystem: Closure():Filesystem, configs: Closure(mixed):Configs, env_type: Closure(mixed):EnvType, const_builder: Closure(mixed):ConstantBuilder, kernel: Closure(mixed):KernelConfig, site_manager: Closure(mixed):SiteManager, switcher: Closure(mixed):Switcher, auth: Closure(mixed):AuthManager, logger: Closure(mixed):FileLogger, query: Closure(mixed):TinyQuery, middlewares: Closure(mixed):CoreMiddleware, whoops: Closure(mixed):WhoopRunner}
      */
     public function getCoreBindings(): array
     {

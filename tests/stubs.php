@@ -6,6 +6,14 @@ if ( ! \defined('RAYDIUM_ENVIRONMENT_TYPE')) {
 	\define('RAYDIUM_ENVIRONMENT_TYPE', null);
 }
 
+if ( ! \defined('SRC_CONFIGS_DIR')) {
+	\define('SRC_CONFIGS_DIR', null);
+}
+
+if ( ! \defined('SRC_PATH_DIR')) {
+	\define('SRC_PATH_DIR', null);
+}
+
 if (!defined('FRAMEWORK_CONFIGS_DIR')) {
     define('FRAMEWORK_CONFIGS_DIR', '');
 }

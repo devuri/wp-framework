@@ -110,11 +110,13 @@ class ShortInitMiddleware extends AbstractMiddleware
     /**
      * Environment Options.
      *
-     * @return array
+     * @return (null|false|int|string)[]
      *
      * @see https://twig.symfony.com/doc/3.x/api.html#environment-options
+     *
+     * @psalm-return array{debug: false, charset: 'utf-8', cache: false, auto_reload: null, strict_variables: false, autoescape: 'html', optimizations: -1}
      */
-    protected static function defaultTwigOptions()
+    protected static function defaultTwigOptions(): array
     {
         return [
             'debug' => false,

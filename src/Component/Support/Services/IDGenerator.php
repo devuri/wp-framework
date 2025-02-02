@@ -155,7 +155,7 @@ class IDGenerator
             $currentNumber++;
         }
 
-        $id = str_pad($currentNumber, $this->idLength, '0', STR_PAD_LEFT);
+        $id = str_pad((string) $currentNumber, $this->idLength, '0', STR_PAD_LEFT);
 
         return $this->enforceLengthConstraints($id);
     }

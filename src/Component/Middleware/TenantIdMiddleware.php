@@ -146,7 +146,7 @@ class TenantIdMiddleware extends AbstractMiddleware
         return $this->tenant;
     }
 
-    protected function isKiosk(array $tenantDomain): ?bool
+    protected function isKiosk(array $tenantDomain): bool
     {
         if (empty($tenantDomain)) {
             return false;
@@ -184,6 +184,9 @@ class TenantIdMiddleware extends AbstractMiddleware
         }
     }
 
+    /**
+     * @psalm-return array{id: mixed, uuid: mixed, enabled: mixed, framework: mixed}
+     */
     private function kioskTenant(): array
     {
         return [
@@ -195,8 +198,6 @@ class TenantIdMiddleware extends AbstractMiddleware
     }
 
     /**
-     * @return null|string[]
-     *
      * @psalm-return list{string, string}|null
      */
     private function resolveTenantIdFromRequest(ServerRequestInterface $request): array

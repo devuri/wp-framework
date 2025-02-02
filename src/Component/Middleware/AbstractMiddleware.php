@@ -219,14 +219,16 @@ abstract class AbstractMiddleware implements MiddlewareInterface
      *
      * Example Configuration:
      * 'restrict_wpadmin' => [
-     *     'enabled' => true,
-     *     'secure' => false,
-     *     'allowed' => [
-     *         'admin-ajax.php'
-     *     ]
+     * 'enabled' => true,
+     * 'secure' => false,
+     * 'allowed' => [
+     * 'admin-ajax.php'
+     * ]
      * ];
      *
      * @return null|array Returns an array of allowed paths if restriction is enabled, null otherwise.
+     *
+     * @psalm-return array{allowed: mixed, secure: mixed}|null
      */
     protected function getAllowedAccessPaths(): ?array
     {

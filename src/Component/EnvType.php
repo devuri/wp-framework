@@ -201,7 +201,9 @@ final class EnvType
      * @throws FileNotFoundException    If the .env file does not exist.
      * @throws InvalidArgumentException If the .env file contains invalid syntax.
      *
-     * @return array
+     * @return string[]
+     *
+     * @psalm-return array<string, string>
      */
     public function readOnly(string $envFilePath): array
     {
@@ -407,6 +409,11 @@ final class EnvType
         END;
     }
 
+    /**
+     * @return string[]
+     *
+     * @psalm-return list{string, string}
+     */
     private function parseLine(string $line): array
     {
         [$key, $value] = array_map('trim', explode('=', $line, 2));
@@ -459,7 +466,7 @@ final class EnvType
         return $this->convertSectionsToObjects($sections);
     }
 
-    private function parseWithoutSections(array $lines, $sanitizeVal = true): array
+    private function parseWithoutSections(array $lines, bool $sanitizeVal = true): array
     {
         $parsed = [];
 
@@ -483,6 +490,11 @@ final class EnvType
         return $parsed;
     }
 
+    /**
+     * @return stdClass[]
+     *
+     * @psalm-return list{0?: stdClass,...}
+     */
     private function convertSectionsToObjects(array $sections, bool $sanitizeVal = true): array
     {
         $sectionObjects = [];
@@ -515,6 +527,11 @@ final class EnvType
         return $value;
     }
 
+    /**
+     * @return string[]
+     *
+     * @psalm-return non-empty-list<string>
+     */
     private function readEnvFile(string $envFilePath): array
     {
         $fileContent = $this->readFile($envFilePath);

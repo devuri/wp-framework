@@ -206,10 +206,14 @@ class TinyQuery
      * using the FastRoute dispatcher.
      *
      * Returns an array with the shape:
-     *   [ 'status' => int, 'handler' => mixed, 'vars' => array ]
+     * [ 'status' => int, 'handler' => mixed, 'vars' => array ]
      * or
-     *   [ 'status' => 404 ]
-     *   [ 'status' => 405, 'allowed' => [ ... ] ]
+     * [ 'status' => 404 ]
+     * [ 'status' => 405, 'allowed' => [ ... ] ]
+     *
+     * @return (int|mixed|string)[]
+     *
+     * @psalm-return array{status: int, error?: 'Dispatcher not set', allowed?: mixed, handler?: mixed, vars?: mixed}
      */
     public function dispatch(string $httpMethod, string $uri): array
     {

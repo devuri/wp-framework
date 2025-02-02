@@ -122,8 +122,7 @@ class Str
      * @param null|string $referrer  Optional. The referrer URL to include in the HTTP request.
      *                               Defaults to the value of the `HOME_URL` environment variable, if available.
      *
-     * @return null|string The external IP address if successfully retrieved and valid,
-     *                     or null if the address could not be fetched or is invalid.
+     * @return null|string The external IP address if successfully retrieved and valid, or null if the address could not be fetched or is invalid.
      */
     public static function getExternalIP(string $userAgent = 'Mozilla/5.0 (compatible; CustomBot/1.0)', ?string $referrer = null): ?string
     {

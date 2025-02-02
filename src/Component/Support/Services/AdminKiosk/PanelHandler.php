@@ -19,7 +19,7 @@ use WPframework\Http\Message\HtmlResponse;
 
 class PanelHandler
 {
-    public function dashboard(ServerRequestInterface $request, array $args = []): ResponseInterface
+    public function dashboard(ServerRequestInterface $request, array $args = []): HtmlResponse
     {
         return new HtmlResponse('<h1>Admin Dashboard</h1><a href="/admin/tables">Manage Tables</a>');
     }
