@@ -116,7 +116,7 @@ class AppFactory
         EnvLoader::init(APP_DIR_PATH, APP_HTTP_HOST)->load($envFiles, $envType);
     }
 
-    private static function copySourceConfigFile($psrContainer): void
+    private static function copySourceConfigFile(\Pimple\Psr11\Container $psrContainer): void
     {
         $filesystem = $psrContainer->get('filesystem');
         $configs = $psrContainer->get('configs');

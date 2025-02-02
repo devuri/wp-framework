@@ -74,7 +74,7 @@ final class HeadlessMode
     public function redirectNonApiRequests(): void
     {
         // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-        if (! is_admin() && ! Str::startsWith($_SERVER['REQUEST_URI'] ?? '', '/wp-json/')) {
+        if (! is_admin() && ! WPframework\Support\Str::startsWith($_SERVER['REQUEST_URI'] ?? '', '/wp-json/')) {
             // Uncomment if you want a real 404 response:
             // wp_die('Headless mode active. Frontend is disabled.', 'Headless Mode', ['response' => 404]);
         }

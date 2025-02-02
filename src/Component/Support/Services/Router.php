@@ -35,6 +35,9 @@ class Router implements MiddlewareInterface
         $this->twig = $twig;
     }
 
+    /**
+     * @param false|string $handler
+     */
     public function get(string $path, $handler): void
     {
         $this->addRoute('GET', $path, $handler);
@@ -145,7 +148,7 @@ class Router implements MiddlewareInterface
         return "{$templateName}.twig";
     }
 
-    private function createResponse(int $status, string $body): ResponseInterface
+    private function createResponse(int $status, string $body): HtmlResponse
     {
         return new HtmlResponse($body, $status);
     }

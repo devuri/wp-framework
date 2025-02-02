@@ -62,7 +62,7 @@ class CoreMiddleware
      *
      * @return string[]
      *
-     * @psalm-return list{'security', 'tenant', 'ignit', 'kiosk', 'status', 'config', 'kernel', 'auth', 'logger', 'adminer', 'whoops'}
+     * @psalm-return list{'security', 'tenant', 'ignit', 'kiosk', 'status', 'config', 'kernel', 'auth', 'logger', 'shortinit', 'adminer', 'whoops'}
      */
     private function defaultMiddlewareKeys(): array
     {

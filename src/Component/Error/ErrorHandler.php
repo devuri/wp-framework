@@ -18,9 +18,9 @@ use WPframework\Terminate;
 class ErrorHandler extends AbstractError
 {
     /**
-     * @return null|int
+     * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         $exception = $this->getException();
 
