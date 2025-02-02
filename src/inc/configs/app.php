@@ -76,7 +76,7 @@ return [
          *
          * @var string $uri Must be a valid string. Default is 'dbadmin'.
          */
-        'uri' => 'dbadmin',
+        'uri' => env('ADMINER_URI', 'dbadmin'),
 
         /*
          * Whether to validate that the WordPress user is authenticated.
