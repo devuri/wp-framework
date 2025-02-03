@@ -212,8 +212,32 @@ class TenantIdMiddleware extends AbstractMiddleware
         return [];
     }
 
+    /**
+     * Determines whether the application should run in "shortinit" mode.
+     *
+     * Shortinit mode is a lightweight mode in WordPress where only a minimal
+     * set of core functionalities are loaded. This method checks multiple conditions
+     * to determine if shortinit should be enabled.
+     *
+     * Conditions checked:
+     * - If the `HYBRIDX` constant is defined and set to `true`, shortinit is disabled.
+     * - If the application configuration (`shortinit.enabled`) is set to `true`, shortinit is enabled.
+     * - Otherwise, it falls back to checking whether the `SHORTINIT` constant is defined and set to `true`.
+     *
+     * @return bool True if shortinit mode should be enabled, false otherwise.
+     */
     private function isShortInit(): bool
     {
+        // When the `HYBRIDX` constant is set to true, the framework operates in a lightweight mode.
+        // In this mode, WordPress will not be loaded, making shortinit unavailable.
+        if (\defined('HYBRIDX') && true === \constant('HYBRIDX')) {
+            return false;
+        }
+
+        if ($this->configs->app()->config['app']->get('shortinit.enabled')) {
+            return true;
+        }
+
         return \defined('SHORTINIT') && true === \constant('SHORTINIT');
     }
 
