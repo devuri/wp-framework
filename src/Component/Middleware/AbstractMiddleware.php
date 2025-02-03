@@ -288,4 +288,9 @@ abstract class AbstractMiddleware implements MiddlewareInterface
 
         return false;
     }
+
+    protected static function isHybridMode(): bool
+    {
+        return \defined('HYBRIDX') && true === \constant('HYBRIDX');
+    }
 }

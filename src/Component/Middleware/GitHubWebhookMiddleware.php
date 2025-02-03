@@ -23,6 +23,8 @@ use Psr\Http\Server\RequestHandlerInterface;
  *
  * This middleware validates that an incoming request has a valid GitHub HMAC signature.
  * If valid, sets isValidGitHubSignature = true, otherwise false.
+ *
+ * @see https://docs.github.com/en/webhooks/using-webhooks/creating-webhooks
  */
 class GitHubWebhookMiddleware implements MiddlewareInterface
 {

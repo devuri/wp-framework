@@ -17,8 +17,8 @@ declare(strict_types=1);
  * Define lightweight framework mode.
  *
  * When `HYBRIDX` is set to true, the framework operates in a lightweight mode
- * and avoids fully loading WordPress, instead relying on `wp-config.php` for dependency
- * bootstrapping. This is useful for specific scenarios where we only a minimal framework environment.
+ * and avoids fully loading WordPress, instead relying on `wp-config.php` for dependency bootstrapping.
+ * This is useful for specific scenarios where we only need a minimal framework environment.
  */
 \define('HYBRIDX', false);
 
