@@ -17,7 +17,6 @@ use Pimple\Container as PimpleContainer;
 use Pimple\Psr11\Container as PsrContainer;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Throwable;
 use WPframework\Exceptions\HttpException;
@@ -175,7 +174,7 @@ class App implements RequestHandlerInterface
     {
         $this->request = $request->withAttribute('isProd', Configs::isInProdEnvironment());
 
-		// middlewares are loaded from configs/middleware.php
+        // middlewares are loaded from configs/middleware.php
         $this->middlewareRegistry = new MiddlewareRegistry($this->psrContainer, $this->middlewareFilter);
 
         try {
