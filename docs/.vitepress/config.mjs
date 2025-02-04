@@ -93,6 +93,7 @@ function navBar(){
 			{ text: 'Compatibility', link: 'guide/customization/compatibility' },
 			{ text: 'GitHub Token', link: 'guide/customization/auth-json' },
 			{ text: 'Kiosk', link: 'guide/customization/kiosk' },
+			{ text: 'Middleware', link: 'guide/customization/middleware' },
 			{ text: 'Install Protection', link: 'guide/customization/install-protection' }
 		]
 	},
@@ -228,9 +229,11 @@ function sidebarGuide() {
 				{ text: 'Environments', link: 'customization/environments' },
 				{ text: 'Constants', link: 'customization/constants-file' },
 				{ text: 'Multisite', link: 'customization/multisite' },
+				{ text: 'Adminer', link: 'customization/dbadmin' },
 				{ text: 'Compatibility', link: 'customization/compatibility' },
 				{ text: 'GitHub Token', link: 'customization/auth-json' },
 				{ text: 'Kiosk', link: 'customization/kiosk' },
+				{ text: 'Middleware', link: 'customization/middleware' },
 				{ text: 'Install Protection', link: 'customization/install-protection' }
 			]
 		}

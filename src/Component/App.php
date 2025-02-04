@@ -137,18 +137,6 @@ class App implements RequestHandlerInterface
     }
 
     /**
-     * Add middleware to the application via MiddlewareRegistry.
-     *
-     * @param callable|MiddlewareInterface $middleware
-     *
-     * @return static
-     */
-    public function add($middleware, string $key = ''): self
-    {
-        return $this->withMiddleware($middleware, $key);
-    }
-
-    /**
      * Set the error handler middleware.
      *
      * @param callable $errorHandler
@@ -187,6 +175,7 @@ class App implements RequestHandlerInterface
     {
         $this->request = $request->withAttribute('isProd', Configs::isInProdEnvironment());
 
+		// middlewares are loaded from configs/middleware.php
         $this->middlewareRegistry = new MiddlewareRegistry($this->psrContainer, $this->middlewareFilter);
 
         try {
@@ -219,20 +208,6 @@ class App implements RequestHandlerInterface
         $response = $this->handle($this->request);
         $this->finalRequest = $this->defaultHandler->getFinalRequest();
         $this->emitResponse($response);
-    }
-
-    /**
-     * Add middleware to the application via MiddlewareRegistry.
-     *
-     * @param callable|MiddlewareInterface $middleware
-     *
-     * @return static
-     */
-    protected function withMiddleware($middleware, string $key = ''): self
-    {
-        $this->middlewareRegistry->register($middleware, $key);
-
-        return $this;
     }
 
     /**

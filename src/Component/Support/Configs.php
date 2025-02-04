@@ -637,7 +637,7 @@ class Configs implements ConfigsInterface
 
     protected function setMiddlewares(array $defaultMiddlewares): array
     {
-        $middlewareFile = $this->configsPath . '/middlewares.php';
+        $middlewareFile = $this->configsPath . '/middleware.php';
 
         if (file_exists($middlewareFile) && \is_array(@require $middlewareFile)) {
             $appMiddleware = require $middlewareFile;
