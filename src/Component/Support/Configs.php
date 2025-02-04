@@ -614,40 +614,43 @@ class Configs implements ConfigsInterface
         return false;
     }
 
+    /**
+     * Safely require a file that should return an array.
+     *
+     * @param string $filePath The path to the PHP file that returns an array.
+     *
+     * @throws RuntimeException         If the file does not exist or is not readable.
+     * @throws UnexpectedValueException If the file does not return an array.
+     *
+     * @return array The array loaded from the file.
+     */
+    public static function loadArrayFile(string $filePath): array
+    {
+        if (! self::isPhpFile($filePath)) {
+            return [];
+        }
+
+        // 'require' the file, which should return an array
+        $data = require $filePath;
+
+        if (!\is_array($data)) {
+            throw new \UnexpectedValueException("Expected array, got " . \gettype($data) . " from file: {$filePath}");
+        }
+
+        return $data;
+    }
+
     protected function appSettingsFileArray(): array
     {
         $optionsFile = $this->configsPath . '/app.php';
 
-        if (! file_exists($optionsFile)) {
-            return [];
-        }
-
-        if (! self::isPhpFile($optionsFile)) {
-            return [];
-        }
-
-        if (\is_array(@require $optionsFile)) {
-            $appOptions = require $optionsFile;
-        } else {
-            $appOptions = [];
-        }
-
-        return $appOptions;
+        return self::loadArrayFile($optionsFile);
     }
 
     protected function setMiddlewares(array $defaultMiddlewares): array
     {
         $middlewareFile = $this->configsPath . '/middleware.php';
-
-        if (file_exists($middlewareFile) && \is_array(@require $middlewareFile)) {
-            $appMiddleware = require $middlewareFile;
-        } else {
-            $appMiddleware = [];
-        }
-
-        if (! \is_array($appMiddleware)) {
-            throw new InvalidArgumentException('Error: Config::$appMiddleware must be of type array', 1);
-        }
+        $appMiddleware = self::loadArrayFile($middlewareFile);
 
         return array_merge($defaultMiddlewares, $appMiddleware);
     }

@@ -100,10 +100,10 @@ class MiddlewareDispatcher implements RequestHandlerInterface
 
         $middleware = array_shift($this->middlewareQueue);
 
-		// we can disable middleware by passing in null value.
-		if (\is_null($middleware)) {
-			$middleware = array_shift($this->middlewareQueue);
-		}
+        // we can disable middleware by passing in null value.
+        if (\is_null($middleware)) {
+            $middleware = array_shift($this->middlewareQueue);
+        }
 
         if (\is_string($middleware)) {
             $middleware = new $middleware($this->container);
