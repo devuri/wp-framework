@@ -2,6 +2,9 @@
 
 Middlewares are classes that sit between the request and the final application logic. They can modify the request or response, perform authentication or logging, handle errors, apply caching, and so forth. Each middleware can be registered in `configs/middleware.php`, and when the framework boots, it merges your custom middlewares with its own defaults.
 
+> [!IMPORTANT]  
+> Proceed with caution when modifying middleware configurations, as improper setup can disrupt the request lifecycle and cause unintended side effects.
+
 ## Creating `middleware.php`
 
 Inside your `configs` directory, create a file named `middleware.php`. This file returns an array of **alias keys** mapped to **fully qualified class names** of your custom or third-party middleware:
@@ -387,3 +390,16 @@ From there, you can expand and refine your pipeline to meet your application’s
 
 3. **Performance**  
    - Constantly creating large objects in a closure might be expensive under high load. Where relevant, consider patterns like singletons or memoization to avoid repeated heavy instantiation.
+
+
+## ⚠ **Middlewares Affect Application Flow**  
+
+Middleware plays a critical role in processing requests and responses within the framework. Misconfiguring or improperly implementing middleware **can lead to unexpected behaviors, performance issues, or even security vulnerabilities**.  
+
+### **Things to Keep in Mind:**  
+- **Order Matters:** Middleware is executed in a specific sequence. Ensure that critical middleware (such as authentication or security headers) is **executed before** others that depend on them.  
+- **Blocking Requests:** If a middleware **does not call** `$handler->handle($request)`, it will **halt** request execution, potentially causing blank pages, failed API responses, or missing functionality.  
+- **Performance Impact:** Middleware that performs expensive operations (such as database queries, file reads, or external API calls) on every request **can slow down** your application. Consider **caching or optimizing** such operations.  
+- **Error Handling:** Improper exception handling in middleware **can break request flow**. Always wrap error-prone logic in try-catch blocks and log errors where necessary.  
+- **Disabling Middleware:** Setting middleware to `null` in `configs/middleware.php` disables it. Ensure that this does not unintentionally remove essential functionality.  
+- **Testing & Debugging:** Always **test middleware configurations in a development environment** before deploying to production. Unexpected middleware behavior can lead to difficult-to-debug issues.  
