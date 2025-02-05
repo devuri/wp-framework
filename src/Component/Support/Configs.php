@@ -768,7 +768,7 @@ class Configs implements ConfigsInterface
         return [
             'security' => \WPframework\Middleware\SecurityHeadersMiddleware::class,
             'spam' => \WPframework\Middleware\SpamDetectionMiddleware::class,
-            'tenant' => \WPframework\Middleware\TenantIdMiddleware::class,
+            'tenant' => \WPframework\Middleware\TenantMiddleware::class,
             'ignit' => \WPframework\Middleware\IgnitionMiddleware::class,
             'kiosk' => \WPframework\Middleware\KioskMiddleware::class,
             'status' => \WPframework\Middleware\StatusMiddleware::class,
