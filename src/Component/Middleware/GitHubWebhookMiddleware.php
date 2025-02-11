@@ -29,9 +29,9 @@ use Psr\Http\Server\RequestHandlerInterface;
 class GitHubWebhookMiddleware implements MiddlewareInterface
 {
     /**
-     * @var string
+     * @var null|string
      */
-    private string $gitHubSecret;
+    private ?string $gitHubSecret;
 
     /**
      * Process the incoming server request and return a response.
@@ -43,7 +43,7 @@ class GitHubWebhookMiddleware implements MiddlewareInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $this->gitHubSecret = env('GITHUB_SECRET');
+        $this->gitHubSecret = env('GITHUB_SECRET', '');
 
         // The standard GitHub signature header for HMAC-SHA256 is "X-Hub-Signature-256"
         $signatureHeader = $request->getHeaderLine('X-Hub-Signature-256');
