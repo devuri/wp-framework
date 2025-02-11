@@ -21,7 +21,7 @@ use WPframework\Exceptions\TenantNotFoundException;
 use WPframework\Support\Services\TenantRepository;
 use WPframework\Support\Services\TenantResolver;
 
-class TenantIdMiddleware extends AbstractMiddleware
+class TenantMiddleware extends AbstractMiddleware
 {
     private $tenant;
     private $tenantResolver;
@@ -55,6 +55,11 @@ class TenantIdMiddleware extends AbstractMiddleware
             ->withAttribute('isMultitenant', $this->isMultitenant)
             ->withAttribute('isShortInit', $this->isShortInit)
             ->withAttribute('tenant', $this->tenant);
+
+        // setup `SHORTINIT`
+        if (! \defined('SHORTINIT') && $this->isShortInit) {
+            \define('SHORTINIT', true);
+        }
 
         // check secure modes.
         if (self::isSecureMode() && 'https' !== $request->getUri()->getScheme()) {

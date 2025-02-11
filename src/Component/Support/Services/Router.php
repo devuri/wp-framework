@@ -92,9 +92,17 @@ class Router implements MiddlewareInterface
     protected function handleFoundRoute($callback, array $vars, ServerRequestInterface $request): ResponseInterface
     {
         if (\is_string($callback) && $this->twig) {
+            $statusCode = 200;
             $template = $this->resolveTemplate($callback, $vars);
 
-            return $this->createResponse(200, $this->twig->render($template, $this->postItem));
+            $loaderPath = $this->twig->getLoader()->getPaths();
+
+            if (!file_exists($loaderPath[0] . "/{$template}") && !file_exists($loaderPath[1] . "/{$template}")) {
+                $statusCode = 404;
+                $template = '404.twig';
+            }
+
+            return $this->createResponse($statusCode, $this->twig->render($template, $this->postItem));
         }
 
         $handler = self::resolve($callback);

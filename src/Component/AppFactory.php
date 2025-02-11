@@ -182,9 +182,6 @@ class AppFactory
                 'headers' => $request->getHeaders(),
             ]);
 
-            // TODO only send this back in dev mode, security issue
-            // $response = $response->withHeader('Exception', $e->getMessage());
-
             return $response;
         });
     }
