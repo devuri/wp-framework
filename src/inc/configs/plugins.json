@@ -1,5 +1,5 @@
 {
-	"active-plugins": {
+	"active": {
 		"query-monitor": "query-monitor/query-monitor",
 		"easy-page-generator": "easy-page-generator/easy-page-generator",
 		"elementor": "elementor/elementor",
@@ -8,7 +8,7 @@
 		"system-info": "system-info/system-info",
 		"wp-auto-updates": "wp-auto-updates/wp-auto-update"
 	},
-	"installed-plugins": {
+	"installed": {
 		"query-monitor": "query-monitor/query-monitor",
 		"easy-page-generator": "easy-page-generator/easy-page-generator",
 		"elementor": "elementor/elementor",
