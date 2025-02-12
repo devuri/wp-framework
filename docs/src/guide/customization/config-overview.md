@@ -118,11 +118,15 @@ return [
 
 Adds a basic health-check endpoint (default `/up`), commonly used by uptime monitors and automated scripts.
 
-| Key     | Default | Description                                                         |
-|---------|---------|---------------------------------------------------------------------|
-| enabled | `true`  | Toggles the health-check middleware.                                |
-| secret  | `null`  | If specified, the endpoint requires a matching secret key.          |
-| route   | `up`    | The path to access the health check, e.g., `example.com/up`.        |
+| Key      | Default | Description                                                       |
+|----------|---------|-------------------------------------------------------------------|
+| enabled  | `true`  | Toggles the health-check middleware.                              |
+| secret   | `null`  | If specified, the endpoint requires a matching secret key.        |
+| route    | `up`    | The path to access the health check, e.g., `example.com/up`.      |
+| critical | `[]`    | The critical routes or endpoints that we should also check.       |
+
+> ## Notes on `critical` the `critical` array should contain list or urls and endpoints that should also be checked the format should be as follows:
+> - critical => [ 'contact-us', 'about/careers', 'some-url']
 
 **Example:**
 ```php
@@ -131,6 +135,7 @@ return [
         'enabled' => true,
         'secret'  => 'my-secret-value',
         'route'   => 'healthcheck',
+		'critical' => [],
     ],
 ];
 ```
