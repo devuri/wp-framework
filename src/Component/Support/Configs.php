@@ -239,6 +239,7 @@ class Configs implements ConfigsInterface
                 'enabled' => true,
                 'secret' => env('HEALTH_STATUS_SECRET', null),
                 'route' => 'up',
+                'critical' => [],
             ],
             'prod'             => [ 'secure', 'sec', 'production', 'prod' ],
             'terminate'        => [

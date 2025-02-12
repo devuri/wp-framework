@@ -149,6 +149,11 @@ return [
      * - `secret` (string|null): An optional secret key for securing health status checks.
      *   Use `env('HEALTH_STATUS_SECRET')` to configure via environment variables. Defaults to `null`.
      * - `route` (string): The route for the health status endpoint. Defaults to `'up'`.
+     * - `critical` (array): The critical routes or endpoints that we should also check. Defaults to `[]`.
+     *
+     * ## Notes on `critical` the `critical` array should contain list or urls and endpoints that should
+     * also be checked the format should be as follows:
+     * - critical => [ 'contact-us', 'about/careers', 'some-url']
      *
      * ## Future Considerations
      * - Adding authentication, such as a secret key, to restrict access to the health status endpoint.
@@ -160,6 +165,7 @@ return [
      *     'enabled' => true,
      *     'secret' => env('HEALTH_STATUS_SECRET', null),
      *     'route' => 'up',
+     *     'critical' => [],
      * ],
      * ```
      */
@@ -167,6 +173,7 @@ return [
         'enabled' => true,
         'secret' => env('HEALTH_STATUS_SECRET', null),
         'route' => 'up',
+        'critical' => [],
     ],
 
     /*
