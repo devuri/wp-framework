@@ -1,5 +1,34 @@
 # Changelog
 
+## [0.9.16](https://github.com/devuri/wpframework/compare/v0.9.15...v0.9.16) (2025-02-12)
+
+
+### Features
+
+* add `GitHubWebhookMiddleware` ([3358de9](https://github.com/devuri/wpframework/commit/3358de954f9c77314e48d0d15d1ab43ac2a77de4))
+* add `strict_types` ([e3c4f19](https://github.com/devuri/wpframework/commit/e3c4f1911895acaaa74ce63492d8aea4963d7b8c))
+* middleware docs update ([9b40eb2](https://github.com/devuri/wpframework/commit/9b40eb2c1eb181e9ad1cab889a33bd05ef153616))
+
+
+### Bug Fixes
+
+* add `adminerID` to the admin footer ([f498cb5](https://github.com/devuri/wpframework/commit/f498cb5588c5c7d008e3773956efdac6c9eeaa66))
+* add `Configs::loadArrayFile` safely require a file as an array. ([93e7ce0](https://github.com/devuri/wpframework/commit/93e7ce08a250a9b45c0b027c50b71e5da6128db4))
+* add plugin.json ([cb3215a](https://github.com/devuri/wpframework/commit/cb3215a9daf68c4a219158c69f3ae69cbfb34359))
+* better health checks ([d0dc007](https://github.com/devuri/wpframework/commit/d0dc007a613b843b285f4c66362a2c73341e26ea))
+* both example.com/up and example.com/up/ will match correctly. ([ed63c7b](https://github.com/devuri/wpframework/commit/ed63c7bc4d1c76da09bde8344f02f735a95cb1db))
+* fix for when `HYBRIDX` is set to true ([eba02c1](https://github.com/devuri/wpframework/commit/eba02c139f2dbacee27b1395df0155d20a44b77d))
+* improved `Emitter` ([e7744dc](https://github.com/devuri/wpframework/commit/e7744dc3b71b38da40704c376079380479533222))
+* improved `Emitter` ([bd6eedf](https://github.com/devuri/wpframework/commit/bd6eedf6370f01f94334b1ca5c1c2154aa1e1dd8))
+* shortinit should return 404 if we cant find the template ([124b1fc](https://github.com/devuri/wpframework/commit/124b1fc453acbd9838a9978a537c2e432895e011))
+* should be null/empty `gitHubSecret` ([1000883](https://github.com/devuri/wpframework/commit/1000883c909e21ca38486a9ef5474bb3e7a034cf))
+
+
+### Miscellaneous Chores
+
+* build ([9d87e62](https://github.com/devuri/wpframework/commit/9d87e62d9c2b6daa50668eefae0a7ada23640cfe))
+* build ([842b0ee](https://github.com/devuri/wpframework/commit/842b0ee88ba091177cb2c8983ee7eafa2417d876))
+
 ## [0.9.15](https://github.com/devuri/wpframework/compare/v0.9.14...v0.9.15) (2025-01-23)
 
 
